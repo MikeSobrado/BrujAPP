@@ -485,13 +485,14 @@
         .journal-table textarea { resize: vertical; min-height: 40px; }
         .journal-table input:focus, .journal-table select:focus, .journal-table textarea:focus { outline: none; border-color: var(--accent-cyan); }
         .journal-table td:nth-child(2) input { width: 12ch; min-width: 12ch; }
-        .journal-table td:nth-child(4) input, .journal-table td:nth-child(5) input, .journal-table td:nth-child(6) input { width: 9ch; min-width: 9ch; }
+        .journal-table td:nth-child(4) input, .journal-table td:nth-child(5) input, .journal-table td:nth-child(6) input { width: 9ch; min-width: 9ch; text-align: center; }
         .journal-table td:nth-child(7) textarea { width: 25ch; min-width: 25ch; }
         input[type="number"] { -moz-appearance: textfield; }
         input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        .journal-table .roi-cell { font-weight: bold; }
-        .journal-table .positive { color: #4CAF50; }
-        .journal-table .negative { color: #f44336; }
+        /* --- MEJORA: Estilos para el campo ROI --- */
+        .journal-table .roi-input { font-weight: bold; text-align: center; }
+        .journal-table .roi-input.positive { color: #4CAF50; }
+        .journal-table .roi-input.negative { color: #f44336; }
         .delete-btn { background-color: #4d1a1a; color: var(--text-light); border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; transition: background-color 0.3s; font-weight: 600; }
         .delete-btn:hover { background-color: var(--accent-magenta); }
         .journal-actions { display: flex; gap: 15px; justify-content: space-between; }
@@ -686,7 +687,6 @@
                     <ol>
                         <li>Introduce tu capital total y el apalancamiento que usarás</li>
                         <li>Ajusta el porcentaje de tu cuenta que estás dispuesto a arriesgar</li>
-                        <li>Introduce los puntos del activo para calcular el número de contratos</li>
                         <li>Establece el valor de Stop Loss deseado</li>
                         <li>Configura tu Risk Reward Ratio y pérdida máxima deseada</li>
                         <li>La herramienta calculará automáticamente los valores necesarios</li>
@@ -713,10 +713,6 @@
                                 <td><input type="number" id="porcentaje-cuenta" value="2" min="0" max="100" step="0.1"></td>
                             </tr>
                             <tr>
-                                <td>PUNTOS</td>
-                                <td><input type="number" id="puntos" value="100" min="0.01" step="0.01"></td>
-                            </tr>
-                            <tr>
                                 <td>STOP LOSS (%)</td>
                                 <td><input type="number" id="stop-loss" value="1" min="0" step="0.1"></td>
                             </tr>
@@ -735,10 +731,6 @@
                         <div class="result-item">
                             <span class="result-label">Capital:</span>
                             <span class="result-value" id="sl-tp-capital">$20.00</span>
-                        </div>
-                        <div class="result-item">
-                            <span class="result-label">Contratos:</span>
-                            <span class="result-value" id="sl-tp-contratos">2.00</span>
                         </div>
                         <div class="result-item">
                             <span class="result-label">Take Profit:</span>
@@ -794,11 +786,11 @@
                     <div class="result-display">
                         <div class="result-item">
                             <span class="result-label">% para cubrir comisión:</span>
-                            <span class="result-value" id="porcentaje-cubrir">1.20%</span>
+                            <span class="result-value" id="porcentaje-cubrir">12.00%</span>
                         </div>
                         <div class="result-item">
                             <span class="result-label">Comisión ($):</span>
-                            <span class="result-value" id="comision-dolares">$12.00</span>
+                            <span class="result-value" id="comision-dolares">$120.00</span>
                         </div>
                     </div>
                     
@@ -853,19 +845,15 @@ function showModal() {
 
 function hideModal() {
     welcomeModal.classList.remove('show');
-    // Marcamos que el usuario ya ha visitado la página
     localStorage.setItem(hasVisitedKey, 'true');
 }
 
-// Comprobamos si es la primera visita
 if (!localStorage.getItem(hasVisitedKey)) {
     showModal();
 }
 
-// Event listener para el botón de cerrar
 closeModalBtn.addEventListener('click', hideModal);
 
-// Opcional: Cerrar la ventana haciendo clic fuera del contenido
 welcomeModal.addEventListener('click', (event) => {
     if (event.target === welcomeModal) {
         hideModal();
@@ -1120,7 +1108,6 @@ welcomeModal.addEventListener('click', (event) => {
             updateProfileSelector();
         }
 
-        // Función para descargar perfiles
         function downloadProfiles() {
             const profiles = JSON.parse(localStorage.getItem(PROFILES_STORAGE_KEY) || '{}');
             const dataStr = JSON.stringify(profiles, null, 2);
@@ -1134,7 +1121,6 @@ welcomeModal.addEventListener('click', (event) => {
             linkElement.click();
         }
 
-        // Función para cargar perfiles
         function uploadProfiles(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1154,7 +1140,6 @@ welcomeModal.addEventListener('click', (event) => {
             reader.readAsText(file);
         }
 
-        // Event Listeners para gestión de perfiles
         document.getElementById('new-profile-btn').addEventListener('click', createNewProfile);
         document.getElementById('delete-profile-btn').addEventListener('click', deleteCurrentProfile);
         document.getElementById('rename-profile-btn').addEventListener('click', renameCurrentProfile);
@@ -1164,10 +1149,8 @@ welcomeModal.addEventListener('click', (event) => {
             loadProfile(e.target.value);
         });
 
-        // Event listeners para los nuevos botones
         document.getElementById('download-profiles-btn').addEventListener('click', downloadProfiles);
 
-        // Para el botón de carga, necesitamos crear un input de archivo oculto
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
         fileInput.accept = '.json';
@@ -1179,7 +1162,6 @@ welcomeModal.addEventListener('click', (event) => {
             fileInput.click();
         });
 
-        // Event Delegation para la lista de indicadores
         indicatorList.addEventListener('click', (event) => {
             const item = event.target.closest('.indicator-item');
             if (!item) return;
@@ -1195,31 +1177,50 @@ welcomeModal.addEventListener('click', (event) => {
                 
                 if (!wasActive) {
                     event.target.classList.add('active');
-                    indicatorData.state = event.target.dataset.state;
-                } else {
-                    indicatorData.state = null;
                 }
                 
                 saveProfile();
                 updateDecision();
-            } 
-            else if (event.target.closest('.trash-icon-btn')) {
+            } else if (event.target.classList.contains('trash-icon-btn')) {
                 deleteIndicator(indicatorName);
             }
         });
 
         indicatorList.addEventListener('input', (event) => {
             if (event.target.classList.contains('weight-input')) {
-                const item = event.target.closest('.indicator-item');
-                const indicatorName = item.dataset.indicatorName;
-                if (currentProfileData.indicators[indicatorName]) {
-                    currentProfileData.indicators[indicatorName].weight = parseInt(event.target.value) || 10;
-                    
-                    saveProfile();
-                    updateDecision();
-                }
+                saveProfile();
+                updateDecision();
             }
         });
+
+        function updateDecision() {
+            let greenScore = 0;
+            let redScore = 0;
+
+            for (const name in currentProfileData.indicators) {
+                const indicator = currentProfileData.indicators[name];
+                if (indicator.state === 'green') {
+                    greenScore += indicator.weight;
+                } else if (indicator.state === 'red') {
+                    redScore += indicator.weight;
+                }
+            }
+
+            const greenThreshold = parseInt(greenThresholdInput.value) || 40;
+            const redThreshold = parseInt(redThresholdInput.value) || 40;
+
+            buySignal.classList.remove('active');
+            sellSignal.classList.remove('active');
+            waitSignal.classList.remove('active');
+
+            if (greenScore >= greenThreshold && greenScore > redScore) {
+                buySignal.classList.add('active');
+            } else if (redScore >= redThreshold && redScore > greenScore) {
+                sellSignal.classList.add('active');
+            } else {
+                waitSignal.classList.add('active');
+            }
+        }
 
         greenThresholdInput.addEventListener('input', () => {
             saveProfile();
@@ -1231,213 +1232,220 @@ welcomeModal.addEventListener('click', (event) => {
             updateDecision();
         });
 
-        function updateDecision() {
-            if (!currentProfileData || !currentProfileData.indicators) {
-                waitSignal.classList.add('active');
-                buySignal.classList.remove('active');
-                sellSignal.classList.remove('active');
-                return;
-            }
-
-            let totalGreenWeight = 0;
-            let totalRedWeight = 0;
-
-            Object.keys(currentProfileData.indicators).forEach(name => {
-                const indicator = currentProfileData.indicators[name];
-                if (indicator.state === 'green') {
-                    totalGreenWeight += indicator.weight || 0;
-                } else if (indicator.state === 'red') {
-                    totalRedWeight += indicator.weight || 0;
-                }
-            });
-
-            const greenThreshold = parseInt(greenThresholdInput.value) || 0;
-            const redThreshold = parseInt(redThresholdInput.value) || 0;
-
-            buySignal.classList.remove('active');
-            sellSignal.classList.remove('active');
-            waitSignal.classList.remove('active');
-
-            if (totalGreenWeight > totalRedWeight && totalGreenWeight >= greenThreshold) {
-                buySignal.classList.add('active');
-            } else if (totalRedWeight > totalGreenWeight && totalRedWeight >= redThreshold) {
-                sellSignal.classList.add('active');
-            } else {
-                waitSignal.classList.add('active');
-            }
-        }
-
         // --- LÓGICA DE GESTIÓN DE RIESGO ---
-        const calculateSLTPBtn = document.getElementById('calculate-sl-tp');
-        const calculateComisionBtn = document.getElementById('calculate-comision');
-
-        calculateSLTPBtn.addEventListener('click', () => {
+        document.getElementById('calculate-sl-tp').addEventListener('click', () => {
             const capital = parseFloat(document.getElementById('capital-total').value) || 0;
             const apalancamiento = parseFloat(document.getElementById('apalancamiento').value) || 1;
             const porcentajeCuenta = parseFloat(document.getElementById('porcentaje-cuenta').value) || 0;
-            const puntos = parseFloat(document.getElementById('puntos').value) || 0;
             const stopLoss = parseFloat(document.getElementById('stop-loss').value) || 0;
-            const riskRewardRatio = parseFloat(document.getElementById('risk-reward-ratio').value) || 1;
+            const riskRewardRatio = parseFloat(document.getElementById('risk-reward-ratio').value) || 0;
             const perdidaMaxima = parseFloat(document.getElementById('perdida-maxima').value) || 0;
 
-            const capitalRiesgo = capital * (porcentajeCuenta / 100);
-            const capitalApalancado = capital * apalancamiento;
-            const contratos = (capitalRiesgo / 100) / (puntos * stopLoss / 100);
+            const riesgoCapital = capital * (porcentajeCuenta / 100);
             const takeProfit = stopLoss * riskRewardRatio;
-            const perdidaDolares = contratos * puntos * stopLoss;
-            const perdidaPorcentaje = (perdidaDolares / capitalApalancado) * 100;
+            const perdidaDolares = (capital * apalancamiento * porcentajeCuenta * stopLoss) / 10000;
+            const perdidaPorcentual = (apalancamiento * porcentajeCuenta * stopLoss) / 100;
 
-            document.getElementById('sl-tp-capital').textContent = `$${capitalRiesgo.toFixed(2)}`;
-            document.getElementById('sl-tp-contratos').textContent = contratos.toFixed(2);
+            document.getElementById('sl-tp-capital').textContent = `$${riesgoCapital.toFixed(2)}`;
             document.getElementById('sl-tp-tp').textContent = `${takeProfit.toFixed(2)}%`;
             document.getElementById('sl-tp-perdida-dolares').textContent = `$${perdidaDolares.toFixed(2)}`;
-            document.getElementById('sl-tp-perdida').textContent = `${perdidaPorcentaje.toFixed(2)}%`;
+            document.getElementById('sl-tp-perdida').textContent = `${perdidaPorcentual.toFixed(2)}%`;
 
-            if (perdidaPorcentaje > perdidaMaxima) {
-                document.getElementById('sl-tp-perdida').classList.add('warning');
+            const perdidaDolaresElement = document.getElementById('sl-tp-perdida-dolares');
+            const perdidaPorcentualElement = document.getElementById('sl-tp-perdida');
+
+            if (perdidaPorcentual > perdidaMaxima) {
+                perdidaDolaresElement.classList.add('warning');
+                perdidaPorcentualElement.classList.add('warning');
             } else {
-                document.getElementById('sl-tp-perdida').classList.remove('warning');
+                perdidaDolaresElement.classList.remove('warning');
+                perdidaPorcentualElement.classList.remove('warning');
             }
         });
 
-        calculateComisionBtn.addEventListener('click', () => {
-            const comision = parseFloat(document.getElementById('comision').value) || 0;
+        // --- LÓGICA DE CÁLCULO DE COMISIONES (FÓRMULA FINAL CORREGIDA) ---
+        document.getElementById('calculate-comision').addEventListener('click', () => {
+            const comisionPorcentual = parseFloat(document.getElementById('comision').value) || 0;
             const apalancamiento = parseFloat(document.getElementById('apalancamiento-comision').value) || 1;
             const capital = parseFloat(document.getElementById('capital-comision').value) || 0;
 
-            const comisionTotal = comision * 2; // Comisión al abrir y cerrar
-            const porcentajeCubrir = comisionTotal / apalancamiento;
-            const comisionDolares = capital * (comisionTotal / 100);
+            // 1. Cálculo para "Comisión ($)" como solicitó el usuario.
+            // Fórmula: (COMISIÓN (%) * APALANCAMIENTO * CAPITAL($) * 2) / 100
+            const comisionDolares = (comisionPorcentual * apalancamiento * capital * 2) / 100;
+
+            // 2. Cálculo para "% para cubrir comisión" con la fórmula final corregida.
+            // Fórmula: COMISIÓN (%) * APALANCAMIENTO * 2
+            const porcentajeCubrir = comisionPorcentual * apalancamiento * 2;
 
             document.getElementById('porcentaje-cubrir').textContent = `${porcentajeCubrir.toFixed(2)}%`;
             document.getElementById('comision-dolares').textContent = `$${comisionDolares.toFixed(2)}`;
         });
 
         // --- LÓGICA DEL REGISTRO DE OPERACIONES ---
-        const journalTbody = document.getElementById('journal-tbody');
-        const addTradeBtn = document.getElementById('add-trade-btn');
-        const downloadCSBtn = document.getElementById('download-csv-btn');
         const JOURNAL_STORAGE_KEY = 'tradingJournal';
+        const journalTable = document.getElementById('journal-tbody');
+        const addTradeBtn = document.getElementById('add-trade-btn');
+        const downloadCsvBtn = document.getElementById('download-csv-btn');
 
-        function loadJournal() {
-            const journal = JSON.parse(localStorage.getItem(JOURNAL_STORAGE_KEY) || '[]');
-            journalTbody.innerHTML = '';
-            
-            journal.forEach((trade, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><input type="date" value="${trade.date}" data-index="${index}" data-field="date"></td>
-                    <td><input type="text" value="${trade.asset}" data-index="${index}" data-field="asset"></td>
-                    <td>
-                        <select data-index="${index}" data-field="position">
-                            <option value="LONG" ${trade.position === 'LONG' ? 'selected' : ''}>LONG</option>
-                            <option value="SHORT" ${trade.position === 'SHORT' ? 'selected' : ''}>SHORT</option>
-                        </select>
-                    </td>
-                    <td><input type="number" value="${trade.entry}" data-index="${index}" data-field="entry"></td>
-                    <td><input type="number" value="${trade.exit}" data-index="${index}" data-field="exit"></td>
-                    <td class="roi-cell ${trade.roi >= 0 ? 'positive' : 'negative'}">${trade.roi.toFixed(2)}%</td>
-                    <td><textarea data-index="${index}" data-field="notes">${trade.notes}</textarea></td>
-                    <td><button class="delete-btn" data-index="${index}">Borrar</button></td>
-                `;
-                journalTbody.appendChild(row);
-            });
+        function calculateROI(entry, exit, position) {
+            if (entry === 0) return 0;
+            let roi;
+            if (position === 'short') {
+                roi = ((entry - exit) / entry) * 100;
+            } else { // 'long' o cualquier otro valor
+                roi = ((exit - entry) / entry) * 100;
+            }
+            return roi;
         }
 
-        function saveJournal() {
-            const journal = [];
-            const rows = journalTbody.querySelectorAll('tr');
-            
-            rows.forEach(row => {
-                const inputs = row.querySelectorAll('input, select, textarea');
-                const trade = {
-                    date: inputs[0].value,
-                    asset: inputs[1].value,
-                    position: inputs[2].value,
-                    entry: parseFloat(inputs[3].value) || 0,
-                    exit: parseFloat(inputs[4].value) || 0,
-                    roi: 0,
-                    notes: inputs[5].value
-                };
+        function updateRowROI(row) {
+            if (!row) return;
+            const entryInput = row.querySelector('.entry-input');
+            const exitInput = row.querySelector('.exit-input');
+            const positionSelect = row.querySelector('.position-input');
+            const roiInput = row.querySelector('.roi-input');
+
+            if (entryInput && exitInput && positionSelect && roiInput) {
+                const entry = parseFloat(entryInput.value) || 0;
+                const exit = parseFloat(exitInput.value) || 0;
+                const position = positionSelect.value;
+                const roi = calculateROI(entry, exit, position);
                 
-                // Calcular ROI
-                if (trade.entry > 0 && trade.exit > 0) {
-                    if (trade.position === 'LONG') {
-                        trade.roi = ((trade.exit - trade.entry) / trade.entry) * 100;
-                    } else {
-                        trade.roi = ((trade.entry - trade.exit) / trade.entry) * 100;
-                    }
-                }
-                
-                journal.push(trade);
-            });
-            
-            localStorage.setItem(JOURNAL_STORAGE_KEY, JSON.stringify(journal));
-            loadJournal();
+                roiInput.value = roi.toFixed(2) + '%';
+                roiInput.classList.remove('positive', 'negative');
+                roiInput.classList.add(roi >= 0 ? 'positive' : 'negative');
+            }
         }
 
         function addTrade() {
-            const newTrade = {
-                date: new Date().toISOString().split('T')[0],
-                asset: '',
-                position: 'LONG',
-                entry: 0,
-                exit: 0,
-                roi: 0,
-                notes: ''
-            };
-            
-            const journal = JSON.parse(localStorage.getItem(JOURNAL_STORAGE_KEY) || '[]');
-            journal.push(newTrade);
-            localStorage.setItem(JOURNAL_STORAGE_KEY, JSON.stringify(journal));
-            loadJournal();
+            const tradeId = Date.now();
+            const rowHtml = `
+                <tr data-id="${tradeId}">
+                    <td><input type="date" class="date-input"></td>
+                    <td><input type="text" class="asset-input" placeholder="BTC/USD"></td>
+                    <td>
+                        <select class="position-input">
+                            <option value="long">Long</option>
+                            <option value="short">Short</option>
+                        </select>
+                    </td>
+                    <td><input type="number" class="entry-input" placeholder="0.00" step="0.01"></td>
+                    <td><input type="number" class="exit-input" placeholder="0.00" step="0.01"></td>
+                    <td><input type="text" class="roi-input" value="0.00%" readonly></td>
+                    <td><textarea class="notes-input" placeholder="Notas..."></textarea></td>
+                    <td><button class="delete-btn">Borrar</button></td>
+                </tr>
+            `;
+            journalTable.insertAdjacentHTML('beforeend', rowHtml);
+            saveJournalToLocalStorage();
         }
 
-        function deleteTrade(index) {
-            if (!confirm('¿Estás seguro de que quieres eliminar esta operación?')) return;
-            
-            const journal = JSON.parse(localStorage.getItem(JOURNAL_STORAGE_KEY) || '[]');
-            journal.splice(index, 1);
-            localStorage.setItem(JOURNAL_STORAGE_KEY, JSON.stringify(journal));
-            loadJournal();
+        function deleteTrade(event) {
+            if (event.target.classList.contains('delete-btn')) {
+                const row = event.target.closest('tr');
+                row.remove();
+                saveJournalToLocalStorage();
+            }
+        }
+
+        function saveJournalToLocalStorage() {
+            const rows = journalTable.querySelectorAll('tr');
+            const journalData = [];
+            rows.forEach(row => {
+                const date = row.querySelector('.date-input').value;
+                const asset = row.querySelector('.asset-input').value;
+                const position = row.querySelector('.position-input').value;
+                const entry = row.querySelector('.entry-input').value;
+                const exit = row.querySelector('.exit-input').value;
+                const notes = row.querySelector('.notes-input').value;
+                journalData.push({ date, asset, position, entry, exit, notes });
+            });
+            localStorage.setItem(JOURNAL_STORAGE_KEY, JSON.stringify(journalData));
+        }
+
+        function loadJournalFromLocalStorage() {
+            const journalData = JSON.parse(localStorage.getItem(JOURNAL_STORAGE_KEY) || '[]');
+            journalTable.innerHTML = '';
+            journalData.forEach(trade => {
+                const tradeId = Date.now() + Math.random();
+                const loadedRoi = calculateROI(parseFloat(trade.entry), parseFloat(trade.exit), trade.position);
+                const roiClass = loadedRoi >= 0 ? 'positive' : 'negative';
+                const rowHtml = `
+                    <tr data-id="${tradeId}">
+                        <td><input type="date" class="date-input" value="${trade.date}"></td>
+                        <td><input type="text" class="asset-input" value="${trade.asset}" placeholder="BTC/USD"></td>
+                        <td>
+                            <select class="position-input">
+                                <option value="long" ${trade.position === 'long' ? 'selected' : ''}>Long</option>
+                                <option value="short" ${trade.position === 'short' ? 'selected' : ''}>Short</option>
+                            </select>
+                        </td>
+                        <td><input type="number" class="entry-input" value="${trade.entry}" placeholder="0.00" step="0.01"></td>
+                        <td><input type="number" class="exit-input" value="${trade.exit}" placeholder="0.00" step="0.01"></td>
+                        <td><input type="text" class="roi-input ${roiClass}" value="${loadedRoi.toFixed(2)}%" readonly></td>
+                        <td><textarea class="notes-input" placeholder="Notas...">${trade.notes}</textarea></td>
+                        <td><button class="delete-btn">Borrar</button></td>
+                    </tr>
+                `;
+                journalTable.insertAdjacentHTML('beforeend', rowHtml);
+            });
         }
 
         function downloadCSV() {
-            const journal = JSON.parse(localStorage.getItem(JOURNAL_STORAGE_KEY) || '[]');
-            
-            let csv = 'Fecha,Activo,Posición,Entrada,Salida,ROI (%),Notas\n';
-            journal.forEach(trade => {
-                csv += `${trade.date},${trade.asset},${trade.position},${trade.entry},${trade.exit},${trade.roi.toFixed(2)},"${trade.notes}"\n`;
+            const rows = journalTable.querySelectorAll('tr');
+            let csvContent = "Fecha,Activo,Posición,Entrada,Salida,ROI (%),Notas\n";
+            rows.forEach(row => {
+                const date = row.querySelector('.date-input').value;
+                const asset = row.querySelector('.asset-input').value;
+                const position = row.querySelector('.position-input').value;
+                const entry = row.querySelector('.entry-input').value;
+                const exit = row.querySelector('.exit-input').value;
+                const roi = row.querySelector('.roi-input').value;
+                const notes = row.querySelector('.notes-input').value.replace(/(\r\n|\n|\r)/gm, " ");
+                csvContent += `${date},${asset},${position},${entry},${exit},${roi},"${notes}"\n`;
             });
-            
-            const dataUri = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-            const exportFileDefaultName = 'trading_journal.csv';
-            
-            const linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', exportFileDefaultName);
-            linkElement.click();
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'trading_journal.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
+        journalTable.addEventListener('input', (event) => {
+            const target = event.target;
+            if (!target.classList.contains('entry-input') && !target.classList.contains('exit-input')) {
+                return;
+            }
+            const row = target.closest('tr');
+            updateRowROI(row);
+            saveJournalToLocalStorage();
+        });
+
+        journalTable.addEventListener('change', (event) => {
+            const target = event.target;
+            const row = target.closest('tr');
+            
+            if (target.classList.contains('position-input')) {
+                updateRowROI(row);
+            }
+            
+            if (target.classList.contains('position-input') || target.classList.contains('date-input')) {
+                saveJournalToLocalStorage();
+            }
+        });
+
+        journalTable.addEventListener('click', deleteTrade);
         addTradeBtn.addEventListener('click', addTrade);
-        downloadCSBtn.addEventListener('click', downloadCSV);
-
-        journalTbody.addEventListener('input', (e) => {
-            if (e.target.matches('input, select, textarea')) {
-                saveJournal();
-            }
-        });
-
-        journalTbody.addEventListener('click', (e) => {
-            if (e.target.matches('.delete-btn')) {
-                const index = parseInt(e.target.dataset.index);
-                deleteTrade(index);
-            }
-        });
+        downloadCsvBtn.addEventListener('click', downloadCSV);
 
         // Inicialización
         initializeProfiles();
-        loadJournal();
+        loadJournalFromLocalStorage();
     });
     </script>
 </body>
