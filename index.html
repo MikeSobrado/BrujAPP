@@ -1,10 +1,28 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+       <!-- Meta-tags Esenciales -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BrujAPP</title>
-    
+    <title>BrujAPP - Gestor de Estrategias y Riesgos para Trading</title>
+    <meta name="description" content="BrujAPP es una potente herramienta de trading para gestionar tus estrategias, calcular riesgos, registrar operaciones y maximizar ganancias. Crea perfiles personalizados para scalping, swinging o activos como BTC y ETH.">
+    <meta name="keywords" content="trading, gestión de riesgo, brujapp, trading journal, perfil de trading, apalancamiento, stop loss, take profit, comisiones, criptomonedas, forex, análisis técnico, RSI, MACD, scalping, swinging">
+    <meta name="author" content="Mike Sobrado">
+    <meta name="robots" content="index, follow">
+
+    <!-- Meta-tags para Redes Sociales (Open Graph) -->
+    <meta property="og:title" content="BrujAPP - Tu Asistente de Trading Personal">
+    <meta property="og:description" content="BrujAPP es una potente herramienta de trading para gestionar tus estrategias, calcular riesgos, registrar operaciones y maximizar ganancias.">
+    <meta property="og:image" content="https://github.com/MikeSobrado/BrujAPP/blob/19cb9c91f4b69f7790a2c6e9f90781ee8fbdfeaf/Banner.png">
+    <meta property="og:url" content="https://mikesobrado.github.io/BrujAPP/">
+    <meta property="og:type" content="website">
+
+    <!-- Meta-tags para Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="BrujAPP - Tu Asistente de Trading Personal">
+    <meta name="twitter:description" content="BrujAPP es una potente herramienta de trading para gestionar tus estrategias, calcular riesgos y maximizar ganancias.">
+    <meta name="twitter:image" content="https://github.com/MikeSobrado/BrujAPP/blob/19cb9c91f4b69f7790a2c6e9f90781ee8fbdfeaf/Redes.png">
+
     <!-- Librería Chart.js para los gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
@@ -706,19 +724,19 @@
                             </tr>
                             <tr>
                                 <td>APALANCAMIENTO</td>
-                                <td><input type="number" id="apalancamiento" value="10" min="1"></td>
+                                <td><input type="number" id="apalancamiento" value="15" min="1"></td>
                             </tr>
                             <tr>
                                 <td>% DE LA CUENTA</td>
-                                <td><input type="number" id="porcentaje-cuenta" value="2" min="0" max="100" step="0.1"></td>
+                                <td><input type="number" id="porcentaje-cuenta" value="3" min="0" max="100" step="0.1"></td>
                             </tr>
                             <tr>
                                 <td>STOP LOSS (%)</td>
-                                <td><input type="number" id="stop-loss" value="1" min="0" step="0.1"></td>
+                                <td><input type="number" id="stop-loss" value="2" min="0" step="0.1"></td>
                             </tr>
                             <tr>
                                 <td>RISK REWARD RATIO DESEADO</td>
-                                <td><input type="number" id="risk-reward-ratio" value="3" min="1"></td>
+                                <td><input type="number" id="risk-reward-ratio" value="2" min="1"></td>
                             </tr>
                             <tr>
                                 <td>PÉRDIDA MÁXIMA DESEADA (%)</td>
@@ -770,11 +788,11 @@
                         <tbody>
                             <tr>
                                 <td>COMISIÓN (%)</td>
-                                <td><input type="number" id="comision" value="0.6" min="0" step="0.1"></td>
+                                <td><input type="number" id="comision" value="0.06" min="0" step="0.1"></td>
                             </tr>
                             <tr>
                                 <td>APALANCAMIENTO</td>
-                                <td><input type="number" id="apalancamiento-comision" value="10" min="1"></td>
+                                <td><input type="number" id="apalancamiento-comision" value="15" min="1"></td>
                             </tr>
                             <tr>
                                 <td>CAPITAL ($)</td>
@@ -1450,3 +1468,4 @@ welcomeModal.addEventListener('click', (event) => {
     </script>
 </body>
 </html>
+
