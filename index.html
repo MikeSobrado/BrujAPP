@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html>
 <html lang="es">
 <head>
 
@@ -830,14 +830,14 @@
                         </div>
                     </div>
                     
-                    <button class="calculate-btn" id="calculate-sl-tp">Calcular</button>
+                    <!-- Botón de calcular eliminado para actualización automática -->
                 </div>
                 
                 <!-- Herramienta 2: Ratio de cobertura de comisiones -->
                 <div class="risk-tool">
-                    <h3>Ratio de cobertura de comisiones</h3>
+                    <h3>Cálculo de Costes y Ganancia Mínima</h3>
                     <p>
-                        Esta herramienta calcula el coste de las comisiones y el porcentaje de ganancia mínimo sobre tu capital arriesgado para cubrir dichos costes.
+                        Esta herramienta calcula el coste total de una operación (comisiones, financiación y spread) y el porcentaje de ganancia mínimo sobre tu capital arriesgado (margen) necesario para cubrir dichos costes.
                         <br><strong>Nota:</strong> El apalancamiento y el capital se toman automáticamente de la calculadora de SL y TP.
                     </p>
                     
@@ -851,14 +851,14 @@
                         <tbody>
                             <tr>
                                 <td>COMISIÓN (%)</td>
-                                <td><input type="number" id="comision" value="0.06" min="0" step="0.1"></td>
+                                <td><input type="number" id="comision" value="0.06" min="0" step="0.01"></td>
                             </tr>
                             <tr>
-                                <td>FINANCIACIÓN</td>
+                                <td>FINANCIACIÓN ($)</td>
                                 <td><input type="number" id="financiacion" value="0" min="0" step="0.01"></td>
                             </tr>
                             <tr>
-                                <td>SPREAD</td>
+                                <td>SPREAD ($)</td>
                                 <td><input type="number" id="spread" value="0" min="0" step="0.01"></td>
                             </tr>
                         </tbody>
@@ -867,19 +867,19 @@
                     <div class="result-display">
                         <div class="result-item">
                             <span class="result-label">% Ganancia Mínima:</span>
-                            <span class="result-value" id="porcentaje-cubrir">1.80%</span>
+                            <span class="result-value" id="porcentaje-cubrir">1.95%</span>
                         </div>
                         <div class="result-item">
-                            <span class="result-label">Comisión ($):</span>
-                            <span class="result-value" id="comision-dolares">$0.54</span>
+                            <span class="result-label">Coste Comisiones ($):</span>
+                            <span class="result-value" id="comision-dolares">$36.00</span>
                         </div>
                         <div class="result-item">
-                            <span class="result-label">Gastos ($):</span>
-                            <span class="result-value" id="gastos-dolares">$0.54</span>
+                            <span class="result-label">Gastos Totales ($):</span>
+                            <span class="result-value" id="gastos-dolares">$39.00</span>
                         </div>
                     </div>
                     
-                    <button class="calculate-btn" id="calculate-comision">Calcular</button>
+                    <!-- Botón de calcular eliminado para actualización automática -->
                 </div>
             </div>
         </div>
@@ -899,7 +899,6 @@
                                 <th>Entrada</th>
                                 <th>Salida</th>
                                 <th>ROI (%)</th>
-                                <th>Calcular</th>
                                 <th>Notas</th>
                                 <th>Borrar</th>
                             </tr>
@@ -1282,61 +1281,47 @@ welcomeModal.addEventListener('click', (event) => {
         });
 
         function updateDecision() {
-    if (!currentProfileData || !currentProfileData.indicators) return;
+            if (!currentProfileData || !currentProfileData.indicators) return;
 
-    let greenScore = 0;
-    let redScore = 0;
+            let greenScore = 0;
+            let redScore = 0;
 
-    Object.keys(currentProfileData.indicators).forEach(name => {
-        const indicator = currentProfileData.indicators[name];
-        if (indicator.state === 'green') {
-            greenScore += indicator.weight || 0;
-        } else if (indicator.state === 'red') {
-            redScore += indicator.weight || 0;
+            Object.keys(currentProfileData.indicators).forEach(name => {
+                const indicator = currentProfileData.indicators[name];
+                if (indicator.state === 'green') {
+                    greenScore += indicator.weight || 0;
+                } else if (indicator.state === 'red') {
+                    redScore += indicator.weight || 0;
+                }
+            });
+
+            const greenThreshold = parseInt(greenThresholdInput.value) || 40;
+            const redThreshold = parseInt(redThresholdInput.value) || 40;
+
+            buySignal.classList.remove('active');
+            sellSignal.classList.remove('active');
+            waitSignal.classList.remove('active');
+
+            if (greenScore >= redScore && greenScore >= greenThreshold) {
+                buySignal.classList.add('active');
+            } else if (redScore >= greenScore && redScore >= redThreshold) {
+                sellSignal.classList.add('active');
+            } else {
+                waitSignal.classList.add('active');
+            }
         }
-    });
-
-    const greenThreshold = parseInt(greenThresholdInput.value) || 40;
-    const redThreshold = parseInt(redThresholdInput.value) || 40;
-
-    // Resetear todas las señales
-    buySignal.classList.remove('active');
-    sellSignal.classList.remove('active');
-    waitSignal.classList.remove('active');
-
-    // --- NUEVA LÓGICA DE DECISIÓN ---
-
-    // 1. Si hay empate, la señal es ESPERA.
-    if (greenScore === redScore) {
-        waitSignal.classList.add('active');
-    } 
-    // 2. Si LONG es estrictamente mayor que SHORT y supera su umbral, la señal es LONG.
-    else if (greenScore > redScore && greenScore >= greenThreshold) {
-        buySignal.classList.add('active');
-    } 
-    // 3. Si SHORT es estrictamente mayor que LONG y supera su umbral, la señal es SHORT.
-    else if (redScore > greenScore && redScore >= redThreshold) {
-        sellSignal.classList.add('active');
-    } 
-    // 4. En cualquier otro caso (ninguna puntuación es suficiente), la señal es ESPERA.
-    else {
-        waitSignal.classList.add('active');
-    }
-}
 
         // --- LÓGICA DE GESTIÓN DE RIESGO ---
         
         // --- FUNCIÓN DE ANÁLISIS DE NÚMEROS ROBUSTA ---
         function parseNumber(value) {
             if (typeof value !== 'string') return parseFloat(value) || 0;
-            // Elimina todo lo que no sea un dígito, un signo de menos o un punto.
             let cleanedValue = value.replace(/[^0-9.-]+/g, '');
-            // Reemplaza la coma por un punto para estandarizar el separador decimal.
             cleanedValue = cleanedValue.replace(',', '.');
             return parseFloat(cleanedValue) || 0;
         }
 
-        // Calculadora de SL y TP (MEJORADA)
+        // Calculadora de SL y TP
         function calculateSlTp() {
             const capitalTotal = parseNumber(document.getElementById('capital-total').value);
             const apalancamiento = parseNumber(document.getElementById('apalancamiento').value);
@@ -1363,48 +1348,35 @@ welcomeModal.addEventListener('click', (event) => {
                 perdidaElement.classList.remove('warning');
             }
         }
-        document.getElementById('calculate-sl-tp').addEventListener('click', calculateSlTp);
 
-        // Ratio de cobertura de comisiones (MEJORADA CON GASTOS TOTALES)
-function calculateCommissionRatio() {
-    const commission = parseNumber(document.getElementById('comision').value);
-    const leverage = parseNumber(document.getElementById('apalancamiento').value);
-    
-    // Obtenemos el capital arriesgado (margen) del resultado de la calculadora de SL/TP
-    const capitalText = document.getElementById('sl-tp-capital').textContent;
-    const capital = parseNumber(capitalText.replace('$', ''));
-    
-    // Obtenemos los gastos adicionales
-    const financiacion = parseNumber(document.getElementById('financiacion').value);
-    const spread = parseNumber(document.getElementById('spread').value);
+        // Ratio de cobertura de comisiones
+        function calculateCommissionRatio() {
+            const commission = parseNumber(document.getElementById('comision').value);
+            const leverage = parseNumber(document.getElementById('apalancamiento').value);
+            
+            const capitalText = document.getElementById('sl-tp-capital').textContent;
+            const capital = parseNumber(capitalText.replace('$', ''));
+            
+            const financiacion = parseNumber(document.getElementById('financiacion').value);
+            const spread = parseNumber(document.getElementById('spread').value);
 
-    // Si el capital es 0, no se puede calcular nada para evitar errores
-    if (capital === 0) {
-        document.getElementById('porcentaje-cubrir').textContent = '0.00%';
-        document.getElementById('comision-dolares').textContent = '$0.00';
-        document.getElementById('gastos-dolares').textContent = '$0.00';
-        return;
-    }
-    
-    // 1. Calcular el coste total de comisiones basado en el valor nocional
-    const notionalValue = capital * leverage;
-    const totalCommissionCost = (notionalValue * (commission / 100)) * 2;
-    
-    // 2. Calcular el total de gastos adicionales
-    const additionalCosts = financiacion + spread;
-    
-    // 3. Calcular el gran total de TODOS los costes
-    const totalCosts = totalCommissionCost + additionalCosts;
-    
-    // 4. Calcular el porcentaje de ganancia necesario sobre el CAPITAL ARRIESGADO para cubrir TODOS los costes
-    const percentageToCover = (totalCosts / capital) * 100;
-    
-    // 5. Actualizar la interfaz
-    document.getElementById('porcentaje-cubrir').textContent = percentageToCover.toFixed(2) + '%';
-    document.getElementById('comision-dolares').textContent = '$' + totalCommissionCost.toFixed(2);
-    document.getElementById('gastos-dolares').textContent = '$' + totalCosts.toFixed(2);
-}
-        document.getElementById('calculate-comision').addEventListener('click', calculateCommissionRatio);
+            if (capital === 0) {
+                document.getElementById('porcentaje-cubrir').textContent = '0.00%';
+                document.getElementById('comision-dolares').textContent = '$0.00';
+                document.getElementById('gastos-dolares').textContent = '$0.00';
+                return;
+            }
+            
+            const notionalValue = capital * leverage;
+            const totalCommissionCost = (notionalValue * (commission / 100)) * 2;
+            const additionalCosts = financiacion + spread;
+            const totalCosts = totalCommissionCost + additionalCosts;
+            const percentageToCover = (totalCosts / capital) * 100;
+            
+            document.getElementById('porcentaje-cubrir').textContent = percentageToCover.toFixed(2) + '%';
+            document.getElementById('comision-dolares').textContent = '$' + totalCommissionCost.toFixed(2);
+            document.getElementById('gastos-dolares').textContent = '$' + totalCosts.toFixed(2);
+        }
 
         // --- LÓGICA DEL REGISTRO DE OPERACIONES ---
         const journalTbody = document.getElementById('journal-tbody');
@@ -1505,6 +1477,14 @@ function calculateCommissionRatio() {
             }
         }
 
+        // Función para recalcular todos los ROIs del registro
+        function recalculateAllJournalROIs() {
+            const rows = journalTbody.querySelectorAll('tr');
+            rows.forEach(row => {
+                calculateRowROI(row);
+            });
+        }
+
         function loadJournal() {
             const trades = JSON.parse(localStorage.getItem(JOURNAL_STORAGE_KEY) || '[]');
             journalTbody.innerHTML = '';
@@ -1538,6 +1518,7 @@ function calculateCommissionRatio() {
             const row = document.createElement('tr');
             const today = new Date().toISOString().split('T')[0];
             
+            // Se elimina la columna "Calcular" y su botón
             row.innerHTML = `
                 <td data-label="Fecha"><input type="date" value="${trade.date || today}"></td>
                 <td data-label="Activo"><input type="text" value="${trade.asset || ''}" placeholder="BTC/USD"></td>
@@ -1551,7 +1532,6 @@ function calculateCommissionRatio() {
                 <td data-label="Entrada"><input type="number" value="${trade.entry || ''}" step="0.01" placeholder="0.00"></td>
                 <td data-label="Salida"><input type="number" value="${trade.exit || ''}" step="0.01" placeholder="0.00"></td>
                 <td data-label="ROI (%)"><input type="number" class="roi-input" value="" readonly></td>
-                <td data-label="Calcular"><button class="calculate-roi-btn" title="Calcular ROI">↻</button></td>
                 <td data-label="Notas"><button class="notes-btn" data-notes="${trade.notes || ''}" title="Ver/Añadir Notas">📝</button></td>
                 <td data-label="Borrar">
                     <svg class="trash-icon-btn delete-btn" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" title="Borrar Operación">
@@ -1585,15 +1565,24 @@ function calculateCommissionRatio() {
         journalTbody.addEventListener('input', saveJournal);
         journalTbody.addEventListener('change', saveJournal);
         
+        // Listener para recalcular ROI automáticamente al cambiar datos de una fila
+        journalTbody.addEventListener('input', (e) => {
+            if (e.target.matches('td:nth-child(4) input, td:nth-child(5) input, td:nth-child(6) input')) {
+                const row = e.target.closest('tr');
+                if (row) calculateRowROI(row);
+            }
+        });
+
+        journalTbody.addEventListener('change', (e) => {
+            if (e.target.matches('td:nth-child(3) select')) {
+                const row = e.target.closest('tr');
+                if (row) calculateRowROI(row);
+            }
+        });
+
         journalTbody.addEventListener('click', (e) => {
             if (e.target.classList.contains('notes-btn')) {
                 openNotesModal(e.target);
-            }
-            if (e.target.classList.contains('calculate-roi-btn')) {
-                const row = e.target.closest('tr');
-                if (row) {
-                    calculateRowROI(row);
-                }
             }
         });
 
@@ -1636,11 +1625,35 @@ function calculateCommissionRatio() {
             document.body.removeChild(link);
         });
 
-        // --- INICIALIZACIÓN ---
+        // --- INICIALIZACIÓN Y LISTENERS AUTOMÁTICOS ---
+
+        // Listeners para la calculadora de SL/TP. Cualquier cambio recalcula.
+        const slTpInputs = ['capital-total', 'apalancamiento', 'porcentaje-cuenta', 'stop-loss', 'risk-reward-ratio', 'perdida-maxima'];
+        slTpInputs.forEach(id => {
+            document.getElementById(id).addEventListener('input', () => {
+                calculateSlTp();
+                // Como el capital y apalancamiento afectan a la comisión y al ROI, los recalculamos todo.
+                calculateCommissionRatio();
+                recalculateAllJournalROIs();
+            });
+        });
+
+        // Listeners para la calculadora de comisiones.
+        const commissionInputs = ['comision', 'financiacion', 'spread'];
+        commissionInputs.forEach(id => {
+            document.getElementById(id).addEventListener('input', () => {
+                calculateCommissionRatio();
+                // Estos valores afectan al ROI de todas las operaciones.
+                recalculateAllJournalROIs();
+            });
+        });
+
+        // Inicialización final
         initializeProfiles();
         loadJournal();
         calculateSlTp();
         calculateCommissionRatio();
+        recalculateAllJournalROIs(); // Calcular ROIs iniciales al cargar la página
     });
     </script>
 </body>
