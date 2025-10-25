@@ -525,9 +525,9 @@
         .download-csv-btn { padding: 10px 15px; font-size: 14px; flex-shrink: 0; }
         .add-trade-btn:hover, .download-csv-btn:hover { background-color: #ffffff; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4); }
 
-        /* --- ESTILOS PARA LOS BOTONES DE NOTAS Y CÁLCULO --- */
+        /* --- ESTILOS PARA LOS BOTONES DE NOTAS Y CÁLCULO (ACTUALIZADOS) --- */
         .notes-btn, .calculate-roi-btn {
-            background: none;
+            background-color: var(--item-purple);
             border: 1px solid var(--text-dim);
             color: var(--text-dim);
             padding: 5px 10px;
@@ -536,9 +536,18 @@
             transition: all 0.2s ease;
             font-size: 16px;
         }
-        .notes-btn:hover, .calculate-roi-btn:hover {
-            color: var(--accent-cyan);
+
+        .calculate-roi-btn:hover {
+            background-color: var(--accent-cyan);
+            color: var(--bg-deep-purple);
             border-color: var(--accent-cyan);
+            transform: scale(1.1);
+        }
+
+        .notes-btn:hover {
+            background-color: var(--accent-yellow);
+            color: var(--bg-deep-purple);
+            border-color: var(--accent-yellow);
             transform: scale(1.1);
         }
 
@@ -1294,7 +1303,7 @@ welcomeModal.addEventListener('click', (event) => {
             sellSignal.classList.remove('active');
             waitSignal.classList.remove('active');
 
-            if (greenScore >= greenScore > redScore && greenScore >= greenThreshold) {
+            if (greenScore >= redScore && greenScore >= greenThreshold) {
                 buySignal.classList.add('active');
             } else if (redScore >= greenScore && redScore >= redThreshold) {
                 sellSignal.classList.add('active');
@@ -1305,14 +1314,24 @@ welcomeModal.addEventListener('click', (event) => {
 
         // --- LÓGICA DE GESTIÓN DE RIESGO ---
         
-        // Calculadora de SL y TP
+        // --- FUNCIÓN DE ANÁLISIS DE NÚMEROS ROBUSTA ---
+        function parseNumber(value) {
+            if (typeof value !== 'string') return parseFloat(value) || 0;
+            // Elimina todo lo que no sea un dígito, un signo de menos o un punto.
+            let cleanedValue = value.replace(/[^0-9.-]+/g, '');
+            // Reemplaza la coma por un punto para estandarizar el separador decimal.
+            cleanedValue = cleanedValue.replace(',', '.');
+            return parseFloat(cleanedValue) || 0;
+        }
+
+        // Calculadora de SL y TP (MEJORADA)
         function calculateSlTp() {
-            const capitalTotal = parseFloat(document.getElementById('capital-total').value) || 0;
-            const apalancamiento = parseFloat(document.getElementById('apalancamiento').value) || 1;
-            const porcentajeCuenta = parseFloat(document.getElementById('porcentaje-cuenta').value) || 0;
-            const stopLoss = parseFloat(document.getElementById('stop-loss').value) || 0;
-            const riskRewardRatio = parseFloat(document.getElementById('risk-reward-ratio').value) || 1;
-            const perdidaMaxima = parseFloat(document.getElementById('perdida-maxima').value) || 0;
+            const capitalTotal = parseNumber(document.getElementById('capital-total').value);
+            const apalancamiento = parseNumber(document.getElementById('apalancamiento').value);
+            const porcentajeCuenta = parseNumber(document.getElementById('porcentaje-cuenta').value);
+            const stopLoss = parseNumber(document.getElementById('stop-loss').value);
+            const riskRewardRatio = parseNumber(document.getElementById('risk-reward-ratio').value);
+            const perdidaMaxima = parseNumber(document.getElementById('perdida-maxima').value);
 
             const capital = (capitalTotal * porcentajeCuenta) / 100;
             const positionSize = capital * apalancamiento;
@@ -1334,16 +1353,16 @@ welcomeModal.addEventListener('click', (event) => {
         }
         document.getElementById('calculate-sl-tp').addEventListener('click', calculateSlTp);
 
-        // Ratio de cobertura de comisiones
+        // Ratio de cobertura de comisiones (MEJORADA)
         function calculateCommissionRatio() {
-            const commission = parseFloat(document.getElementById('comision').value) || 0;
-            const leverage = parseFloat(document.getElementById('apalancamiento').value) || 1;
+            const commission = parseNumber(document.getElementById('comision').value);
+            const leverage = parseNumber(document.getElementById('apalancamiento').value);
             
             const capitalText = document.getElementById('sl-tp-capital').textContent;
-            const capital = parseFloat(capitalText.replace('$', '')) || 0;
+            const capital = parseNumber(capitalText.replace('$', ''));
             
-            const financiacion = parseFloat(document.getElementById('financiacion').value) || 0;
-            const spread = parseFloat(document.getElementById('spread').value) || 0;
+            const financiacion = parseNumber(document.getElementById('financiacion').value);
+            const spread = parseNumber(document.getElementById('spread').value);
             
             const commissionCost = (capital * commission * leverage * 2) / 100;
             const percentageToCover = commission * leverage * 2;
@@ -1374,7 +1393,7 @@ welcomeModal.addEventListener('click', (event) => {
         function closeNotesModal() {
             if (currentNotesButton) {
                 currentNotesButton.dataset.notes = notesModalTextarea.value;
-                saveJournal(); // Guardar los cambios en localStorage
+                saveJournal();
             }
             notesModal.classList.remove('show');
             currentNotesButton = null;
@@ -1388,124 +1407,208 @@ welcomeModal.addEventListener('click', (event) => {
             }
         });
 
-        // --- FUNCIÓN CENTRALIZADA PARA EL CÁLCULO DE ROI AVANZADO (SIN CAMBIOS) ---
-function getAdvancedROICalculation(tradeData, riskParams) {
-    const { position, amount, entry, exit } = tradeData;
-    const { leverage, commission, financing, spread } = riskParams;
+        // --- FUNCIÓN CENTRALIZADA PARA EL CÁLCULO DE ROI AVANZADO ---
+        function getAdvancedROICalculation(tradeData, riskParams) {
+            const { position, amount, entry, exit } = tradeData;
+            const { leverage, commission, financing, spread } = riskParams;
 
-    if (leverage === 0 || amount === 0 || entry === 0 || exit === 0) {
-        return { roi: 0, isValid: false };
-    }
+            if (leverage === 0 || amount === 0 || entry === 0 || exit === 0) {
+                return { roi: 0, isValid: false };
+            }
 
-    const valorNocional = amount * entry;
-    const costoInicial = valorNocional / leverage;
+            const valorNocional = amount * entry;
+            const costoInicial = valorNocional / leverage;
 
-    let pnlBruto;
-    if (position === 'LONG') {
-        pnlBruto = (exit - entry) * amount;
-    } else {
-        pnlBruto = (entry - exit) * amount;
-    }
+            let pnlBruto;
+            if (position === 'LONG') {
+                pnlBruto = (exit - entry) * amount;
+            } else { // SHORT
+                pnlBruto = (entry - exit) * amount;
+            }
 
-    const comisionTotal = (valorNocional * (commission / 100)) * 2;
-    const costesAdicionales = financing + spread;
-    const costesTotales = comisionTotal + costesAdicionales;
+            const comisionTotal = (valorNocional * (commission / 100)) * 2;
+            const costesAdicionales = financing + spread;
+            const costesTotales = comisionTotal + costesAdicionales;
 
-    const gananciaNeta = pnlBruto - costesTotales;
-    const roi = (gananciaNeta / costoInicial) * 100;
+            const gananciaNeta = pnlBruto - costesTotales;
+            const roi = (gananciaNeta / costoInicial) * 100;
 
-    return { roi, isValid: true };
-}
-
-// --- FUNCIÓN PARA CALCULAR EL ROI DE UNA FILA ---
-function calculateRowROI(row) {
-    const amountInput = row.querySelector('td:nth-child(4) input');
-    const entryInput = row.querySelector('td:nth-child(5) input');
-    const exitInput = row.querySelector('td:nth-child(6) input');
-    const roiInput = row.querySelector('.roi-input');
-    const positionSelect = row.querySelector('select');
-
-    // Se eliminan las comas antes de convertir a número
-    const tradeData = {
-        position: positionSelect.value,
-        amount: parseFloat(amountInput.value.replace(',', '')) || 0,
-        entry: parseFloat(entryInput.value.replace(',', '')) || 0,
-        exit: parseFloat(exitInput.value.replace(',', '')) || 0,
-    };
-
-    // Se eliminan las comas de los parámetros de riesgo también
-    const riskParams = {
-        leverage: parseFloat(document.getElementById('apalancamiento').value.replace(',', '')) || 1,
-        commission: parseFloat(document.getElementById('comision').value.replace(',', '')) || 0,
-        financing: parseFloat(document.getElementById('financiacion').value.replace(',', '')) || 0,
-        spread: parseFloat(document.getElementById('spread').value.replace(',', '')) || 0,
-    };
-    
-    const { roi, isValid } = getAdvancedROICalculation(tradeData, riskParams);
-
-    if (isValid) {
-        roiInput.value = roi.toFixed(2);
-        roiInput.classList.remove('positive', 'negative');
-        if (roi > 0) {
-            roiInput.classList.add('positive');
-        } else if (roi < 0) {
-            roiInput.classList.add('negative');
+            return { roi, isValid: true };
         }
-    } else {
-        roiInput.value = '';
-        roiInput.classList.remove('positive', 'negative');
-    }
-}
 
-// ... (el resto de las funciones como addTradeToTable, loadJournal, etc. permanecen igual)
+        function calculateRowROI(row) {
+            const amountInput = row.querySelector('td:nth-child(4) input');
+            const entryInput = row.querySelector('td:nth-child(5) input');
+            const exitInput = row.querySelector('td:nth-child(6) input');
+            const roiInput = row.querySelector('.roi-input');
+            const positionSelect = row.querySelector('select');
 
-// --- EVENT LISTENER PARA DESCARGAR CSV (CORREGIDO) ---
-document.getElementById('download-csv-btn').addEventListener('click', () => {
-    const trades = JSON.parse(localStorage.getItem(JOURNAL_STORAGE_KEY) || '[]');
-    if (trades.length === 0) {
-        alert('No hay operaciones para descargar.');
-        return;
-    }
-    
-    let csv = 'Fecha,Activo,Posición,Monto,Entrada,Salida,ROI (%),Notas\n';
-    
-    // Se eliminan las comas de los parámetros de riesgo para el cálculo del CSV
-    const riskParams = {
-        leverage: parseFloat(document.getElementById('apalancamiento').value.replace(',', '')) || 1,
-        commission: parseFloat(document.getElementById('comision').value.replace(',', '')) || 0,
-        financing: parseFloat(document.getElementById('financiacion').value.replace(',', '')) || 0,
-        spread: parseFloat(document.getElementById('spread').value.replace(',', '')) || 0,
-    };
+            const tradeData = {
+                position: positionSelect.value,
+                amount: parseNumber(amountInput.value),
+                entry: parseNumber(entryInput.value),
+                exit: parseNumber(exitInput.value),
+            };
 
-    trades.forEach(trade => {
-        // Los datos del trade ya vienen de localStorage como números, pero por si acaso
-        const cleanTradeData = {
-            ...trade,
-            amount: parseFloat(trade.amount) || 0,
-            entry: parseFloat(trade.entry) || 0,
-            exit: parseFloat(trade.exit) || 0,
-        };
-        const { roi } = getAdvancedROICalculation(cleanTradeData, riskParams);
-        const roiStr = roi ? roi.toFixed(2) : '';
-        csv += `"${trade.date}","${trade.asset}","${trade.position}","${trade.amount}","${trade.entry}","${trade.exit}","${roiStr}","${trade.notes.replace(/"/g, '""')}"\n`;
-    });
-    
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', 'trading_journal.csv');
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-});
+            const riskParams = {
+                leverage: parseNumber(document.getElementById('apalancamiento').value),
+                commission: parseNumber(document.getElementById('comision').value),
+                financing: parseNumber(document.getElementById('financiacion').value),
+                spread: parseNumber(document.getElementById('spread').value),
+            };
+            
+            const { roi, isValid } = getAdvancedROICalculation(tradeData, riskParams);
+
+            if (isValid) {
+                roiInput.value = roi.toFixed(2);
+                roiInput.classList.remove('positive', 'negative');
+                if (roi > 0) {
+                    roiInput.classList.add('positive');
+                } else if (roi < 0) {
+                    roiInput.classList.add('negative');
+                }
+            } else {
+                roiInput.value = '';
+                roiInput.classList.remove('positive', 'negative');
+            }
+        }
+
+        function loadJournal() {
+            const trades = JSON.parse(localStorage.getItem(JOURNAL_STORAGE_KEY) || '[]');
+            journalTbody.innerHTML = '';
+            trades.forEach((trade, index) => {
+                addTradeToTable(trade, index);
+            });
+        }
+
+        function saveJournal() {
+            const trades = [];
+            const rows = journalTbody.querySelectorAll('tr');
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                if (cells.length > 0) {
+                    const notesBtn = row.querySelector('.notes-btn');
+                    trades.push({
+                        date: cells[0].querySelector('input').value,
+                        asset: cells[1].querySelector('input').value,
+                        position: cells[2].querySelector('select').value,
+                        amount: cells[3].querySelector('input').value,
+                        entry: cells[4].querySelector('input').value,
+                        exit: cells[5].querySelector('input').value,
+                        notes: notesBtn ? notesBtn.dataset.notes : ''
+                    });
+                }
+            });
+            localStorage.setItem(JOURNAL_STORAGE_KEY, JSON.stringify(trades));
+        }
+
+        function addTradeToTable(trade = {}, index = null) {
+            const row = document.createElement('tr');
+            const today = new Date().toISOString().split('T')[0];
+            
+            row.innerHTML = `
+                <td data-label="Fecha"><input type="date" value="${trade.date || today}"></td>
+                <td data-label="Activo"><input type="text" value="${trade.asset || ''}" placeholder="BTC/USD"></td>
+                <td data-label="Posición">
+                    <select>
+                        <option value="LONG" ${trade.position === 'LONG' ? 'selected' : ''}>LONG</option>
+                        <option value="SHORT" ${trade.position === 'SHORT' ? 'selected' : ''}>SHORT</option>
+                    </select>
+                </td>
+                <td data-label="Monto"><input type="number" value="${trade.amount || ''}" step="0.01" placeholder="0.00"></td>
+                <td data-label="Entrada"><input type="number" value="${trade.entry || ''}" step="0.01" placeholder="0.00"></td>
+                <td data-label="Salida"><input type="number" value="${trade.exit || ''}" step="0.01" placeholder="0.00"></td>
+                <td data-label="ROI (%)"><input type="number" class="roi-input" value="" readonly></td>
+                <td data-label="Calcular"><button class="calculate-roi-btn" title="Calcular ROI">↻</button></td>
+                <td data-label="Notas"><button class="notes-btn" data-notes="${trade.notes || ''}" title="Ver/Añadir Notas">📝</button></td>
+                <td data-label="Borrar">
+                    <svg class="trash-icon-btn delete-btn" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" title="Borrar Operación">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                    </svg>
+                </td>
+            `;
+            
+            if (index !== null) {
+                journalTbody.appendChild(row);
+            } else {
+                journalTbody.insertBefore(row, journalTbody.firstChild);
+            }
+            
+            row.querySelector('.delete-btn').addEventListener('click', () => {
+                if (confirm('¿Estás seguro de que quieres borrar esta operación?')) {
+                    row.remove();
+                    saveJournal();
+                }
+            });
+        }
+
+        document.getElementById('add-trade-btn').addEventListener('click', () => {
+            addTradeToTable();
+            saveJournal();
+        });
+
+        journalTbody.addEventListener('input', saveJournal);
+        journalTbody.addEventListener('change', saveJournal);
+        
+        journalTbody.addEventListener('click', (e) => {
+            if (e.target.classList.contains('notes-btn')) {
+                openNotesModal(e.target);
+            }
+            if (e.target.classList.contains('calculate-roi-btn')) {
+                const row = e.target.closest('tr');
+                if (row) {
+                    calculateRowROI(row);
+                }
+            }
+        });
+
+        document.getElementById('download-csv-btn').addEventListener('click', () => {
+            const trades = JSON.parse(localStorage.getItem(JOURNAL_STORAGE_KEY) || '[]');
+            if (trades.length === 0) {
+                alert('No hay operaciones para descargar.');
+                return;
+            }
+            
+            let csv = 'Fecha,Activo,Posición,Monto,Entrada,Salida,ROI (%),Notas\n';
+            
+            const riskParams = {
+                leverage: parseNumber(document.getElementById('apalancamiento').value),
+                commission: parseNumber(document.getElementById('comision').value),
+                financing: parseNumber(document.getElementById('financiacion').value),
+                spread: parseNumber(document.getElementById('spread').value),
+            };
+
+            trades.forEach(trade => {
+                const cleanTradeData = {
+                    ...trade,
+                    amount: parseNumber(trade.amount),
+                    entry: parseNumber(trade.entry),
+                    exit: parseNumber(trade.exit),
+                };
+                const { roi } = getAdvancedROICalculation(cleanTradeData, riskParams);
+                const roiStr = roi ? roi.toFixed(2) : '';
+                csv += `"${trade.date}","${trade.asset}","${trade.position}","${trade.amount}","${trade.entry}","${trade.exit}","${roiStr}","${trade.notes.replace(/"/g, '""')}"\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'trading_journal.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
 
         // --- INICIALIZACIÓN ---
         initializeProfiles();
         loadJournal();
-        calculateSlTp(); // Calcular valores iniciales
-        calculateCommissionRatio(); // Calcular valores iniciales
+        calculateSlTp();
+        calculateCommissionRatio();
     });
     </script>
 </body>
