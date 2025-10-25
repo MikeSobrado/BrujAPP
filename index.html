@@ -1282,35 +1282,47 @@ welcomeModal.addEventListener('click', (event) => {
         });
 
         function updateDecision() {
-            if (!currentProfileData || !currentProfileData.indicators) return;
+    if (!currentProfileData || !currentProfileData.indicators) return;
 
-            let greenScore = 0;
-            let redScore = 0;
+    let greenScore = 0;
+    let redScore = 0;
 
-            Object.keys(currentProfileData.indicators).forEach(name => {
-                const indicator = currentProfileData.indicators[name];
-                if (indicator.state === 'green') {
-                    greenScore += indicator.weight || 0;
-                } else if (indicator.state === 'red') {
-                    redScore += indicator.weight || 0;
-                }
-            });
-
-            const greenThreshold = parseInt(greenThresholdInput.value) || 40;
-            const redThreshold = parseInt(redThresholdInput.value) || 40;
-
-            buySignal.classList.remove('active');
-            sellSignal.classList.remove('active');
-            waitSignal.classList.remove('active');
-
-            if (greenScore >= redScore && greenScore >= greenThreshold) {
-                buySignal.classList.add('active');
-            } else if (redScore >= greenScore && redScore >= redThreshold) {
-                sellSignal.classList.add('active');
-            } else {
-                waitSignal.classList.add('active');
-            }
+    Object.keys(currentProfileData.indicators).forEach(name => {
+        const indicator = currentProfileData.indicators[name];
+        if (indicator.state === 'green') {
+            greenScore += indicator.weight || 0;
+        } else if (indicator.state === 'red') {
+            redScore += indicator.weight || 0;
         }
+    });
+
+    const greenThreshold = parseInt(greenThresholdInput.value) || 40;
+    const redThreshold = parseInt(redThresholdInput.value) || 40;
+
+    // Resetear todas las señales
+    buySignal.classList.remove('active');
+    sellSignal.classList.remove('active');
+    waitSignal.classList.remove('active');
+
+    // --- NUEVA LÓGICA DE DECISIÓN ---
+
+    // 1. Si hay empate, la señal es ESPERA.
+    if (greenScore === redScore) {
+        waitSignal.classList.add('active');
+    } 
+    // 2. Si LONG es estrictamente mayor que SHORT y supera su umbral, la señal es LONG.
+    else if (greenScore > redScore && greenScore >= greenThreshold) {
+        buySignal.classList.add('active');
+    } 
+    // 3. Si SHORT es estrictamente mayor que LONG y supera su umbral, la señal es SHORT.
+    else if (redScore > greenScore && redScore >= redThreshold) {
+        sellSignal.classList.add('active');
+    } 
+    // 4. En cualquier otro caso (ninguna puntuación es suficiente), la señal es ESPERA.
+    else {
+        waitSignal.classList.add('active');
+    }
+}
 
         // --- LÓGICA DE GESTIÓN DE RIESGO ---
         
