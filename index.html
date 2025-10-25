@@ -1365,25 +1365,45 @@ welcomeModal.addEventListener('click', (event) => {
         }
         document.getElementById('calculate-sl-tp').addEventListener('click', calculateSlTp);
 
-        // Ratio de cobertura de comisiones (MEJORADA)
-        function calculateCommissionRatio() {
-            const commission = parseNumber(document.getElementById('comision').value);
-            const leverage = parseNumber(document.getElementById('apalancamiento').value);
-            
-            const capitalText = document.getElementById('sl-tp-capital').textContent;
-            const capital = parseNumber(capitalText.replace('$', ''));
-            
-            const financiacion = parseNumber(document.getElementById('financiacion').value);
-            const spread = parseNumber(document.getElementById('spread').value);
-            
-            const commissionCost = (capital * commission * leverage * 2) / 100;
-            const percentageToCover = commission * leverage * 2;
-            const totalExpenses = commissionCost + financiacion + spread;
-            
-            document.getElementById('porcentaje-cubrir').textContent = percentageToCover.toFixed(2) + '%';
-            document.getElementById('comision-dolares').textContent = '$' + commissionCost.toFixed(2);
-            document.getElementById('gastos-dolares').textContent = '$' + totalExpenses.toFixed(2);
-        }
+        // Ratio de cobertura de comisiones (MEJORADA CON GASTOS TOTALES)
+function calculateCommissionRatio() {
+    const commission = parseNumber(document.getElementById('comision').value);
+    const leverage = parseNumber(document.getElementById('apalancamiento').value);
+    
+    // Obtenemos el capital arriesgado (margen) del resultado de la calculadora de SL/TP
+    const capitalText = document.getElementById('sl-tp-capital').textContent;
+    const capital = parseNumber(capitalText.replace('$', ''));
+    
+    // Obtenemos los gastos adicionales
+    const financiacion = parseNumber(document.getElementById('financiacion').value);
+    const spread = parseNumber(document.getElementById('spread').value);
+
+    // Si el capital es 0, no se puede calcular nada para evitar errores
+    if (capital === 0) {
+        document.getElementById('porcentaje-cubrir').textContent = '0.00%';
+        document.getElementById('comision-dolares').textContent = '$0.00';
+        document.getElementById('gastos-dolares').textContent = '$0.00';
+        return;
+    }
+    
+    // 1. Calcular el coste total de comisiones basado en el valor nocional
+    const notionalValue = capital * leverage;
+    const totalCommissionCost = (notionalValue * (commission / 100)) * 2;
+    
+    // 2. Calcular el total de gastos adicionales
+    const additionalCosts = financiacion + spread;
+    
+    // 3. Calcular el gran total de TODOS los costes
+    const totalCosts = totalCommissionCost + additionalCosts;
+    
+    // 4. Calcular el porcentaje de ganancia necesario sobre el CAPITAL ARRIESGADO para cubrir TODOS los costes
+    const percentageToCover = (totalCosts / capital) * 100;
+    
+    // 5. Actualizar la interfaz
+    document.getElementById('porcentaje-cubrir').textContent = percentageToCover.toFixed(2) + '%';
+    document.getElementById('comision-dolares').textContent = '$' + totalCommissionCost.toFixed(2);
+    document.getElementById('gastos-dolares').textContent = '$' + totalCosts.toFixed(2);
+}
         document.getElementById('calculate-comision').addEventListener('click', calculateCommissionRatio);
 
         // --- LÓGICA DEL REGISTRO DE OPERACIONES ---
