@@ -1,10 +1,21 @@
 // --- FUNCIONES GLOBALES DE NOTICIAS ---
 
 // Declaramos las variables en el ámbito global.
-let currentNewsCategory = 'general'; // La usaremos para cambiar de feed
-let currentRssUrl = 'https://news.bitcoin.com/feed/'; // URL por defecto (probada y funcional)
+let currentNewsCategory = 'general';
 
-// Función para cargar noticias (debe ser global para que tabs.js pueda llamarla)
+// Mapeo de categorías a URLs de feeds RSS.
+// Puedes cambiar estas URLs por otras que prefieras.
+const RSS_FEEDS = {
+    'general': 'https://news.bitcoin.com/feed/',
+    'cryptocurrency': 'https://www.coindesk.com/arc/outboundfeeds/rss/',
+    'forex': 'https://www.forexfactory.com/news.xml',
+    'stocks': 'https://feeds.finance.yahoo.com/rss/2.0/headline?region=US&lang=en-US'
+};
+
+/**
+ * Función principal para cargar noticias.
+ * Llama a nuestro proxy de Netlify, que obtiene el feed RSS y lo devuelve sin problemas de CORS.
+ */
 async function loadNews() {
     const newsContent = document.getElementById('news-content');
     
@@ -15,29 +26,54 @@ async function loadNews() {
         </div>
     `;
     
-    // Usamos un proxy CORS para evitar problemas de seguridad del navegador
-    const CORS_PROXY = "https://api.codetabs.com/v1/proxy?quest=";
-    const parser = new RSSParser();
-    
     try {
-        const feed = await parser.parseURL(CORS_PROXY + currentRssUrl);
-        renderNews(feed.items);
+        // Obtenemos la URL del feed RSS según la categoría seleccionada
+        const rssUrl = RSS_FEEDS[currentNewsCategory];
+        if (!rssUrl) {
+            throw new Error('No hay un feed RSS configurado para esta categoría.');
+        }
+        
+        // Llamamos a nuestra función de Netlify, pasando la URL del feed como parámetro
+        const response = await fetch(`/.netlify/functions/proxy?url=${encodeURIComponent(rssUrl)}`);
+        
+        if (!response.ok) {
+            throw new Error(`El servidor respondió con un error: ${response.status}`);
+        }
+        
+        // La respuesta del proxy es texto plano (XML)
+        const rssText = await response.text();
+        
+        // Usamos DOMParser para convertir el texto XML en un documento que podamos navegar
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(rssText, "application/xml");
+        
+        // Comprobamos si hubo un error al parsear el XML
+        const parserError = xmlDoc.querySelector('parsererror');
+        if (parserError) {
+            throw new Error('Error al procesar el feed RSS. El formato no es válido.');
+        }
+        
+        // Renderizamos las noticias en la página a partir del XML
+        renderNewsFromXML(xmlDoc);
         
     } catch (error) {
-        console.error('Error al cargar el feed RSS:', error);
+        console.error('Error al cargar noticias:', error);
         newsContent.innerHTML = `
             <div class="news-error">
-                <p>Error al cargar las noticias desde el feed RSS.</p>
-                <p>Verifica que la URL en Ajustes es correcta.</p>
-                <p>Detalles del error: ${error.message}</p>
+                <p>Error al cargar las noticias: ${error.message}</p>
+                <p>Verifica la consola para más detalles.</p>
             </div>
         `;
     }
 }
 
-// Función para renderizar las noticias (debe ser global)
-function renderNews(items) {
+/**
+ * Renderiza las noticias en la página a partir de un documento XML.
+ * @param {Document} xmlDoc - El documento XML parseado del feed RSS.
+ */
+function renderNewsFromXML(xmlDoc) {
     const newsContent = document.getElementById('news-content');
+    const items = xmlDoc.querySelectorAll('item'); // Los feeds RSS usan la etiqueta <item>
     
     if (!items || items.length === 0) {
         newsContent.innerHTML = `
@@ -55,30 +91,36 @@ function renderNews(items) {
         const newsItem = document.createElement('div');
         newsItem.className = 'news-item';
         
-        // Formatear la fecha
-        const publishedDate = new Date(item.pubDate).toLocaleDateString('es-ES', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+        // Extraemos los datos del XML. Usamos el operador ?. por si algún campo no existe.
+        const title = item.querySelector('title')?.textContent || 'Sin título';
+        const description = item.querySelector('description')?.textContent || 'Sin descripción.';
+        const link = item.querySelector('link')?.textContent || '#';
+        const pubDate = item.querySelector('pubDate')?.textContent;
         
-        // Limpiar el contenido HTML para evitar problemas
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = item.content || item.contentSnippet || 'Sin descripción disponible.';
-        const cleanDescription = tempDiv.textContent || tempDiv.innerText || 'Sin descripción disponible.';
+        // Formateamos la fecha para que sea más legible
+        let formattedDate = 'Fecha desconocida';
+        if (pubDate) {
+            try {
+                formattedDate = new Date(pubDate).toLocaleDateString('es-ES', {
+                    year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                });
+            } catch (e) {
+                console.warn('No se pudo formatear la fecha:', pubDate);
+            }
+        }
+        
+        // Limpiamos la descripción de posibles etiquetas HTML que pueda contener
+        const cleanDescription = description.replace(/<[^>]*>/g, '');
         
         newsItem.innerHTML = `
             <div class="news-header">
                 <div>
-                    <h4 class="news-title">${item.title}</h4>
-                    <p class="news-source">Fuente: ${item.creator || 'RSS Feed'}</p>
+                    <h4 class="news-title">${title}</h4>
                 </div>
-                <p class="news-date">${publishedDate}</p>
+                <p class="news-date">${formattedDate}</p>
             </div>
             <p class="news-description">${cleanDescription}</p>
-            <a href="${item.link}" target="_blank" class="news-link">Leer más</a>
+            <a href="${link}" target="_blank" class="news-link">Leer más</a>
         `;
         
         newsList.appendChild(newsItem);
@@ -88,58 +130,20 @@ function renderNews(items) {
     newsContent.appendChild(newsList);
 }
 
-
 // --- INICIALIZACIÓN DEL MÓDULO DE NOTICIAS ---
 // Este bloque se ejecuta solo cuando el DOM está listo.
 document.addEventListener('DOMContentLoaded', () => {
-    // Cargar la URL del feed desde localStorage al iniciar la página
-    const rssUrlInput = document.getElementById('rss-feed-url');
-    if (rssUrlInput) {
-        const savedUrl = localStorage.getItem('rss-feed-url');
-        if (savedUrl) {
-            currentRssUrl = savedUrl;
-            rssUrlInput.value = savedUrl;
-        }
-    }
-    
-    // Event listeners para los filtros de noticias (ahora cambian el feed)
+    // Event listeners para los botones de filtro de noticias
     const newsFilters = document.querySelectorAll('.news-filter');
     newsFilters.forEach(filter => {
         filter.addEventListener('click', (event) => {
-            // Quitar la clase 'active' de todos los botones
+            // Quitamos la clase 'active' de todos los filtros
             newsFilters.forEach(f => f.classList.remove('active'));
-            // Añadir la clase 'active' al botón que se ha clicado
+            // Añadimos la clase 'active' al filtro que se ha pulsado
             event.target.classList.add('active');
-
-            // Lógica para cambiar el feed RSS según el filtro
-            const category = event.target.getAttribute('data-category');
-            let newUrl = '';
-
-            switch(category) {
-                case 'cryptocurrency':
-                    newUrl = 'https://coinjournal.net/news/category/business/feed';
-                    break;
-                case 'forex':
-                    newUrl = 'https://www.forexlive.com/feed';
-                    break;
-                case 'stocks':
-                    newUrl = 'https://es.investing.com/rss/news.rss';
-                    break;
-                case 'custom': // Caso para feed personalizado
-                    newUrl = localStorage.getItem('rss-feed-url');
-                    // Si no hay una URL personalizada guardada, no hacemos nada
-                    if (!newUrl) {
-                        alert('No hay ninguna fuente personalizada configurada. Ve a Ajustes para añadir una.');
-                        return;
-                    }
-                    break;
-                default: // general
-                    newUrl = 'https://news.bitcoin.com/feed/';
-            }
-
-            currentRssUrl = newUrl;
-            localStorage.setItem('rss-feed-url', newUrl);
-            loadNews(); // Recargar noticias con el nuevo feed
+            // Actualizamos la categoría y cargamos las noticias
+            currentNewsCategory = event.target.getAttribute('data-category');
+            loadNews();
         });
     });
 });
