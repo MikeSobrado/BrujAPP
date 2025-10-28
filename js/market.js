@@ -56,7 +56,7 @@ function loadTradingViewWidgets() {
         ],
         "chartOnly": false,
         "width": "100%",
-        "height": 200,
+        "height": "150",
         "locale": "es",
         "colorTheme": "dark",
         "autosize": true,
@@ -103,7 +103,7 @@ function loadTradingViewWidgets() {
     "isTransparent": false,
     "locale": "es",
     "width": "100%",
-    "height": 550
+    "height": "500"
     });
     cryptoScreenerContainer.appendChild(cryptoScreenerScript);
 
