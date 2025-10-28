@@ -42,6 +42,53 @@ function loadTradingViewWidgets() {
     });
     advancedChartContainer.appendChild(advancedChartScript);
 
+        // --- Widget 1.5: Gráfico de Resumen de BTC (NUEVO) ---
+    const btcOverviewContainer = document.getElementById('btc-overview-widget');
+    const btcOverviewScript = document.createElement('script');
+    btcOverviewScript.type = 'text/javascript';
+    btcOverviewScript.src = 'https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js';
+    btcOverviewScript.async = true;
+    btcOverviewScript.innerHTML = JSON.stringify({
+        "symbols": [
+            [
+                "BINANCE:BTCUSDT"
+            ]
+        ],
+        "chartOnly": false,
+        "width": "100%",
+        "height": 200,
+        "locale": "es",
+        "colorTheme": "dark",
+        "autosize": true,
+        "showVolume": false,
+        "showMA": false,
+        "hideDateRanges": false,
+        "hideMarketStatus": false,
+        "hideSymbolLogo": false,
+        "scalePosition": "right",
+        "scaleMode": "Normal",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+        "fontSize": "10",
+        "noTimeScale": false,
+        "valuesTracking": "1",
+        "changeMode": "price-and-percent",
+        "chartType": "area",
+        "maLineColor": "#2962FF",
+        "maLineWidth": 1,
+        "maLength": 9,
+        "lineWidth": 2,
+        "lineType": 0,
+        "dateRanges": [
+            "1d|1",
+            "1m|30",
+            "3m|60",
+            "12m|1D",
+            "60m|1W",
+            "all|1M"
+        ]
+    });
+    btcOverviewContainer.appendChild(btcOverviewScript);
+
     // --- Widget 2: Mercado de Criptomonedas ---
     const cryptoScreenerContainer = document.getElementById('crypto-screener-widget');
     const cryptoScreenerScript = document.createElement('script');
@@ -49,15 +96,14 @@ function loadTradingViewWidgets() {
     cryptoScreenerScript.src = 'https://s3.tradingview.com/external-embedding/embed-widget-screener.js';
     cryptoScreenerScript.async = true;
     cryptoScreenerScript.innerHTML = JSON.stringify({
-        "width": "100%",
-        "height": "500",
-        "defaultColumn": "overview",
-        "defaultScreen": "general",
-        "market": "crypto",
-        "showToolbar": true,
-        "colorTheme": "dark",
-        "locale": "es",
-        "isTransparent": false
+    "defaultColumn": "overview",
+    "screener_type": "crypto_mkt",
+    "displayCurrency": "USD",
+    "colorTheme": "dark",
+    "isTransparent": false,
+    "locale": "es",
+    "width": "100%",
+    "height": 550
     });
     cryptoScreenerContainer.appendChild(cryptoScreenerScript);
 
