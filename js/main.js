@@ -31,9 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- INICIALIZAR LOS MÓDULOS PRINCIPALES ---
     // Ahora que el DOM está listo, podemos inicializar las partes de la aplicación.
-    // Estas funciones deben estar definidas como globales en sus respectivos archivos .js
+    // Estos módulos se inicializan a sí mismos en sus propios archivos JS.
     initializeProfiles();
-    initializeJournal();
-    calculateRisk();
+    // initializeJournal(); <-- ELIMINADO: journal.js se auto-inicializa.
+    // calculateRisk();       <-- ELIMINADO: risk.js se auto-inicializa.
 
 });
