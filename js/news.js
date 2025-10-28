@@ -1,8 +1,8 @@
 // --- FUNCIONES GLOBALES DE NOTICIAS ---
 
 // Declaramos las variables en el ámbito global.
-let currentNewsCategory = 'general';
-let newsApiKey = '';
+let currentNewsCategory = 'general'; // La usaremos para cambiar de feed
+let currentRssUrl = 'https://news.bitcoin.com/feed/'; // URL por defecto (probada y funcional)
 
 // Función para cargar noticias (debe ser global para que tabs.js pueda llamarla)
 async function loadNews() {
@@ -15,71 +15,34 @@ async function loadNews() {
         </div>
     `;
     
-    // Obtener la clave de API desde localStorage
-    newsApiKey = localStorage.getItem('newsapi-key') || '';
-    
-    if (!newsApiKey) {
-        newsContent.innerHTML = `
-            <div class="news-error">
-                <p>No se ha configurado una clave de NewsAPI.</p>
-                <p>Ve a la pestaña de Ajustes para configurar tu clave de API.</p>
-            </div>
-        `;
-        return;
-    }
+    // Usamos un proxy CORS para evitar problemas de seguridad del navegador
+    const CORS_PROXY = "https://api.codetabs.com/v1/proxy?quest=";
+    const parser = new RSSParser();
     
     try {
-        // Determinar la consulta de búsqueda según la categoría
-        let query = '';
-        switch (currentNewsCategory) {
-            case 'cryptocurrency':
-                query = 'cryptocurrency OR bitcoin OR ethereum OR crypto';
-                break;
-            case 'forex':
-                query = 'forex OR currency OR foreign exchange';
-                break;
-            case 'stocks':
-                query = 'stocks OR market OR trading OR shares';
-                break;
-            default:
-                query = 'finance OR economy OR market';
-        }
-        
-        // Realizar la solicitud a la API de NewsAPI
-        const response = await fetch(`https://newsapi.org/v2/everything?q=${query}&sortBy=publishedAt&pageSize=20&language=es&apiKey=${newsApiKey}`);
-        
-        if (!response.ok) {
-            throw new Error(`Error en la solicitud: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        
-        if (data.status !== 'ok') {
-            throw new Error(data.message || 'Error al obtener noticias');
-        }
-        
-        // Renderizar las noticias
-        renderNews(data.articles);
+        const feed = await parser.parseURL(CORS_PROXY + currentRssUrl);
+        renderNews(feed.items);
         
     } catch (error) {
-        console.error('Error al cargar noticias:', error);
+        console.error('Error al cargar el feed RSS:', error);
         newsContent.innerHTML = `
             <div class="news-error">
-                <p>Error al cargar las noticias: ${error.message}</p>
-                <p>Verifica tu clave de API en la pestaña de Ajustes.</p>
+                <p>Error al cargar las noticias desde el feed RSS.</p>
+                <p>Verifica que la URL en Ajustes es correcta.</p>
+                <p>Detalles del error: ${error.message}</p>
             </div>
         `;
     }
 }
 
 // Función para renderizar las noticias (debe ser global)
-function renderNews(articles) {
+function renderNews(items) {
     const newsContent = document.getElementById('news-content');
     
-    if (!articles || articles.length === 0) {
+    if (!items || items.length === 0) {
         newsContent.innerHTML = `
             <div class="news-error">
-                <p>No se encontraron noticias para esta categoría.</p>
+                <p>No se encontraron noticias en el feed.</p>
             </div>
         `;
         return;
@@ -88,12 +51,12 @@ function renderNews(articles) {
     const newsList = document.createElement('div');
     newsList.className = 'news-list';
     
-    articles.forEach(article => {
+    items.forEach(item => {
         const newsItem = document.createElement('div');
         newsItem.className = 'news-item';
         
         // Formatear la fecha
-        const publishedDate = new Date(article.publishedAt).toLocaleDateString('es-ES', {
+        const publishedDate = new Date(item.pubDate).toLocaleDateString('es-ES', {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
@@ -101,16 +64,21 @@ function renderNews(articles) {
             minute: '2-digit'
         });
         
+        // Limpiar el contenido HTML para evitar problemas
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = item.content || item.contentSnippet || 'Sin descripción disponible.';
+        const cleanDescription = tempDiv.textContent || tempDiv.innerText || 'Sin descripción disponible.';
+        
         newsItem.innerHTML = `
             <div class="news-header">
                 <div>
-                    <h4 class="news-title">${article.title}</h4>
-                    <p class="news-source">Fuente: ${article.source.name}</p>
+                    <h4 class="news-title">${item.title}</h4>
+                    <p class="news-source">Fuente: ${item.creator || 'RSS Feed'}</p>
                 </div>
                 <p class="news-date">${publishedDate}</p>
             </div>
-            <p class="news-description">${article.description || article.content || 'Sin descripción disponible.'}</p>
-            <a href="${article.url}" target="_blank" class="news-link">Leer más</a>
+            <p class="news-description">${cleanDescription}</p>
+            <a href="${item.link}" target="_blank" class="news-link">Leer más</a>
         `;
         
         newsList.appendChild(newsItem);
@@ -124,21 +92,54 @@ function renderNews(articles) {
 // --- INICIALIZACIÓN DEL MÓDULO DE NOTICIAS ---
 // Este bloque se ejecuta solo cuando el DOM está listo.
 document.addEventListener('DOMContentLoaded', () => {
-    // Cargar la clave de NewsAPI desde localStorage al cargar la página
-    newsApiKey = localStorage.getItem('newsapi-key') || '';
-    const newsApiKeyInput = document.getElementById('newsapi-key');
-    if (newsApiKeyInput) {
-        newsApiKeyInput.value = newsApiKey;
+    // Cargar la URL del feed desde localStorage al iniciar la página
+    const rssUrlInput = document.getElementById('rss-feed-url');
+    if (rssUrlInput) {
+        const savedUrl = localStorage.getItem('rss-feed-url');
+        if (savedUrl) {
+            currentRssUrl = savedUrl;
+            rssUrlInput.value = savedUrl;
+        }
     }
     
-    // Event listeners para los filtros de noticias
+    // Event listeners para los filtros de noticias (ahora cambian el feed)
     const newsFilters = document.querySelectorAll('.news-filter');
     newsFilters.forEach(filter => {
         filter.addEventListener('click', (event) => {
+            // Quitar la clase 'active' de todos los botones
             newsFilters.forEach(f => f.classList.remove('active'));
+            // Añadir la clase 'active' al botón que se ha clicado
             event.target.classList.add('active');
-            currentNewsCategory = event.target.getAttribute('data-category');
-            loadNews();
+
+            // Lógica para cambiar el feed RSS según el filtro
+            const category = event.target.getAttribute('data-category');
+            let newUrl = '';
+
+            switch(category) {
+                case 'cryptocurrency':
+                    newUrl = 'https://coinjournal.net/news/category/business/feed';
+                    break;
+                case 'forex':
+                    newUrl = 'https://www.forexlive.com/feed';
+                    break;
+                case 'stocks':
+                    newUrl = 'https://es.investing.com/rss/news.rss';
+                    break;
+                case 'custom': // Caso para feed personalizado
+                    newUrl = localStorage.getItem('rss-feed-url');
+                    // Si no hay una URL personalizada guardada, no hacemos nada
+                    if (!newUrl) {
+                        alert('No hay ninguna fuente personalizada configurada. Ve a Ajustes para añadir una.');
+                        return;
+                    }
+                    break;
+                default: // general
+                    newUrl = 'https://news.bitcoin.com/feed/';
+            }
+
+            currentRssUrl = newUrl;
+            localStorage.setItem('rss-feed-url', newUrl);
+            loadNews(); // Recargar noticias con el nuevo feed
         });
     });
 });
