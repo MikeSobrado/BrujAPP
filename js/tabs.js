@@ -27,13 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 targetContent.classList.add('active');
                 
                 // Cargar contenido específico de la pestaña si es necesario
-                // NOTA: Las funciones loadNews, loadTradingViewWidgets y loadCustomCharts
-                // deben estar definidas como globales en sus respectivos archivos (news.js, market.js).
+                // NOTA: La función loadNews debe estar definida como global en news.js
                 if (targetId === 'noticias-tab') {
                     loadNews();
                 } else if (targetId === 'mercado-tab') {
                     loadTradingViewWidgets();
-                    loadCustomCharts();
                 }
             }
         });
