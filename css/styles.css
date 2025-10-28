@@ -1,460 +1,464 @@
-        /* --- VARIABLES DE COLOR Y TIPOGRAFÍA --- */
-        :root {
-            --bg-deep-purple: #0f0c29;
-            --panel-purple: #3a2a4a;
-            --item-purple: #31263e;
-            --text-light: #f0f0f0;
-            --text-dim: #b0b0b0;
-            --accent-cyan: #00ffff;
-            --accent-magenta: #ff00ff;
-            --accent-yellow: #ffc107;
-            --font-main: 'Poppins', 'Roboto', sans-serif;
-        }
+ @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
-        /* --- ESTILOS CSS --- */
+  /* --- VARIABLES DE COLOR Y TIPOGRAFÍA --- */
+:root {
+    --bg-deep-purple: #0f0c29;
+    --panel-purple: #3a2a4a;
+    --item-purple: #31263e;
+    --text-light: #f5f9fca5;
+    --text-dim: hsla(0, 0%, 69%, 0.774);
+    --accent-cyan: #00ffff;
+    --accent-magenta: #ff00ff;
+    --accent-yellow: #ffc107;
+    --font-main: 'Poppins', 'Roboto', sans-serif;
+}
 
-        /* Fuentes y colores generales */
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+/* --- ESTILOS CSS --- */
 
-        body {
-            font-family: var(--font-main);
-            background-color: var(--bg-deep-purple);
-            color: var(--text-light);
-            margin: 0;
-            padding: 20px;
-        }
+/* Fuentes y colores generales */
 
-        /* --- ESTILOS DEL SISTEMA DE PESTAÑAS --- */
-        .tabs-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
+body {
+    font-family: var(--font-main);
+    background-color: var(--bg-deep-purple);
+    color: var(--text-light);
+    margin: 0;
+    padding: 20px;
+}
 
-        .tab-button {
-            background-color: var(--panel-purple);
-            color: var(--text-dim);
-            border: 2px solid transparent;
-            padding: 12px 30px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+/* --- ESTILOS DEL SISTEMA DE PESTAÑAS --- */
+.tabs-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
 
-        .tab-button:hover {
-            background-color: #4a3a5a;
-        }
+.tab-button {
+    background-color: var(--panel-purple);
+    color: var(--text-dim);
+    border: 2px solid transparent;
+    padding: 12px 30px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-        .tab-button.active {
-            background-color: var(--accent-cyan);
-            color: var(--bg-deep-purple);
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
-        }
+.tab-button:hover {
+    background-color: #4a3a5a;
+}
 
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.5s;
-        }
+.tab-button.active {
+    background-color: var(--accent-cyan);
+    color: var(--bg-deep-purple);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+}
 
-        .tab-content.active {
-            display: block;
-        }
+.tab-content {
+    display: none;
+    animation: fadeIn 0.5s;
+}
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .content-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+.tab-content.active {
+    display: block;
+}
 
-        /* --- PANELES CON GRADIENTE --- */
-        .indicators-panel, .decision-panel, .journal-panel, .chart-box, .news-panel, .profile-manager, .risk-tools-container {
-            background: linear-gradient(135deg, #4A00E0, #E100FF);
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-            width: 100%;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        h1, h2, h3 {
-            text-align: center;
-            color: var(--text-light);
-            margin-bottom: 25px;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-        
-        h3 { font-size: 1.2em; margin-bottom: 15px; }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+    
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
 
-        /* --- ESTILOS DEL GESTOR DE PERFILES --- */
-        .profile-manager {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 30px;
-            padding: 20px;
-            flex-wrap: wrap;
-        }
+/* --- PANELES CON GRADIENTE --- */
+.indicators-panel, .decision-panel, .journal-panel, .chart-box, .news-panel, .profile-manager, .risk-tools-container, .market-section, .settings-section {
+    background: linear-gradient(135deg, #4A00E0, #E100FF);
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
 
-        .profile-selector {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+h1, h2, h3 {
+    text-align: center;
+    color: var(--text-light);
+    margin-bottom: 25px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
 
-        .profile-selector label {
-            color: var(--text-light);
-            font-weight: 600;
-        }
+h3 { font-size: 1.2em; margin-bottom: 15px; }
 
-        #profile-select {
-            background-color: var(--item-purple);
-            color: var(--text-light);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 8px 15px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-        }
+/* --- ESTILOS DEL GESTOR DE PERFILES --- */
+.profile-manager {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+    padding: 20px;
+    flex-wrap: wrap;
+}
 
-        .profile-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
+.profile-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-        .profile-actions button {
-            background-color: var(--accent-cyan);
-            color: var(--bg-deep-purple);
-            border: none;
-            padding: 8px 15px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+.profile-selector label {
+    color: var(--text-light);
+    font-weight: 600;
+}
 
-        .profile-actions button:hover {
-            background-color: #ffffff;
-            transform: scale(1.05);
-        }
-        
-        .profile-actions button.delete-btn {
-            background-color: var(--accent-magenta);
-        }
+#profile-select {
+    background-color: var(--item-purple);
+    color: var(--text-light);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
 
-        /* --- ESTILOS PARA LOS BOTONES DE CARGA Y DESCARGA --- */
-        .profile-actions button#download-profiles-btn,
-        .profile-actions button#upload-profiles-btn {
-            width: 35px;
-            height: 35px;
-            padding: 0;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+.profile-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
 
-        /* --- ESTILOS DEL ASISTENTE --- */
-        .indicator-list {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
+.profile-actions button {
+    background-color: var(--accent-cyan);
+    color: var(--bg-deep-purple);
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
 
-        .indicator-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: var(--accent-cyan);
-            padding: 15px 20px;
-            margin-bottom: 12px;
-            border-radius: 10px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-        
-        .indicator-item:hover {
-            background-color: #00cccc;
-            transform: translateY(-2px);
-        }
+.profile-actions button:hover {
+    background-color: #ffffff;
+    transform: scale(1.05);
+}
 
-        .label-text {
-            flex-grow: 1;
-            text-align: center;
-            font-size: 16px;
-            padding: 0 15px;
-            font-weight: 600;
-            color: #111;
-        }
+.profile-actions button.delete-btn {
+    background-color: var(--accent-magenta);
+}
 
-        .indicator-button {
-            border: none;
-            cursor: pointer;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
-        }
+/* --- ESTILOS PARA LOS BOTONES DE CARGA Y DESCARGA --- */
+.profile-actions button#download-profiles-btn,
+.profile-actions button#upload-profiles-btn {
+    width: 35px;
+    height: 35px;
+    padding: 0;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-        .btn-green { background-color: #1a4d2e; border: 2px solid #a0a0a0; }
-        .btn-red { background-color: #4d1a1a; border: 2px solid #a0a0a0; }
+/* --- ESTILOS DEL ASISTENTE --- */
+.indicator-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
 
-        .btn-green.active {
-            background-color: #4CAF50;
-            box-shadow: 0 0 15px 5px rgba(76, 175, 80, 0.6),
-                        0 0 25px 10px rgba(76, 175, 80, 0.4),
-                        inset 0 0 10px rgba(255,255,255,0.2);
-        }
+.indicator-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--accent-cyan);
+    padding: 15px 20px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
 
-        .btn-red.active {
-            background-color: var(--accent-magenta);
-            box-shadow: 0 0 15px 5px rgba(255, 0, 255, 0.6),
-                        0 0 25px 10px rgba(255, 0, 255, 0.4),
-                        inset 0 0 10px rgba(255,255,255,0.2);
-        }
+.indicator-item:hover {
+    background-color: #00cccc;
+    transform: translateY(-2px);
+}
 
-        /* --- ESTILOS PARA EL PESO DE LOS INDICADORES --- */
-        .weight-input {
-            width: 50px;
-            padding: 5px;
-            background-color: var(--item-purple);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: var(--text-light);
-            border-radius: 8px;
-            text-align: center;
-            font-size: 16px;
-            font-weight: 600;
-            margin: 0 10px;
-        }
+.label-text {
+    flex-grow: 1;
+    text-align: center;
+    font-size: 16px;
+    padding: 0 15px;
+    font-weight: 600;
+    color: #111;
+}
 
-        .weight-input:focus {
-            outline: none;
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 5px var(--accent-cyan);
-        }
-        
-        /* --- ESTILOS PARA EL BOTÓN DE ELIMINAR INDICADOR --- */
-        .trash-icon-btn {
-            cursor: pointer;
-            color: purple;
-            width: 20px;
-            height: 20px;
-            margin-left: 8px;
-            transition: color 0.2s ease, transform 0.2s ease;
-        }
+.indicator-button {
+    border: none;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+}
 
-        .trash-icon-btn:hover {
-            color: #d32f2f;
-            transform: scale(1.1);
-        }
-        .delete-indicator-btn:hover {
-            background-color: #b71c1c;
-        }
+.btn-green { background-color: #1a4d2e; border: 2px solid #a0a0a0; }
+.btn-red { background-color: #4d1a1a; border: 2px solid #a0a0a0; }
 
-        /* ESTILOS DEL PANEL DE DECISIÓN */
-        .decision-panel {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 25px;
-        }
+.btn-green.active {
+    background-color: #4CAF50;
+    box-shadow: 0 0 15px 5px rgba(76, 175, 80, 0.6),
+                0 0 25px 10px rgba(76, 175, 80, 0.4),
+                inset 0 0 10px rgba(255,255,255,0.2);
+}
 
-        .decision-icons-container {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-around;
-            align-items: center;
-            width: 100%;
-            gap: 25px;
-        }
+.btn-red.active {
+    background-color: var(--accent-magenta);
+    box-shadow: 0 0 15px 5px rgba(255, 0, 255, 0.6),
+                0 0 25px 10px rgba(255, 0, 255, 0.4),
+                inset 0 0 10px rgba(255,255,255,0.2);
+}
 
-        .decision-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            transition: opacity 0.4s ease, transform 0.4s ease;
-        }
+/* --- ESTILOS PARA EL PESO DE LOS INDICADORES --- */
+.weight-input {
+    width: 50px;
+    padding: 5px;
+    background-color: var(--item-purple);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-light);
+    border-radius: 8px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 10px;
+}
 
-        .decision-icon {
-            width: 60px;
-            height: 60px;
-            fill: #555555;
-            opacity: 0.3;
-        }
+.weight-input:focus {
+    outline: none;
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 5px var(--accent-cyan);
+}
 
-        .decision-wait .decision-icon { opacity: 1; fill: var(--text-dim); }
-        .decision-item.active .decision-icon { opacity: 1; transform: scale(1.1); }
-        .decision-buy.active .decision-icon { fill: var(--accent-cyan); box-shadow: 0 0 20px 8px rgba(0, 255, 255, 0.6); }
-        .decision-sell.active .decision-icon { fill: var(--accent-magenta); box-shadow: 0 0 20px 8px rgba(255, 0, 255, 0.6); }
-        .decision-wait.active .decision-icon { fill: var(--accent-yellow); box-shadow: 0 0 20px 8px rgba(255, 193, 7, 0.6); }
+/* --- ESTILOS PARA EL BOTÓN DE ELIMINAR INDICADOR --- */
+.trash-icon-btn {
+    cursor: pointer;
+    color: purple;
+    width: 20px;
+    height: 20px;
+    margin-left: 8px;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
 
-        .decision-label { font-size: 14px; color: var(--text-dim); font-weight: 600; }
+.trash-icon-btn:hover {
+    color: #d32f2f;
+    transform: scale(1.1);
+}
+.delete-indicator-btn:hover {
+    background-color: #b71c1c;
+}
 
-        .threshold-input {
-            width: 60px;
-            padding: 8px;
-            background-color: var(--item-purple);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-light);
-            border-radius: 8px;
-            text-align: center;
-            font-size: 16px;
-            font-weight: 600;
-        }
-        .threshold-input:focus { outline: none; border-color: var(--accent-cyan); box-shadow: 0 0 5px var(--accent-cyan); }
+/* ESTILOS DEL PANEL DE DECISIÓN */
+.decision-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+}
 
-        /* --- ESTILOS DE LA PESTAÑA G. RIESGO --- */
-        .risk-tools-container {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-        }
-        
-        .risk-tool {
-            background-color: var(--item-purple);
-            border-radius: 12px;
-            padding: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .risk-tool h3 {
-            color: var(--accent-cyan);
-            margin-top: 0;
-        }
-        
-        .risk-tool p {
-            color: var(--text-dim);
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-        
-        .risk-tool-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        
-        .risk-tool-table th, .risk-tool-table td {
-            padding: 12px;
-            text-align: center;
-            border: 1px solid #8532d3ec;
-        }
-        
-        .risk-tool-table th {
-            background-color: #8532d3ec;
-            color: var(--accent-cyan);
-            font-weight: 600;
-        }
-        
-        .risk-tool-table input {
-            width: 100%;
-            background-color: var(--bg-deep-purple);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-light);
-            padding: 8px;
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-family: var(--font-main);
-            font-size: 16px;
-            text-align: center;
-        }
-        
-        .risk-tool-table input:focus {
-            outline: none;
-            border-color: var(--accent-cyan);
-        }
-        
-        .calculate-btn {
-            background-color: var(--accent-cyan);
-            color: var(--bg-deep-purple);
-            border: none;
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 20px;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .calculate-btn:hover {
-            background-color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
-        }
+.decision-icons-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    gap: 25px;
+}
 
-        .result-display {
-            background-color: #8532d3ec;
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 20px;
-            text-align: center;
-        }
+.decision-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
 
-        .result-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            padding: 8px;
-            background-color: var(--bg-deep-purple);
-            border-radius: 6px;
-        }
+.decision-icon {
+    width: 60px;
+    height: 60px;
+    fill: #555555;
+    opacity: 0.3;
+}
 
-        .result-item:last-child {
-            margin-bottom: 0;
-        }
+.decision-wait .decision-icon { opacity: 1; fill: var(--text-dim); }
+.decision-item.active .decision-icon { opacity: 1; transform: scale(1.1); }
+.decision-buy.active .decision-icon { fill: var(--accent-cyan); box-shadow: 0 0 20px 8px rgba(0, 255, 255, 0.6); }
+.decision-sell.active .decision-icon { fill: var(--accent-magenta); box-shadow: 0 0 20px 8px rgba(255, 0, 255, 0.6); }
+.decision-wait.active .decision-icon { fill: var(--accent-yellow); box-shadow: 0 0 20px 8px rgba(255, 193, 7, 0.6); }
 
-        .result-label {
-            color: var(--text-dim);
-            font-weight: 600;
-        }
+.decision-label { font-size: 14px; color: var(--text-dim); font-weight: 600; }
 
-        .result-value {
-            color: var(--accent-cyan);
-            font-weight: bold;
-            font-size: 1.1em;
-            transition: color 0.3s ease;
-        }
+.threshold-input {
+    width: 60px;
+    padding: 8px;
+    background-color: var(--item-purple);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-light);
+    border-radius: 8px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+}
+.threshold-input:focus { outline: none; border-color: var(--accent-cyan); box-shadow: 0 0 5px var(--accent-cyan); }
 
-        .result-value.warning {
-            color: #ff4444;
-            font-weight: bold;
-            animation: pulse 1.5s infinite;
-        }
+/* --- APLICAR ESPACIADO A LA PESTAÑA ASISTENTE --- */
+#asistente-tab.active { display: flex; flex-direction: column; align-items: center; gap: 30px; }
 
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.7; }
-            100% { opacity: 1; }
-        }
+/* --- ESTILOS DE LA PESTAÑA G. RIESGO --- */
+.risk-tools-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.risk-tool {
+    background-color: var(--item-purple);
+    border-radius: 12px;
+    padding: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.risk-tool h3 {
+    color: var(--accent-cyan);
+    margin-top: 0;
+}
+
+.risk-tool p {
+    color: var(--text-dim);
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.risk-tool-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.risk-tool-table th, .risk-tool-table td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #8532d3ec;
+}
+
+.risk-tool-table th {
+    background-color: #8532d3ec;
+    color: var(--accent-cyan);
+    font-weight: 600;
+}
+
+.risk-tool-table input {
+    width: 100%;
+    background-color: var(--bg-deep-purple);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-light);
+    padding: 8px;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-family: var(--font-main);
+    font-size: 16px;
+    text-align: center;
+}
+
+.risk-tool-table input:focus {
+    outline: none;
+    border-color: var(--accent-cyan);
+}
+
+.calculate-btn {
+    background-color: var(--accent-cyan);
+    color: var(--bg-deep-purple);
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.calculate-btn:hover {
+    background-color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
+}
+
+.result-display {
+    background-color: #8532d3ec;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 8px;
+    background-color: var(--bg-deep-purple);
+    border-radius: 6px;
+}
+
+.result-item:last-child {
+    margin-bottom: 0;
+}
+
+.result-label {
+    color: var(--text-dim);
+    font-weight: 600;
+}
+
+.result-value {
+    color: var(--accent-cyan);
+    font-weight: bold;
+    font-size: 1.1em;
+    transition: color 0.3s ease;
+}
+
+.result-value.warning {
+    color: #ff4444;
+    font-weight: bold;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
 
 /* --- ESTILOS DEL REGISTRO --- */
 .journal-panel { max-height: 80vh; display: flex; flex-direction: column; }
@@ -510,8 +514,18 @@
 .journal-table input:focus, .journal-table select:focus, .journal-table textarea:focus { outline: none; border-color: var(--accent-cyan); }
 .journal-table td:nth-child(2) input { width: 12ch; min-width: 12ch; }
 .journal-table td:nth-child(4) input, .journal-table td:nth-child(5) input, .journal-table td:nth-child(6) input, .journal-table td:nth-child(7) input { width: 9ch; min-width: 9ch; text-align: center; }
-input[type="number"] { -moz-appearance: textfield; }
-input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+/* --- CORRECCIÓN CLAVE: Apariencia de inputs numéricos --- */
+input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+}
 
 /* --- MEJORA: Estilos para el campo ROI --- */
 .journal-table .roi-input { font-weight: bold; text-align: center; }
@@ -553,333 +567,294 @@ input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-i
     transform: scale(1.1);
 }
 
-        /* --- APLICAR ESPACIADO A LA PESTAÑA ASISTENTE --- */
-        #asistente-tab.active { display: flex; flex-direction: column; align-items: center; gap: 30px; }
+/* --- ESTILOS DE LA PESTAÑA MERCADO --- */
+.market-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
 
-        /* --- ESTILOS DE LA PESTAÑA MERCADO --- */
-        .market-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            width: 100%;
-        }
-        
-        .market-section {
-            background-color: var(--item-purple);
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .market-section h3 {
-            color: var(--accent-cyan);
-            margin-top: 0;
-            margin-bottom: 15px;
-        }
-        
-        .tradingview-widget-container {
-            margin: 15px 0;
-        }
-        
-        .widgets-row {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .widget-container {
-            flex: 1;
-            background-color: var(--item-purple);
-            border-radius: 12px;
-            padding: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .widget-container h3 {
-            color: var(--accent-cyan);
-            margin-top: 0;
-            margin-bottom: 10px;
-            font-size: 1.1em;
-        }
-        
-        .custom-chart-container {
-            background-color: var(--item-purple);
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            margin-top: 20px;
-        }
-        
-        .custom-chart-container h3 {
-            color: var(--accent-cyan);
-            margin-top: 0;
-            margin-bottom: 15px;
-        }
-        
-        .chart-canvas-container {
-            position: relative;
-            height: 300px;
-            width: 100%;
-        }
+.market-section {
+    background-color: var(--item-purple);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
 
-        /* --- ESTILOS DE LA PESTAÑA NOTICIAS --- */
-        .news-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        .news-filters {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .news-filter {
-            background-color: var(--item-purple);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-light);
-            padding: 8px 15px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .news-filter:hover, .news-filter.active {
-            background-color: var(--accent-cyan);
-            color: var(--bg-deep-purple);
-        }
-        
-        .news-list {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            max-height: 70vh;
-            overflow-y: auto;
-        }
-        
-        .news-item {
-            background-color: var(--item-purple);
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .news-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        .news-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 15px;
-        }
-        
-        .news-title {
-            font-size: 1.2em;
-            font-weight: 600;
-            color: var(--accent-cyan);
-            margin-bottom: 8px;
-            padding-right: 10px;
-        }
-        
-        .news-source {
-            font-size: 0.9em;
-            color: var(--text-dim);
-            white-space: nowrap;
-        }
-        
-        .news-date {
-            font-size: 0.9em;
-            color: var(--text-dim);
-            white-space: nowrap;
-        }
-        
-        .news-description {
-            color: var(--text-light);
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
-        
-        .news-link {
-            display: inline-block;
-            background-color: var(--accent-cyan);
-            color: var(--bg-deep-purple);
-            padding: 8px 15px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .news-link:hover {
-            background-color: #ffffff;
-            transform: scale(1.05);
-        }
-        
-        .news-error {
-            background-color: rgba(255, 0, 0, 0.2);
-            border: 1px solid rgba(255, 0, 0, 0.5);
-            color: var(--text-light);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .news-loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100px;
-        }
-        
-        .news-loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: var(--accent-cyan);
-            animation: spin 1s ease-in-out infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+.market-section h3 {
+    color: var(--accent-cyan);
+    margin-top: 0;
+    margin-bottom: 15px;
+}
 
-        /* --- ESTILOS DE LA PESTAÑA AJUSTES --- */
-        .settings-container {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-        }
-        
-        .settings-section {
-            background-color: var(--item-purple);
-            border-radius: 12px;
-            padding: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .settings-section h3 {
-            color: var(--accent-cyan);
-            margin-top: 0;
-            margin-bottom: 20px;
-        }
-        
-        .settings-item {
-            margin-bottom: 20px;
-        }
-        
-        .settings-item label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-light);
-            font-weight: 600;
-        }
-        
-        .settings-item input {
-            width: 100%;
-            background-color: var(--bg-deep-purple);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-light);
-            padding: 12px;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-family: var(--font-main);
-            font-size: 16px;
-        }
-        
-        .settings-item input:focus {
-            outline: none;
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 5px var(--accent-cyan);
-        }
-        
-        .settings-item p {
-            color: var(--text-dim);
-            font-size: 0.9em;
-            margin-top: 8px;
-            line-height: 1.5;
-        }
-        
-        .settings-item a {
-            color: var(--accent-cyan);
-            text-decoration: none;
-        }
-        
-        .settings-item a:hover {
-            text-decoration: underline;
-        }
-        
-        .save-settings-btn {
-            background-color: var(--accent-cyan);
-            color: var(--bg-deep-purple);
-            border: none;
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 10px;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .save-settings-btn:hover {
-            background-color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
-        }
-        
-        .settings-success {
-            background-color: rgba(76, 175, 80, 0.2);
-            border: 1px solid rgba(76, 175, 80, 0.5);
-            color: var(--text-light);
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-            text-align: center;
-            display: none;
-        }
+.tradingview-widget-container {
+    margin: 15px 0;
+}
 
-        /* --- MEDIA QUERY PARA MÓVILES --- */
-        @media (max-width: 768px) {
-            body { padding: 10px; }
-            .content-wrapper { max-width: 100%; }
-            .indicators-panel, .decision-panel, .journal-panel, .chart-box, .news-panel { padding: 20px; }
-            .indicator-button { width: 40px; height: 40px; }
-            .decision-icon { width: 50px; height: 50px; }
-            .threshold-input { width: 50px; font-size: 14px; }
-            .charts-container, .additional-charts-container, .third-charts-container, .fourth-charts-container, .fifth-charts-container { flex-direction: column; }
-            .news-header { flex-direction: column; }
-            .news-title { padding-right: 0; margin-bottom: 8px; }
-            .journal-table thead { display: none; }
-            .journal-table, .journal-table tbody, .journal-table tr, .journal-table td { display: block; width: 100%; }
-            .journal-table tr { margin-bottom: 15px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; padding: 10px; background-color: var(--item-purple); }
-            .journal-table td { display: flex; align-items: center; margin-bottom: 10px; }
-            .journal-table td:last-child { margin-bottom: 0; justify-content: center; }
-            .journal-table td::before { content: attr(data-label); font-weight: bold; color: var(--text-dim); width: 120px; flex-shrink: 0; padding-right: 10px; text-align: left; }
-            .journal-table td input, .journal-table td select { flex-grow: 1; }
-            .journal-table td:last-child::before { display: none; }
-            .journal-table td:last-child .delete-btn { flex-grow: 0; }
-            
-            /* Estilos para widgets en móvil */
-            .widgets-row {
-                flex-direction: column;
-            }
-        }
-        /* --- ESTILOS DE LA VENTANA MODAL --- */
+.widget-container {
+    flex: 1;
+    background-color: var(--item-purple);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.widget-container h3 {
+    color: var(--accent-cyan);
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+/* --- ESTILOS PARA EL CONTENEDOR ÚNICO DE DATOS Y CALENDARIO --- */
+.market-data-calendar-container {
+    display: flex; /* Coloca los widgets en fila */
+    gap: 30px;     /* Espacio entre ellos */
+}
+
+/* Estilos para el primer widget (Datos de Mercado) */
+.market-data-calendar-container > div:first-child {
+    flex: 1 1 60%; /* Ocupa el 60% del espacio, pero puede encogerse */
+    min-width: 0;   /* ¡Clave! Permite que el widget se haga más pequeño que su contenido */
+}
+
+/* Estilos para el segundo widget (Calendario Económico) */
+.market-data-calendar-container > div:last-child {
+    flex: 0 1 800px; /* Ocupa 800px, pero puede encogerse si no hay espacio */
+    min-width: 0;   /* ¡Clave! Permite que el widget se haga más pequeño que su contenido */
+}
+
+/* --- ESTILOS DE LA PESTAÑA NOTICIAS --- */
+.news-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.news-filters {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.news-filter {
+    background-color: var(--item-purple);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-light);
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.news-filter:hover, .news-filter.active {
+    background-color: var(--accent-cyan);
+    color: var(--bg-deep-purple);
+}
+
+.news-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.news-item {
+    background-color: var(--item-purple);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.news-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.news-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.news-title {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: var(--accent-cyan);
+    margin-bottom: 8px;
+    padding-right: 10px;
+}
+
+.news-source {
+    font-size: 0.9em;
+    color: var(--text-dim);
+    white-space: nowrap;
+}
+
+.news-date {
+    font-size: 0.9em;
+    color: var(--text-dim);
+    white-space: nowrap;
+}
+
+.news-description {
+    color: var(--text-light);
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.news-link {
+    display: inline-block;
+    background-color: var(--accent-cyan);
+    color: var(--bg-deep-purple);
+    padding: 8px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.news-link:hover {
+    background-color: #ffffff;
+    transform: scale(1.05);
+}
+
+.news-error {
+    background-color: rgba(255, 0, 0, 0.2);
+    border: 1px solid rgba(255, 0, 0, 0.5);
+    color: var(--text-light);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.news-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+}
+
+.news-loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--accent-cyan);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* --- ESTILOS DE LA PESTAÑA AJUSTES --- */
+.settings-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.settings-section {
+    background-color: var(--item-purple);
+    border-radius: 12px;
+    padding: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.settings-section h3 {
+    color: var(--accent-cyan);
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.settings-item {
+    margin-bottom: 20px;
+}
+
+.settings-item label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-light);
+    font-weight: 600;
+}
+
+.settings-item input {
+    width: 100%;
+    background-color: var(--bg-deep-purple);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-light);
+    padding: 12px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-family: var(--font-main);
+    font-size: 16px;
+}
+
+.settings-item input:focus {
+    outline: none;
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 5px var(--accent-cyan);
+}
+
+.settings-item p {
+    color: var(--text-dim);
+    font-size: 0.9em;
+    margin-top: 8px;
+    line-height: 1.5;
+}
+
+.settings-item a {
+    color: var(--accent-cyan);
+    text-decoration: none;
+}
+
+.settings-item a:hover {
+    text-decoration: underline;
+}
+
+.save-settings-btn {
+    background-color: var(--accent-cyan);
+    color: var(--bg-deep-purple);
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 10px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.save-settings-btn:hover {
+    background-color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
+}
+
+.settings-success {
+    background-color: rgba(76, 175, 80, 0.2);
+    border: 1px solid rgba(76, 175, 80, 0.5);
+    color: var(--text-light);
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    text-align: center;
+    display: none;
+}
+
+/* --- ESTILOS DE LA VENTANA MODAL --- */
 .modal-overlay {
     display: flex;
     justify-content: center;
@@ -982,6 +957,7 @@ input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-i
     height: 20px;
     fill: currentColor;
 }
+
 /* --- MEJORA: AUMENTAR EL ANCHO DE LAS GRÁFICAS Y EL CONTENIDO --- */
 
 /* 1. Aumentar el ancho máximo general para dar más espacio en toda la app */
@@ -1000,8 +976,7 @@ input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-i
 /* 3. Asegurarse de que los contenedores dentro de Mercado también sean de ancho completo */
 #mercado-tab .market-container,
 #mercado-tab .market-section,
-#mercado-tab .widget-container,
-#mercado-tab .custom-chart-container {
+#mercado-tab .widget-container {
     width: 100%;
     max-width: 100%;
 }
@@ -1010,9 +985,106 @@ input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-i
 #tradingview_chart {
     height: 600px !important; /* Antes era 500px */
 }
-/* --- MEJORA: AJUSTAR EL ANCHO DE LOS WIDGETS DE MERCADO --- */
 
-/* Hacer que el Calendario Económico (segundo widget) sea más estrecho para dar más espacio a Datos de Mercado */
-.widgets-row .widget-container:nth-child(2) {
-    flex: 0 1 300px; /* No crece, puede encoger, base de 300px */
+/* --- MEDIA QUERY PARA MÓVILES --- */
+@media (max-width: 768px) {
+    body { padding: 10px; }
+    .content-wrapper { max-width: 100%; }
+    .indicators-panel, .decision-panel, .journal-panel, .chart-box, .news-panel { padding: 20px; }
+    .indicator-button { width: 40px; height: 40px; }
+    .decision-icon { width: 50px; height: 50px; }
+    .threshold-input { width: 50px; font-size: 14px; }
+    .charts-container, .additional-charts-container, .third-charts-container, .fourth-charts-container, .fifth-charts-container { flex-direction: column; }
+    .news-header { flex-direction: column; }
+    .news-title { padding-right: 0; margin-bottom: 8px; }
+    .journal-table thead { display: none; }
+    .journal-table, .journal-table tbody, .journal-table tr, .journal-table td { display: block; width: 100%; }
+    .journal-table tr { margin-bottom: 15px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; padding: 10px; background-color: var(--item-purple); }
+    .journal-table td { display: flex; align-items: center; margin-bottom: 10px; }
+    .journal-table td:last-child { margin-bottom: 0; justify-content: center; }
+    .journal-table td::before { content: attr(data-label); font-weight: bold; color: var(--text-dim); width: 120px; flex-shrink: 0; padding-right: 10px; text-align: left; }
+    .journal-table td input, .journal-table td select { flex-grow: 1; }
+    .journal-table td:last-child::before { display: none; }
+    .journal-table td:last-child .delete-btn { flex-grow: 0; }
+    
+    
+    
 }
+
+/* --- ESTILOS PARA EL TEMA CLARO --- */
+
+.light-theme {
+    --bg-deep-purple: lab(43.21% 4.18 -2.96 / 0.448);
+    --panel-purple: lch(80.47% 6.07 204.08);
+    --item-purple: #e4e6eb;
+    --text-light: #1c1e21;
+    --text-dim: #65676b;
+    --accent-cyan: #00a8cc;
+    --accent-magenta: #e91e63;
+    --accent-yellow: #f9a825;
+}
+
+.light-theme .modal-overlay {
+    background-color: rgba(240, 242, 245, 0.85);
+}
+
+.light-theme .modal-content {
+    background: linear-gradient(135deg, #ffffff, #e4e6eb);
+    color: var(--text-light);
+}
+
+.light-theme .news-error {
+    background-color: rgba(233, 30, 99, 0.1);
+    border: 1px solid rgba(233, 30, 99, 0.3);
+}
+
+.light-theme .settings-success {
+    background-color: rgba(76, 175, 80, 0.1);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.light-theme .settings-item p {
+    color: #333333; /* Un gris oscuro casi negro para buena legibilidad */
+}
+
+.light-theme .danger-zone p {
+    color: #c62828; /* Un rojo oscuro para la zona de peligro, legible y claro */
+}
+
+/* Estilos para la zona de peligro */
+.danger-zone {
+    border: 1px solid var(--accent-magenta);
+    padding: 15px;
+    border-radius: 8px;
+    background-color: rgba(255, 0, 255, 0.05);
+}
+
+.danger-zone p {
+    color: var(--accent-magenta);
+    font-weight: bold;
+}
+
+.reset-btn {
+    background-color: var(--accent-magenta);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 10px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.reset-btn:hover {
+    background-color: #d32f2f;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(233, 30, 99, 0.4);
+}
+
