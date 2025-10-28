@@ -283,7 +283,7 @@
             </div>
         </div>
 
-        <!-- PESTAÑA 4: MERCADO -->
+                               <!-- PESTAÑA 4: MERCADO -->
         <div id="mercado-tab" class="tab-content">
             <div class="market-container">
                 <h2>Panel de Mercado</h2>
@@ -291,47 +291,19 @@
                 <!-- Advanced Real-Time Chart -->
                 <div class="market-section">
                     <h3>Gráfico Avanzado en Tiempo Real</h3>
-                    <div class="tradingview-widget-container">
-                        <div id="tradingview_chart" style="height: 500px; width: 100%;"></div>
-                    </div>
+                    <div id="tradingview-advanced-chart" style="height: 600px; width: 100%;"></div>
                 </div>
-                
-                <!-- Cryptocurrency Market -->
+
+                <!-- Cryptocurrency Market (Crypto Screener) -->
                 <div class="market-section">
                     <h3>Mercado de Criptomonedas</h3>
-                    <div class="tradingview-widget-container">
-                        <div id="crypto-market-widget" style="height: 400px; width: 100%;"></div>
-                    </div>
+                    <div id="crypto-screener-widget" style="height: 500px; width: 100%;"></div>
                 </div>
                 
-                <!-- Market Data y Economic Calendar en fila -->
-                <div class="widgets-row">
-                    <!-- Market Data -->
-                    <div class="widget-container">
-                        <h3>Datos de Mercado</h3>
-                        <div id="market-data-widget" style="height: 300px; width: 100%;"></div>
-                    </div>
-                    
-                    <!-- Economic Calendar -->
-                    <div class="widget-container">
-                        <h3>Calendario Económico</h3>
-                        <div id="economic-calendar-widget" style="height: 300px; width: 100%;"></div>
-                    </div>
-                </div>
-                
-                <!-- Gráficos personalizados -->
-                <div class="custom-chart-container">
-                    <h3>Índice de Miedo y Codicia</h3>
-                    <div class="chart-canvas-container">
-                        <canvas id="fear-greed-chart"></canvas>
-                    </div>
-                </div>
-                
-                <div class="custom-chart-container">
-                    <h3>Dominancia de Bitcoin</h3>
-                    <div class="chart-canvas-container">
-                        <canvas id="btc-dominance-chart"></canvas>
-                    </div>
+                <!-- Contenedor 3: Datos de Mercado y Calendario Económico juntos -->
+                <div class="market-section market-data-calendar-container">
+                    <div id="market-overview-widget" style="height: 550px; width: 100%;"></div>
+                    <div id="economic-calendar-widget" style="height: 550px; width: 100%;"></div>
                 </div>
             </div>
         </div>
@@ -342,10 +314,11 @@
                 <h2>Noticias del Mercado</h2>
                 <div class="news-container">
                     <div class="news-filters">
-                        <button class="news-filter active" data-category="general">General</button>
-                        <button class="news-filter" data-category="cryptocurrency">Criptomonedas</button>
+                        <button class="news-filter active" data-category="general">Bitcoi.com</button>
+                        <button class="news-filter" data-category="cryptocurrency">CoinJournal</button>
                         <button class="news-filter" data-category="forex">Forex</button>
-                        <button class="news-filter" data-category="stocks">Acciones</button>
+                        <button class="news-filter" data-category="stocks">Investing</button>
+                        <button class="news-filter" data-category="custom">Personalizado</button>
                     </div>
                     
                     <div id="news-content">
@@ -363,29 +336,34 @@
                 <h2>Ajustes de la Aplicación</h2>
                 
                 <div class="settings-section">
-                    <h3>Configuración de APIs</h3>
+                    <h3>Personalización</h3>
                     
                     <div class="settings-item">
-                        <label for="newsapi-key">Clave de NewsAPI</label>
-                        <input type="text" id="newsapi-key" placeholder="Introduce tu clave de NewsAPI">
+                        <label for="theme-selector">Tema de la Aplicación</label>
+                        <select id="theme-selector">
+                            <option value="dark">Oscuro</option>
+                            <option value="light">Claro</option>
+                        </select>
+                    </div>
+
+                    <div class="settings-item">
+                        <label for="font-size-slider">Tamaño de Fuente: <span id="font-size-value">100%</span></label>
+                        <input type="range" id="font-size-slider" min="80" max="130" value="100" step="5">
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>Configuración de Noticias</h3>
+                    
+                    <div class="settings-item">
+                        <label for="rss-feed-url">URL de Feed RSS Personalizado</label>
+                        <input type="text" id="rss-feed-url" placeholder="Introduce la URL de un feed RSS">
                         <p>
-                            NewsAPI proporciona acceso a noticias de todo el mundo. 
-                            Para obtener una clave gratuita, regístrate en 
-                            <a href="https://newsapi.org/" target="_blank">newsapi.org</a>.
-                            El plan gratuito permite hasta 1,000 solicitudes al día.
+                            Usa los botones de arriba para cambiar entre fuentes predefinidas.
+                            <br><br>
+                            <strong>Para usuarios avanzados:</strong> Introduce la URL de un feed RSS personalizado a continuación.
                         </p>
                     </div>
-                    
-                    <div class="settings-item">
-    <label for="cmc-api-key">Clave de CoinMarketCap API</label>
-    <input type="text" id="cmc-api-key" placeholder="Introduce tu clave de CoinMarketCap">
-    <p>
-        CoinMarketCap proporciona datos de criptomonedas en tiempo real.
-        Para obtener una clave gratuita, regístrate en 
-        <a href="https://coinmarketcap.com/api/" target="_blank">coinmarketcap.com/api</a>.
-        El plan gratuito permite un número limitado de llamadas diarias.
-    </p>
-</div>
                     
                     <button id="save-settings-btn" class="save-settings-btn">Guardar Configuración</button>
                     <div id="settings-success" class="settings-success">
@@ -394,23 +372,22 @@
                 </div>
                 
                 <div class="settings-section">
-                    <h3>Preferencias de Visualización</h3>
+                    <h3>Gestión de Datos</h3>
                     
                     <div class="settings-item">
-                        <label for="auto-refresh">Actualización Automática</label>
-                        <select id="auto-refresh">
-                            <option value="disabled">Desactivado</option>
-                            <option value="5">Cada 5 minutos</option>
-                            <option value="15">Cada 15 minutos</option>
-                            <option value="30">Cada 30 minutos</option>
-                            <option value="60">Cada hora</option>
-                        </select>
+                        <p>Exporta una copia de seguridad de todos tus datos (perfiles, registro de operaciones y ajustes).</p>
+                        <button id="export-all-btn" class="save-settings-btn">Exportar Todos los Datos</button>
+                    </div>
+
+                    <div class="settings-item danger-zone">
+                        <p><strong>¡Cuidado!</strong> Esta acción borrará permanentemente todos tus datos de esta aplicación y no se puede deshacer.</p>
+                        <button id="reset-app-btn" class="reset-btn">Restablecer Configuración</button>
                     </div>
                 </div>
             </div>
         </div>
 
-    </div>
+    </div> <!-- Cierre de content-wrapper -->
     
     <!-- Scripts de la aplicación -->
 <script src="js/profiles.js"></script>
@@ -420,6 +397,7 @@
 <script src="js/settings.js"></script>
 <script src="js/market.js"></script>
 <script src="js/tabs.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/rss-parser@3.12.0/dist/rss-parser.min.js"></script>
 <script src="js/main.js"></script>
 
 </body>
