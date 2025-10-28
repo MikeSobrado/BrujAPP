@@ -15,7 +15,7 @@ exports.handler = async (event, context) => {
     'www.investing.com',
     'www.marketwatch.com',
     'bitcoinmagazine.com',
-    'elpais.com',
+    'https://www.ft.com/markets',
     'https://decrypt.co/news'
 
     // Puedes añadir más dominios de confianza aquí

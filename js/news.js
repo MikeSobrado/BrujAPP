@@ -9,7 +9,7 @@ const RSS_FEEDS = {
     'general': 'https://decrypt.co/feed', // <-- Nuevo: Noticias financieras en español
     'cryptocurrency': 'https://www.coindesk.com/arc/outboundfeeds/rss/', // <-- Mantenemos este, que funciona
     'forex': 'https://www.investing.com/rss/news.rss', // <-- Nuevo: Noticias Forex
-    'stocks': 'https://es.investing.com/rss/news_14.rss' // <-- Nuevo: Noticias de Acciones
+    'stocks': 'https://www.ft.com/markets?format=rss' // <-- Nuevo: Noticias de Acciones
 };
 
 /**
