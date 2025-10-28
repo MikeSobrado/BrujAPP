@@ -12,7 +12,11 @@ exports.handler = async (event, context) => {
     'www.coindesk.com',
     'cointelegraph.com',
     'decrypt.co',
-    'cryptonews.com'
+    'cryptonews.com',
+    'investing.com',
+    'www.dailyfx.com',
+    'forexfactory.com'
+
     // Puedes añadir más dominios de confianza aquí
   ];
 
