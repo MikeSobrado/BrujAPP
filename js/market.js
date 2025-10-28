@@ -1,9 +1,15 @@
-// --- FUNCIONES GLOBALES DEL MERCADO ---
+// --- js/market.js --- //
+
+// --- FUNCIONES GLOBALES DEL MERCADO --- //
+
+let tradingViewWidgetsLoaded = false; 
 
 // Función para cargar los widgets de TradingView (debe ser global para que tabs.js pueda llamarla)
 function loadTradingViewWidgets() {
-    // Evitar recargar los widgets si ya están cargados
-    if (document.getElementById('tradingview-advanced-chart').querySelector('script')) {
+
+     // Evitar recargar los widgets si ya están cargados
+    if (tradingViewWidgetsLoaded) {
+        console.log("Los widgets de TradingView ya están cargados. Omitiendo carga.");
         return;
     }
 
@@ -26,7 +32,7 @@ function loadTradingViewWidgets() {
         "locale": "es",
         "save_image": true,
         "style": "1",
-        "symbol": "BITSTAMP:BTCUSD",
+        "symbol": "BINANCE:BTCUSD",
         "theme": "dark",
         "timezone": "Etc/UTC",
         "backgroundColor": "#0F0F0F",
@@ -42,7 +48,7 @@ function loadTradingViewWidgets() {
     });
     advancedChartContainer.appendChild(advancedChartScript);
 
-        // --- Widget 1.5: Gráfico de Resumen de BTC (NUEVO) ---
+        // --- Widget 1.5: Gráfico de Resumen de BTC ---
     const btcOverviewContainer = document.getElementById('btc-overview-widget');
     const btcOverviewScript = document.createElement('script');
     btcOverviewScript.type = 'text/javascript';
@@ -173,10 +179,12 @@ function loadTradingViewWidgets() {
         "height": "550"
     });
     calendarContainer.appendChild(calendarScript);
-}
 
+    tradingViewWidgetsLoaded = true;
+}
 
 // --- INICIALIZACIÓN DEL MÓDULO MERCADO ---
 document.addEventListener('DOMContentLoaded', () => {
     console.log("Módulo de mercado inicializado. Los widgets se cargarán dinámicamente.");
 });
+
