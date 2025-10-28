@@ -8,16 +8,15 @@ exports.handler = async (event, context) => {
 
   // Lista de dominios de feeds RSS que permitimos para mayor seguridad
   const allowedDomains = [
-    'news.bitcoin.com',
+    
     'www.coindesk.com',
     'cointelegraph.com',
     'decrypt.co',
-    'cryptonews.com',
     'www.investing.com',
-    'www.dailyfx.com',
-    'cnnexpansion.com',
     'www.marketwatch.com',
-    'bitcoinmagazine.com'
+    'bitcoinmagazine.com',
+    'elpais.com',
+    'https://www.newsbtc.com/feed/'
 
     // Puedes añadir más dominios de confianza aquí
   ];

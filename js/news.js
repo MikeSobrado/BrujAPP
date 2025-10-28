@@ -6,10 +6,10 @@ let currentNewsCategory = 'general';
 // Mapeo de categorías a URLs de feeds RSS.
 // Puedes cambiar estas URLs por otras que prefieras.
 const RSS_FEEDS = {
-    'general': 'https://elpais.com/rss/economia.xml', // <-- Nuevo: Noticias financieras en español
+    'general': 'https://www.newsbtc.com/feed/', // <-- Nuevo: Noticias financieras en español
     'cryptocurrency': 'https://www.coindesk.com/arc/outboundfeeds/rss/', // <-- Mantenemos este, que funciona
     'forex': 'https://www.investing.com/rss/news.rss', // <-- Nuevo: Noticias Forex
-    'stocks': 'ttps://www.marketwatch.com/rss/topstorie' // <-- Nuevo: Noticias de Acciones
+    'stocks': 'https://cincodias.elpais.com/rss/' // <-- Nuevo: Noticias de Acciones
 };
 
 /**
