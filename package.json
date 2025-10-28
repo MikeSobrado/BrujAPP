@@ -1,0 +1,24 @@
+{
+  "name": "brujapp-main",
+  "version": "1.0.0",
+  "description": "BrujAPP: Tu Aliado Estratégico para el Trading",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MikeSobrado/BrujAPP.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/MikeSobrado/BrujAPP/issues"
+  },
+  "homepage": "https://github.com/MikeSobrado/BrujAPP#readme",
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
+}
