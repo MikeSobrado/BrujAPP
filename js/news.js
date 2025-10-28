@@ -6,10 +6,10 @@ let currentNewsCategory = 'general';
 // Mapeo de categorías a URLs de feeds RSS.
 // Puedes cambiar estas URLs por otras que prefieras.
 const RSS_FEEDS = {
-    'general': 'https://cnnexpansion.com/feed/', // <-- Nuevo: Noticias financieras en español
+    'general': 'https://elpais.com/rss/economia.xml', // <-- Nuevo: Noticias financieras en español
     'cryptocurrency': 'https://www.coindesk.com/arc/outboundfeeds/rss/', // <-- Mantenemos este, que funciona
     'forex': 'https://www.investing.com/rss/news.rss', // <-- Nuevo: Noticias Forex
-    'stocks': 'https://www.investing.com/rss/stock_market_news.rss' // <-- Nuevo: Noticias de Acciones
+    'stocks': 'ttps://www.marketwatch.com/rss/topstorie' // <-- Nuevo: Noticias de Acciones
 };
 
 /**
