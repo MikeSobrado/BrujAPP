@@ -3,248 +3,134 @@
 // Función para cargar los widgets de TradingView (debe ser global para que tabs.js pueda llamarla)
 function loadTradingViewWidgets() {
     // Evitar recargar los widgets si ya están cargados
-    if (document.getElementById('tradingview_chart').innerHTML !== '') {
+    if (document.getElementById('tradingview-advanced-chart').querySelector('script')) {
         return;
     }
-    
-    // Widget de Gráfico Avanzado
-    const tradingViewScript = document.createElement('script');
-    tradingViewScript.type = 'text/javascript';
-    tradingViewScript.src = 'https://s3.tradingview.com/tv.js';
-    tradingViewScript.onload = function() {
-        new TradingView.widget({
-            "width": "100%",
-            "height": 500,
-            "symbol": "BINANCE:BTCUSDT",
-            "interval": "D",
-            "timezone": "Etc/UTC",
-            "theme": "dark",
-            "style": "1",
-            "locale": "es",
-            "toolbar_bg": "#f1f3f6",
-            "enable_publishing": false,
-            "allow_symbol_change": true,
-            "container_id": "tradingview_chart"
-        });
-    };
-    document.head.appendChild(tradingViewScript);
-    
-    // Widget de Mercado de Criptomonedas
-    const cryptoMarketScript = document.createElement('script');
-    cryptoMarketScript.type = 'text/javascript';
-    cryptoMarketScript.src = 'https://s3.tradingview.com/external-embedding/embed-widget-screener.js';
-    cryptoMarketScript.onload = function() {
-        const container = document.getElementById('crypto-market-widget');
-        container.innerHTML = '';
-        const script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-screener.js';
-        script.innerHTML = JSON.stringify({
-            "width": "100%",
-            "height": 400,
-            "defaultColumn": "overview",
-            "screener_type": "crypto_mkt",
-            "displayCurrency": "USD",
-            "colorTheme": "dark",
-            "locale": "es"
-        });
-        container.appendChild(script);
-    };
-    document.head.appendChild(cryptoMarketScript);
-    
-    // Widget de Datos de Mercado
-    const marketDataScript = document.createElement('script');
-    marketDataScript.type = 'text/javascript';
-    marketDataScript.src = 'https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js';
-    marketDataScript.onload = function() {
-        const container = document.getElementById('market-data-widget');
-        container.innerHTML = '';
-        const script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js';
-        script.innerHTML = JSON.stringify({
-            "width": "100%",
-            "height": 300,
-            "symbolsGroups": [
-                {
-                    "name": "Índices",
-                    "originalName": "Indices",
-                    "symbols": [
-                        { "name": "FOREXCOM:SPXUSD", "displayName": "S&P 500" },
-                        { "name": "FOREXCOM:NSXUSD", "displayName": "Nasdaq 100" },
-                        { "name": "FOREXCOM:DJI", "displayName": "Dow 30" }
-                    ]
-                },
-                {
-                    "name": "Divisas",
-                    "originalName": "Forex",
-                    "symbols": [
-                        { "name": "FX:EURUSD", "displayName": "EUR/USD" },
-                        { "name": "FX:GBPUSD", "displayName": "GBP/USD" },
-                        { "name": "FX:USDJPY", "displayName": "USD/JPY" }
-                    ]
-                }
-            ],
-            "colorTheme": "dark",
-            "locale": "es"
-        });
-        container.appendChild(script);
-    };
-    document.head.appendChild(marketDataScript);
-    
-    // Widget de Calendario Económico
-    const economicCalendarScript = document.createElement('script');
-    economicCalendarScript.type = 'text/javascript';
-    economicCalendarScript.src = 'https://s3.tradingview.com/external-embedding/embed-widget-events.js';
-    economicCalendarScript.onload = function() {
-        const container = document.getElementById('economic-calendar-widget');
-        container.innerHTML = '';
-        const script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-events.js';
-        script.innerHTML = JSON.stringify({
-            "width": "100%",
-            "height": 300,
-            "colorTheme": "dark",
-            "locale": "es"
-        });
-        container.appendChild(script);
-    };
-    document.head.appendChild(economicCalendarScript);
-}
 
-// Función para cargar los gráficos personalizados (debe ser global)
-function loadCustomCharts() {
-    // Evitar recargar los gráficos si ya están cargados
-    if (document.getElementById('fear-greed-chart').innerHTML !== '') {
-        return;
-    }
-    
-    // Gráfico de Fear & Greed Index
-    createFearGreedChart();
-    
-    // Gráfico de Dominancia de Bitcoin
-    createBTCDominanceChart();
-}
-
-// Funciones auxiliares para los gráficos (deben ser globales)
-function createFearGreedChart() {
-    const ctx = document.getElementById('fear-greed-chart').getContext('2d');
-    
-    // Datos de ejemplo - en una implementación real, obtendrías estos datos de una API
-    const labels = [];
-    const data = [];
-    const today = new Date();
-    
-    for (let i = 29; i >= 0; i--) {
-        const date = new Date(today);
-        date.setDate(date.getDate() - i);
-        labels.push(date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }));
-        data.push(Math.floor(Math.random() * 100));
-    }
-    
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Fear & Greed Index',
-                data: data,
-                borderColor: '#00ffff',
-                backgroundColor: 'rgba(0, 255, 255, 0.1)',
-                borderWidth: 2,
-                fill: true,
-                tension: 0.4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 100,
-                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                    ticks: { color: '#b0b0b0' }
-                },
-                x: {
-                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                    ticks: { color: '#b0b0b0' }
-                }
-            },
-            plugins: {
-                legend: {
-                    labels: { color: '#f0f0f0' }
-                }
-            }
-        }
+    // --- Widget 1: Gráfico Avanzado ---
+    const advancedChartContainer = document.getElementById('tradingview-advanced-chart');
+    const advancedChartScript = document.createElement('script');
+    advancedChartScript.type = 'text/javascript';
+    advancedChartScript.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+    advancedChartScript.async = true;
+    advancedChartScript.innerHTML = JSON.stringify({
+        "allow_symbol_change": true,
+        "calendar": false,
+        "details": false,
+        "hide_side_toolbar": false,
+        "hide_top_toolbar": false,
+        "hide_legend": false,
+        "hide_volume": false,
+        "hotlist": false,
+        "interval": "D",
+        "locale": "es",
+        "save_image": true,
+        "style": "1",
+        "symbol": "BITSTAMP:BTCUSD",
+        "theme": "dark",
+        "timezone": "Etc/UTC",
+        "backgroundColor": "#0F0F0F",
+        "gridColor": "rgba(242, 242, 242, 0.06)",
+        "watchlist": [],
+        "withdateranges": false,
+        "compareSymbols": [],
+        "show_popup_button": true,
+        "popup_height": "650",
+        "popup_width": "1000",
+        "studies": [],
+        "autosize": true
     });
-}
+    advancedChartContainer.appendChild(advancedChartScript);
 
-function createBTCDominanceChart() {
-    const ctx = document.getElementById('btc-dominance-chart').getContext('2d');
-    
-    // Datos de ejemplo - en una implementación real, obtendrías estos datos de una API
-    const labels = [];
-    const data = [];
-    const today = new Date();
-    
-    for (let i = 29; i >= 0; i--) {
-        const date = new Date(today);
-        date.setDate(date.getDate() - i);
-        labels.push(date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }));
-        data.push(40 + Math.random() * 10);
-    }
-    
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Dominancia de Bitcoin (%)',
-                data: data,
-                borderColor: '#ff9800',
-                backgroundColor: 'rgba(255, 152, 0, 0.1)',
-                borderWidth: 2,
-                fill: true,
-                tension: 0.4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: false,
-                    min: 35,
-                    max: 55,
-                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                    ticks: {
-                        color: '#b0b0b0',
-                        callback: function(value) { return value + '%'; }
-                    }
-                },
-                x: {
-                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                    ticks: { color: '#b0b0b0' }
-                }
-            },
-            plugins: {
-                legend: {
-                    labels: { color: '#f0f0f0' }
-                }
-            }
-        }
+    // --- Widget 2: Mercado de Criptomonedas ---
+    const cryptoScreenerContainer = document.getElementById('crypto-screener-widget');
+    const cryptoScreenerScript = document.createElement('script');
+    cryptoScreenerScript.type = 'text/javascript';
+    cryptoScreenerScript.src = 'https://s3.tradingview.com/external-embedding/embed-widget-screener.js';
+    cryptoScreenerScript.async = true;
+    cryptoScreenerScript.innerHTML = JSON.stringify({
+        "width": "100%",
+        "height": "500",
+        "defaultColumn": "overview",
+        "defaultScreen": "general",
+        "market": "crypto",
+        "showToolbar": true,
+        "colorTheme": "dark",
+        "locale": "es",
+        "isTransparent": false
     });
+    cryptoScreenerContainer.appendChild(cryptoScreenerScript);
+
+    // --- Widget 3: Datos de Mercado ---
+    const marketOverviewContainer = document.getElementById('market-overview-widget');
+    const marketOverviewScript = document.createElement('script');
+    marketOverviewScript.type = 'text/javascript';
+    marketOverviewScript.src = 'https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js';
+    marketOverviewScript.async = true;
+    marketOverviewScript.innerHTML = JSON.stringify({
+        "colorTheme": "dark",
+        "locale": "es",
+        "largeChartUrl": "",
+        "isTransparent": false,
+        "showSymbolLogo": true,
+        "backgroundColor": "#0F0F0F",
+        "support_host": "https://www.tradingview.com",
+        "width": "100%",
+        "height": "550",
+        "symbolsGroups": [
+            { "name": "Indices", "symbols": [
+                { "name": "FOREXCOM:SPXUSD", "displayName": "S&P 500 Index" },
+                { "name": "FOREXCOM:NSXUSD", "displayName": "US 100 Cash CFD" },
+                { "name": "FOREXCOM:DJI", "displayName": "Dow Jones Industrial Average Index" },
+                { "name": "INDEX:NKY", "displayName": "Japan 225" },
+                { "name": "INDEX:DEU40", "displayName": "DAX Index" },
+                { "name": "FOREXCOM:UKXGBP", "displayName": "FTSE 100 Index" }
+            ]},
+            { "name": "Futures", "symbols": [
+                { "name": "BMFBOVESPA:ISP1!", "displayName": "S&P 500" },
+                { "name": "BMFBOVESPA:EUR1!", "displayName": "Euro" },
+                { "name": "CMCMARKETS:GOLD", "displayName": "Gold" },
+                { "name": "PYTH:WTI3!", "displayName": "WTI Crude Oil" },
+                { "name": "BMFBOVESPA:CCM1!", "displayName": "Corn" },
+                { "name": "MCX:SILVER1!", "displayName": "Silver" }
+            ]},
+            { "name": "Bonds", "symbols": [
+                { "name": "EUREX:FGBL1!", "displayName": "Euro Bund" },
+                { "name": "EUREX:FBTP1!", "displayName": "Euro BTP" },
+                { "name": "EUREX:FGBM1!", "displayName": "Euro BOBL" }
+            ]},
+            { "name": "Forex", "symbols": [
+                { "name": "FX:EURUSD", "displayName": "EUR to USD" },
+                { "name": "FX:GBPUSD", "displayName": "GBP to USD" },
+                { "name": "FX:USDJPY", "displayName": "USD to JPY" },
+                { "name": "FX:USDCHF", "displayName": "USD to CHF" },
+                { "name": "FX:AUDUSD", "displayName": "AUD to USD" },
+                { "name": "FX:USDCAD", "displayName": "USD to CAD" }
+            ]}
+        ]
+    });
+    marketOverviewContainer.appendChild(marketOverviewScript);
+
+    // --- Widget 4: Calendario Económico ---
+    const calendarContainer = document.getElementById('economic-calendar-widget');
+    const calendarScript = document.createElement('script');
+    calendarScript.type = 'text/javascript';
+    calendarScript.src = 'https://s3.tradingview.com/external-embedding/embed-widget-events.js';
+    calendarScript.async = true;
+    calendarScript.innerHTML = JSON.stringify({
+        "colorTheme": "dark",
+        "isTransparent": false,
+        "locale": "es",
+        "countryFilter": "ar,au,br,ca,cn,fr,de,in,id,it,jp,kr,mx,ru,sa,za,tr,gb,us,eu",
+        "importanceFilter": "0,1",
+        "width": "100%",
+        "height": "550"
+    });
+    calendarContainer.appendChild(calendarScript);
 }
 
 
 // --- INICIALIZACIÓN DEL MÓDULO MERCADO ---
-// Este bloque se ejecuta solo cuando el DOM está listo.
-// Para este módulo, no hay una inicialización automática, ya que todo se carga bajo demanda.
-// Dejamos el bloque para mantener la consistencia en la estructura del proyecto.
 document.addEventListener('DOMContentLoaded', () => {
-    // No se requiere ninguna acción inicial aquí, ya que los widgets y gráficos
-    // se cargan cuando el usuario accede a la pestaña "Mercado".
-    console.log("Módulo de mercado inicializado y listo para cargar contenido bajo demanda.");
+    console.log("Módulo de mercado inicializado. Los widgets se cargarán dinámicamente.");
 });
