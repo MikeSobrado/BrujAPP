@@ -154,76 +154,52 @@ function initBitgetAPI() {
         }
 
         async getAllOrders(limit = 50) {
-            if (!this.credentials) throw new Error('Sin credenciales');
-            try {
-                // Endpoint correcto de Bitget v2: Historial de posiciones
-                // GET /api/v2/mix/position/history-position
-                // Parámetros obligatorios: productType (USDT-FUTURES o COIN-FUTURES)
-                const path = `/api/v2/mix/position/history-position?productType=USDT-FUTURES&limit=${limit}`;
-                const ts = Date.now().toString();
-                const sig = this.generateSignature(ts, 'GET', path, '');
-                
-                console.log('🔗 Conectando a:', this.apiEndpoint + path);
-                
-                const res = await fetch(this.apiEndpoint + path, {
-                    method: 'GET',
-                    headers: {
-                        'ACCESS-KEY': this.credentials.apiKey,
-                        'ACCESS-SIGN': sig,
-                        'ACCESS-TIMESTAMP': ts,
-                        'ACCESS-PASSPHRASE': this.credentials.passphrase,
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                if (!res.ok) {
-                    const error = await res.text();
-                    console.error(`❌ Error HTTP ${res.status}:`, error);
-                    throw new Error(`Error obteniendo posiciones: ${res.status} ${error}`);
-                }
-                
-                const data = await res.json();
-                console.log('📊 Respuesta de posiciones:', data);
-                console.log('📊 data.data estructura:', data.data);
-                console.log('📊 data.data es array?:', Array.isArray(data.data));
-                
-                // Bitget v2 devuelve { code: "00000", msg: "success", data: [...] }
-                if (data.code !== '00000') {
-                    throw new Error(`Error en API: ${data.msg || data.code}`);
-                }
-                
-                // Si data.data es un array, devolverlo. Si es un objeto, probablemente contenga un array dentro
-                let positions = data.data || [];
-                if (!Array.isArray(positions) && typeof positions === 'object') {
-                    // Intentar encontrar un array dentro del objeto
-                    console.log('⚠️ data.data no es array, buscando array dentro del objeto...');
-                    for (const key in positions) {
-                        if (Array.isArray(positions[key])) {
-                            console.log(`✅ Encontrado array en data.data.${key}`);
-                            positions = positions[key];
-                            break;
-                        }
-                    }
-                }
-                
-                console.log('📊 Posiciones finales:', positions, 'es array?', Array.isArray(positions));
-                return positions;
-            } catch (e) {
-                console.error('❌ Error en getAllOrders:', e);
-                throw e;
-            }
-        }
+        if (!this.credentials) throw new Error('Sin credenciales');
+        try {
+            // Endpoint correcto de Bitget v2: Historial de posiciones
+            // GET /api/v2/mix/position/history-position
+            // Parámetros obligatorios: productType (USDT-FUTURES o COIN-FUTURES)
+            const endpoint = '/api/v2/mix/position/history-position';
+            const params = { productType: 'USDT-FUTURES', limit };
+            console.log('🔗 Conectando a (Netlify proxy):', this.apiEndpoint);
 
-        // Alias para obtener posiciones (mismo que getAllOrders pero más descriptivo)
-        async getPositionHistory(limit = 50) {
-            return this.getAllOrders(limit);
+            const res = await fetch(this.apiEndpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    apiKey: this.credentials.apiKey,
+                    apiSecret: this.credentials.apiSecret,
+                    apiPassphrase: this.credentials.passphrase,
+                    endpoint,
+                    params
+                })
+            });
+
+            if (!res.ok) {
+                const error = await res.text();
+                console.error(`❌ Error HTTP ${res.status}:`, error);
+                throw new Error(`Error obteniendo posiciones: ${res.status} ${error}`);
+            }
+
+            const data = await res.json();
+            console.log('📊 Respuesta de posiciones:', data);
+            return data;
+        } catch (e) {
+            console.error('❌ Error en getAllOrders:', e);
+            throw e;
         }
     }
 
-    window.BitgetAPI = new BitgetAPIManager();
-    window.BitgetAPIReady = true;
-    console.log('✅ BitgetAPI ready');
-}
+            // Alias para obtener posiciones (mismo que getAllOrders pero más descriptivo)
+            async getPositionHistory(limit = 50) {
+                return this.getAllOrders(limit);
+            }
+        }
+
+        window.BitgetAPI = new BitgetAPIManager();
+        window.BitgetAPIReady = true;
+        console.log('✅ BitgetAPI ready');
+    }
 
 // Función directa para manejar el click en el botón Crear Llave
 window.handleSaveKey = function() {
