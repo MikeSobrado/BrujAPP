@@ -1,0 +1,264 @@
+/* Media Queries - Responsive Design */
+
+/* Tablets y pantallas medianas */
+@media (max-width: 992px) {
+    .brand-name {
+        font-size: 3rem;
+    }
+    
+    .brand-tagline {
+        font-size: 1.2rem;
+    }
+    
+    .header-nav {
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+    
+    .graficas-container {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .control-panel {
+        width: 100%;
+        max-width: 400px;
+    }
+    
+    .panels-container {
+        justify-content: center;
+    }
+    
+    .decision-icons-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .decision-column {
+        width: 100%;
+        max-width: 380px;
+    }
+    
+    .decision-item {
+        min-width: 100px;
+    }
+}
+
+/* Móviles */
+@media (max-width: 768px) {
+    .brand-section {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .brand-logo {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .brand-name {
+        font-size: 2.5rem;
+    }
+    
+    .brand-tagline {
+        font-size: 1rem;
+    }
+    
+    .header-nav {
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+    
+    .nav-tabs .nav-link {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .control-panel {
+        width: 100%;
+        max-width: 380px;
+        margin: 0 auto 1rem auto;
+    }
+
+    .panels-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 1.5rem;
+        padding: 0;
+    }
+    
+    .decision-icons-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .decision-column {
+        width: 100%;
+        max-width: 380px;
+    }
+
+    .risk-tool-table {
+        font-size: 0.85rem;
+    }
+
+    .risk-tool-table th, .risk-tool-table td {
+        padding: 8px 10px;
+    }
+
+    .result-item {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+
+    .decision-icons-container {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .decision-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .decision-number-field {
+        position: static !important;
+        align-self: flex-end;
+    }
+
+    .lights-counter {
+        font-size: 11px;
+        margin-top: 5px;
+    }
+
+    .decision-item {
+        width: 100%;
+        max-width: 200px;
+    }
+    
+    .grafica-card {
+        padding: 1.5rem;
+        min-height: 350px;
+    }
+    
+    .grafica-card h3 {
+        font-size: 1.1rem;
+    }
+    
+    /* Gestión de Riesgo - Reorganizar en móviles */
+    .risk-tool .row {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    
+    .risk-tool .col-md-6:first-child {
+        order: 2 !important;
+        width: 100% !important;
+    }
+    
+    .risk-tool .col-md-6:last-child {
+        order: 1 !important;
+        width: 100% !important;
+    }
+    
+    #fear-greed-value {
+        font-size: 60px;
+    }
+    
+    #fear-greed-classification {
+        font-size: 18px;
+    }
+    
+    #funding-rate-value {
+        font-size: 40px;
+    }
+    
+    #funding-rate-classification {
+        font-size: 16px;
+    }
+    
+    .fear-greed-gauge {
+        width: 150px;
+        height: 75px;
+    }
+    
+    .chart-container,
+    .funding-chart-container {
+        height: 180px;
+    }
+}
+
+/* Pantallas muy pequeñas */
+@media (max-width: 480px) {
+    .brand-name {
+        font-size: 2rem;
+    }
+    
+    .brand-logo {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .control-panel {
+        padding: 1rem;
+        width: 100%;
+    }
+    
+    .traffic-light {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .panel-lights {
+        gap: 15px;
+    }
+    
+    .decision-item {
+        padding: 1rem;
+        min-width: auto;
+    }
+    
+    .decision-icon {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .grafica-card {
+        padding: 1rem;
+        margin: 0.5rem 0;
+    }
+    
+    .risk-tool {
+        padding: 1.5rem;
+    }
+    
+    .risk-tool-table {
+        font-size: 0.8rem;
+    }
+    
+    .risk-tool-table th,
+    .risk-tool-table td {
+        padding: 6px 8px;
+    }
+    
+    #fear-greed-value {
+        font-size: 50px;
+    }
+    
+    #funding-rate-value {
+        font-size: 35px;
+    }
+    
+    .fear-greed-gauge {
+        width: 120px;
+        height: 60px;
+    }
+}

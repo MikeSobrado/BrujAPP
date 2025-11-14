@@ -1,0 +1,1023 @@
+/* ROI positivo y negativo */
+.roi-positive {
+    color: #2e7d32 !important; /* verde */
+    font-weight: bold;
+}
+.roi-negative {
+    color: #c62828 !important; /* rojo */
+    font-weight: bold;
+}
+/* Modal de notas */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(44,82,130,0.25);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+.modal-overlay[style*="display: flex"] {
+    display: flex !important;
+}
+.modal-content {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(44,82,130,0.18);
+    padding: 2rem 1.5rem 1.5rem 1.5rem;
+    max-width: 420px;
+    width: 95vw;
+    text-align: center;
+}
+.modal-content h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--brand-primary);
+    margin-bottom: 1rem;
+}
+#notes-modal-textarea {
+    width: 100%;
+    min-height: 120px;
+    border-radius: 8px;
+    border: 1px solid var(--gray-light);
+    padding: 12px;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    background: #f8f9fa;
+    color: #222;
+    resize: vertical;
+}
+.modal-close-btn {
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 22px;
+    font-weight: 600;
+    font-size: 1rem;
+    box-shadow: 0 2px 8px rgba(44,82,130,0.08);
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+.modal-close-btn:hover {
+    background: var(--brand-accent);
+    box-shadow: 0 4px 16px rgba(67,97,238,0.12);
+}
+.notes-btn {
+    background: var(--brand-accent);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-shadow: 0 1px 4px rgba(67,97,238,0.08);
+}
+.notes-btn:hover {
+    background: var(--brand-secondary);
+}
+/* Estilos para el panel de control de semáforos */
+.control-panel {
+    background: linear-gradient(145deg, #f0f0f0 0%, #d0d0d0 25%, #e8e8e8 50%, #c8c8c8 75%, #f0f0f0 100%);
+    border: 2px solid #b0b0b0;
+    border-radius: 12px;
+    padding: 1.3rem;
+    margin: 1rem 0;
+    box-shadow: 
+        0 2px 10px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.1),
+        inset 1px 0 0 rgba(255, 255, 255, 0.4),
+        inset -1px 0 0 rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    width: 380px;
+    min-height: 153px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.control-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.2) 0%, transparent 50%),
+        linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+    border-radius: 10px;
+    pointer-events: none;
+}
+
+.control-panel:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.15),
+        inset 1px 0 0 rgba(255, 255, 255, 0.5),
+        inset -1px 0 0 rgba(0, 0, 0, 0.08);
+    background: linear-gradient(145deg, #f5f5f5 0%, #d5d5d5 25%, #eeeeee 50%, #cdcdcd 75%, #f5f5f5 100%);
+}
+
+.panel-lights {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin-bottom: 1.2rem;
+    padding: 15px 0;
+}
+
+.traffic-light {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid #ddd;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    opacity: 0.3;
+}
+
+.traffic-light:hover {
+    transform: scale(1.1);
+    border-color: #999;
+}
+
+.traffic-light.green {
+    background-color: #28a745;
+    border-color: #1e7e34;
+}
+
+.traffic-light.amber {
+    background-color: #ffc107;
+    border-color: #d39e00;
+}
+
+.traffic-light.red {
+    background-color: #dc3545;
+    border-color: #bd2130;
+}
+
+.traffic-light.active {
+    opacity: 1;
+    box-shadow: 0 0 30px currentColor;
+}
+
+.traffic-light.green.active {
+    box-shadow: 0 0 30px #28a745;
+}
+
+.traffic-light.amber.active {
+    box-shadow: 0 0 30px #ffc107;
+}
+
+.traffic-light.red.active {
+    box-shadow: 0 0 30px #dc3545;
+}
+
+.panel-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.panel-name-input {
+    flex: 1;
+    padding: 0.75rem;
+    border: 1px solid var(--gray-light);
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.panel-name-input:focus {
+    outline: none;
+    border-color: var(--brand-accent);
+    box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+}
+
+.delete-panel-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+}
+
+.delete-panel-btn:hover {
+    background: #c82333;
+    transform: scale(1.05);
+}
+
+.panels-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: 1rem;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 0 1rem;
+}
+
+.add-panel-btn {
+    background: var(--brand-accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.add-panel-btn:hover {
+    background: var(--brand-secondary);
+    transform: translateY(-2px);
+}
+
+/* Panel de decisión de trading */
+.decision-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.decision-title-section {
+    flex: 1;
+    margin-right: 1rem;
+}
+
+.decision-number-field {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 10;
+}
+
+.decision-input {
+    width: 50px;
+    height: 35px;
+    padding: 5px 8px;
+    border: 2px solid var(--brand-primary);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--brand-primary);
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.decision-input:focus {
+    border-color: var(--brand-accent);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    background: #f8f9ff;
+}
+
+.decision-input:hover {
+    border-color: #2c5282;
+    box-shadow: 0 2px 8px rgba(67, 97, 238, 0.15);
+}
+
+/* Eliminar flechas del campo numérico del panel de decisión */
+.decision-input::-webkit-outer-spin-button,
+.decision-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.lights-counter {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #666;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.counter-green, .counter-red {
+    font-weight: 600;
+}
+
+.counter-green {
+    color: #28a745;
+}
+
+.counter-red {
+    color: #dc3545;
+}
+
+.decision-panel {
+    margin: 1rem 0;
+    padding: 0;
+    background: none;
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+}
+
+.decision-icons-container {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+}
+
+.decision-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 380px; /* Mismo ancho que los paneles de control */
+    min-height: 200px;
+    flex-shrink: 0;
+}
+
+.decision-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    padding: 1rem 0.75rem;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    background: linear-gradient(145deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 2px solid var(--brand-accent);
+    width: 100%;
+    max-width: 380px;
+    min-height: auto;
+    height: auto;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    margin-bottom: 0.5rem;
+}
+
+/* Gap más pequeño para todos los elementos que tienen controles */
+.decision-buy,
+.decision-sell,
+.decision-wait {
+    gap: 0.1rem !important;
+}
+
+.decision-icon {
+    width: 75px;
+    height: 75px;
+    transition: all 0.3s ease;
+    fill: var(--gray-medium);
+}
+
+/* Íconos más grandes solo para LONG y SHORT */
+.decision-buy .decision-icon,
+.decision-sell .decision-icon {
+    width: 90px !important;
+    height: 90px !important;
+}
+
+/* El ícono de ESPERA mantiene el tamaño original */
+.decision-wait .decision-icon {
+    width: 75px !important;
+    height: 75px !important;
+}
+
+.decision-item.active .decision-icon { 
+    transform: scale(1.2); 
+}
+
+.decision-buy.active .decision-icon { 
+    fill: #2e7d32 !important; /* Verde para LONG */
+}
+
+.decision-wait.active .decision-icon { 
+    fill: #f57c00 !important; /* Naranja para ESPERA */
+}
+
+.decision-sell.active .decision-icon { 
+    fill: #c62828 !important; /* Rojo para SHORT */
+}
+
+.decision-label {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--gray-medium);
+    transition: color 0.3s ease;
+}
+
+.decision-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px !important;
+}
+
+.threshold-input {
+    width: 60px;
+    height: 30px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--gray-dark);
+    background: white;
+    margin: 4px 0;
+    padding: 0;
+    transition: all 0.3s ease;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.threshold-input:focus {
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    transform: scale(1.05);
+}
+
+.threshold-input:hover {
+    border-color: var(--brand-accent);
+    background: #f8f9ff;
+}
+
+.threshold-input::-webkit-outer-spin-button,
+.threshold-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.threshold-input[type=number] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.decision-item.active {
+    border-color: var(--brand-accent);
+    background: rgba(67, 97, 238, 0.05);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.decision-item.active .decision-label {
+    color: var(--brand-primary);
+}
+
+.decision-buy.active {
+    border-color: var(--success-color);
+    background: rgba(46, 125, 50, 0.05);
+}
+
+.decision-wait.active {
+    border-color: var(--warning-color);
+    background: rgba(245, 124, 0, 0.05);
+}
+
+.decision-sell.active {
+    border-color: var(--danger-color);
+    background: rgba(198, 40, 40, 0.05);
+}
+
+/* === ESTILOS PARA PANELES COMO BOTONES === */
+.panel-button {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.panel-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 
+        0 6px 25px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+        inset 1px 0 0 rgba(255, 255, 255, 0.6),
+        inset -1px 0 0 rgba(0, 0, 0, 0.1);
+    background: linear-gradient(145deg, #f8f8f8 0%, #d8d8d8 25%, #f0f0f0 50%, #d0d0d0 75%, #f8f8f8 100%);
+}
+
+.panel-button:active {
+    transform: translateY(-1px);
+    box-shadow: 
+        0 2px 10px rgba(0, 0, 0, 0.3),
+        inset 0 2px 4px rgba(0, 0, 0, 0.15),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.7);
+    background: linear-gradient(145deg, #e8e8e8 0%, #c8c8c8 25%, #e0e0e0 50%, #c0c0c0 75%, #e8e8e8 100%);
+}
+
+.panel-button-indicator {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    color: #666;
+    font-size: 14px;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+.panel-button:hover .panel-button-indicator {
+    opacity: 1;
+    color: var(--brand-accent);
+}
+
+.panel-button.clicked {
+    animation: panelClickEffect 0.4s ease;
+    border-color: var(--brand-accent);
+}
+
+@keyframes panelClickEffect {
+    0% {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 25px rgba(67, 97, 238, 0.3);
+    }
+    50% {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(67, 97, 238, 0.4);
+        border-color: var(--brand-accent);
+    }
+    100% {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+}
+
+/* === ESTILOS PARA PANEL ACTIVADO (DORADO) === */
+.panel-button.activated {
+    background: linear-gradient(145deg, 
+        #ffd700 0%,   /* Gold */
+        #ffed4e 15%,  /* Light gold */
+        #ffc107 30%,  /* Amber */
+        #ff8f00 50%,  /* Orange gold */
+        #ffc107 70%,  /* Amber */
+        #ffed4e 85%,  /* Light gold */
+        #ffd700 100%  /* Gold */
+    );
+    border-color: #ff8f00;
+    box-shadow: 
+        0 4px 20px rgba(255, 193, 7, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        inset 0 -1px 0 rgba(204, 102, 0, 0.3),
+        inset 1px 0 0 rgba(255, 255, 255, 0.6),
+        inset -1px 0 0 rgba(204, 102, 0, 0.2),
+        0 0 15px rgba(255, 193, 7, 0.3);
+    transform: translateY(-2px);
+}
+
+.panel-button.activated::before {
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.5) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+        linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.2) 50%, transparent 70%);
+}
+
+.panel-button.activated:hover {
+    background: linear-gradient(145deg, 
+        #ffe135 0%,   /* Brighter gold */
+        #fff176 15%,  /* Very light gold */
+        #ffd54f 30%,  /* Light amber */
+        #ffab00 50%,  /* Bright orange gold */
+        #ffd54f 70%,  /* Light amber */
+        #fff176 85%,  /* Very light gold */
+        #ffe135 100%  /* Brighter gold */
+    );
+    box-shadow: 
+        0 6px 25px rgba(255, 193, 7, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95),
+        inset 0 -1px 0 rgba(204, 102, 0, 0.4),
+        inset 1px 0 0 rgba(255, 255, 255, 0.7),
+        inset -1px 0 0 rgba(204, 102, 0, 0.25),
+        0 0 20px rgba(255, 193, 7, 0.4);
+    transform: translateY(-3px);
+}
+
+.panel-button.activated .panel-button-indicator {
+    color: #cc6600;
+    opacity: 1;
+}
+
+.panel-button.activated .panel-controls input {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: #ff8f00;
+    color: #cc6600;
+    font-weight: 600;
+}
+
+.panel-button.activated .traffic-light {
+    box-shadow: 0 0 8px rgba(255, 193, 7, 0.3);
+}
+
+/* Animación de activación */
+@keyframes panelActivation {
+    0% {
+        background: linear-gradient(145deg, #f0f0f0 0%, #d0d0d0 25%, #e8e8e8 50%, #c8c8c8 75%, #f0f0f0 100%);
+        transform: translateY(-2px);
+    }
+    50% {
+        background: linear-gradient(145deg, #ffe135 0%, #fff176 25%, #ffd54f 50%, #ffab00 75%, #ffe135 100%);
+        transform: translateY(-4px);
+        box-shadow: 0 8px 30px rgba(255, 193, 7, 0.6);
+    }
+    100% {
+        background: linear-gradient(145deg, #ffd700 0%, #ffed4e 15%, #ffc107 30%, #ff8f00 50%, #ffc107 70%, #ffed4e 85%, #ffd700 100%);
+        transform: translateY(-2px);
+    }
+}
+
+.panel-button.activating {
+    animation: panelActivation 0.5s ease;
+}
+
+/* Indicador de peso doble para paneles activados */
+.panel-button.activated::after {
+    content: "×2";
+    position: absolute;
+    top: 12px;
+    left: 16px;
+    background: linear-gradient(145deg, #cc6600, #b85500);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 6px 10px;
+    border-radius: 16px;
+    box-shadow: 
+        0 3px 8px rgba(204, 102, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    z-index: 100;
+    pointer-events: none;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Variables de color para el panel de decisión - Adaptadas al diseño principal */
+:root {
+    --decision-accent-cyan: #2196f3;
+    --decision-accent-magenta: #e91e63;
+    --decision-accent-yellow: #ff9800;
+    --decision-bg-primary: #ffffff;
+    --decision-bg-secondary: #f8f9fa;
+    --decision-border: #e9ecef;
+    --decision-text-primary: #333;
+    --decision-text-secondary: #6c757d;
+}
+
+/* ESTILOS DEL PANEL DE DECISIÓN - Adaptado al diseño principal */
+.decision-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 0.5rem;
+    margin: 0;
+    position: relative;
+}
+
+.decision-icons-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    gap: 15px;
+    position: relative;
+}
+
+.decision-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    padding: 12px 10px;
+    border-radius: 8px;
+    background: var(--decision-bg-secondary);
+    border: 2px solid transparent;
+    min-width: 90px;
+}
+
+.decision-item:hover {
+    background: #e3f2fd;
+    transform: translateY(-2px);
+    border-color: rgba(33, 150, 243, 0.3);
+}
+
+.decision-icon {
+    width: 48px;
+    height: 48px;
+    fill: var(--decision-text-secondary);
+    opacity: 0.6;
+    transition: all 0.3s ease;
+}
+
+.decision-wait .decision-icon { 
+    opacity: 0.8; 
+    fill: var(--decision-text-secondary); 
+}
+
+.decision-item.active {
+    background: white;
+    border-color: var(--brand-accent);
+    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.15);
+}
+
+.decision-item.active .decision-icon { 
+    opacity: 1; 
+    transform: scale(1.1);
+}
+
+.decision-buy.active {
+    border-color: var(--decision-accent-cyan);
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.25);
+}
+
+.decision-buy.active .decision-icon { 
+    fill: var(--decision-accent-cyan);
+}
+
+.decision-sell.active {
+    border-color: var(--decision-accent-magenta);
+    box-shadow: 0 4px 12px rgba(233, 30, 99, 0.25);
+}
+
+.decision-sell.active .decision-icon { 
+    fill: var(--decision-accent-magenta);
+}
+
+.decision-wait.active {
+    border-color: var(--decision-accent-yellow);
+    box-shadow: 0 4px 12px rgba(255, 152, 0, 0.25);
+}
+
+.decision-wait.active .decision-icon { 
+    fill: var(--decision-accent-yellow);
+}
+
+.decision-label { 
+    font-size: 13px; 
+    color: var(--decision-text-secondary); 
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+}
+
+.decision-item.active .decision-label {
+    color: var(--decision-text-primary);
+    font-weight: 700;
+}
+
+.threshold-input {
+    width: 60px;
+    padding: 8px 12px;
+    background-color: white;
+    border: 1px solid var(--decision-border);
+    color: var(--decision-text-primary);
+    border-radius: 4px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.threshold-input:focus { 
+    outline: none; 
+    border-color: var(--brand-accent); 
+    box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+}
+
+.threshold-input:hover {
+    border-color: var(--brand-secondary);
+}
+
+/* Responsividad para el panel de decisión */
+@media (max-width: 768px) {
+    .decision-panel {
+        padding: 1.5rem 1rem;
+    }
+    
+    .decision-icons-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .decision-item {
+        width: 100%;
+        max-width: 200px;
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 15px;
+        padding: 15px 20px;
+    }
+    
+    .decision-icon {
+        width: 36px;
+        height: 36px;
+    }
+}
+
+/* ESTILOS DEL PANEL DE INDICADORES - Adaptado al diseño principal */
+.indicators-panel {
+    padding: 1rem 0;
+}
+
+.indicator-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.indicator-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 1px solid var(--gray-light);
+    padding: 18px 20px;
+    margin-bottom: 0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    min-height: 60px;
+}
+
+.indicator-item:hover {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-color: var(--brand-accent);
+}
+
+.label-text {
+    flex-grow: 1;
+    text-align: center;
+    font-size: 16px;
+    padding: 0 15px;
+    font-weight: 600;
+    color: var(--decision-text-primary);
+}
+
+.label-input {
+    flex-grow: 1;
+    text-align: center;
+    font-size: 16px;
+    padding: 6px 15px;
+    font-weight: 600;
+    color: var(--decision-text-primary);
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.label-input:focus {
+    background-color: white;
+    border-color: var(--brand-accent);
+    box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+}
+
+.label-input:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+    border-color: var(--brand-secondary);
+}
+
+.indicator-button {
+    border: none;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.btn-green { 
+    background-color: #e8f5e8; 
+    border: 2px solid #4caf50; 
+}
+
+.btn-red { 
+    background-color: #fce8e8; 
+    border: 2px solid #f44336; 
+}
+
+.btn-green:hover {
+    background-color: #c8e6c9;
+    transform: scale(1.08);
+}
+
+.btn-red:hover {
+    background-color: #ffcdd2;
+    transform: scale(1.08);
+}
+
+.btn-green.active {
+    background-color: #4caf50;
+    box-shadow: 
+        0 0 8px rgba(76, 175, 80, 0.6),
+        0 2px 8px rgba(0, 0, 0, 0.2);
+    border-color: #388e3c;
+}
+
+.btn-red.active {
+    background-color: #f44336;
+    box-shadow: 
+        0 0 8px rgba(244, 67, 54, 0.6),
+        0 2px 8px rgba(0, 0, 0, 0.2);
+    border-color: #d32f2f;
+}
+
+/* Estilos para el peso de los indicadores */
+.weight-input {
+    width: 45px;
+    padding: 6px 8px;
+    background-color: white;
+    border: 1px solid var(--decision-border);
+    color: var(--decision-text-primary);
+    border-radius: 4px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 10px;
+    transition: all 0.3s ease;
+    -moz-appearance: textfield; /* Firefox */
+    appearance: textfield; /* Standard property */
+}
+
+/* Quitar flechas en Chrome, Safari, Edge */
+.weight-input::-webkit-outer-spin-button,
+.weight-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.weight-input:focus {
+    outline: none;
+    border-color: var(--brand-accent);
+    box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+}
+
+.weight-input:hover {
+    border-color: var(--brand-secondary);
+}
+
+/* Estilos para el botón de eliminar indicador */
+.trash-icon-btn {
+    cursor: pointer;
+    color: var(--decision-text-secondary);
+    width: 16px;
+    height: 16px;
+    margin: 0 8px;
+    transition: all 0.3s ease;
+}
+
+.trash-icon-btn:hover {
+    color: var(--danger-color);
+    transform: scale(1.1);
+}
+
+/* Estilos para el botón de añadir indicador */
+#add-indicator-btn {
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#add-indicator-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(135deg, var(--brand-secondary), var(--brand-accent));
+}
+
+#add-indicator-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+

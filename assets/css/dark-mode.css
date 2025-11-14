@@ -1,0 +1,437 @@
+/* ============================================
+   DARK MODE STYLES - BrujAPP Trading Dashboard
+   ============================================ */
+
+/* Variables para el modo nocturno */
+:root {
+    --dark-bg-primary: #1a1a2e;
+    --dark-bg-secondary: #16213e;
+    --dark-text-primary: #ffffff;
+    --dark-text-secondary: #e9ecef;
+    --dark-brand-color: #0d2339;
+}
+
+/* ============================================
+   ESTILOS GLOBALES DEL MODO NOCTURNO
+   ============================================ */
+
+body.dark-mode {
+    background-color: var(--dark-bg-primary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* ============================================
+   BARRA LATERAL DE NAVEGACIÓN - DARK MODE
+   ============================================ */
+
+body.dark-mode .sidebar-nav {
+    background: var(--dark-bg-secondary) !important;
+    border-right-color: #2c3e50 !important;
+}
+
+body.dark-mode .sidebar-logo {
+    border-bottom-color: #2c3e50 !important;
+}
+
+body.dark-mode .sidebar-nav .nav-link {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .sidebar-nav .nav-link:hover {
+    color: var(--dark-text-primary) !important;
+    background: rgba(33, 150, 243, 0.1) !important;
+}
+
+body.dark-mode .sidebar-nav .nav-link.active {
+    color: #2196F3 !important;
+    background: rgba(33, 150, 243, 0.15) !important;
+    border-left-color: #2196F3 !important;
+}
+
+body.dark-mode .sidebar-nav .nav-buttons {
+    border-top-color: #2c3e50 !important;
+}
+
+body.dark-mode .sidebar-nav .nav-divider {
+    background-color: #2c3e50 !important;
+}
+
+body.dark-mode #optionsTab .nav-link {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode #optionsTab .nav-link:hover {
+    background: rgba(33, 150, 243, 0.1) !important;
+    color: #2196F3 !important;
+}
+
+body.dark-mode .sidebar-nav .dropdown-toggle {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .sidebar-nav .dropdown-toggle:hover {
+    color: #2196F3 !important;
+}
+
+/* ============================================
+   SECCIÓN INICIO - TABS NAV
+   ============================================ */
+
+body.dark-mode .tabs-card {
+    background-color: #2196F3 !important;
+    border-color: #2196F3 !important;
+}
+
+body.dark-mode .tabs-card .card-body {
+    background-color: #2196F3 !important;
+}
+
+body.dark-mode .tabs-card .inicio-tab {
+    color: white !important;
+    background-color: transparent;
+    border: 2px solid white;
+    border-radius: 6px;
+    padding: 8px 16px;
+    margin: 0 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+body.dark-mode .tabs-card .inicio-tab:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+body.dark-mode .tabs-card .inicio-tab.active {
+    background-color: white;
+    color: #2196F3 !important;
+}
+
+body.dark-mode .tabs-card .registro-tab {
+    color: white !important;
+    background-color: transparent;
+    border: 2px solid white;
+    border-radius: 6px;
+    padding: 8px 16px;
+    margin: 0 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+body.dark-mode .tabs-card .registro-tab:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+body.dark-mode .tabs-card .registro-tab.active {
+    background-color: white;
+    color: #2196F3 !important;
+}
+
+/* ============================================
+   SECCIÓN CONTACTO
+   ============================================ */
+
+body.dark-mode .card {
+    background-color: var(--dark-bg-secondary) !important;
+    border-color: var(--dark-bg-secondary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .gray-text {
+    color: var(--dark-text-primary) !important;
+}
+
+/* ============================================
+   SECCIÓN GESTIÓN DE RIESGO
+   ============================================ */
+
+body.dark-mode .risk-tool {
+    background-color: var(--dark-bg-secondary) !important;
+}
+
+/* Dominancia - Colores en modo oscuro */
+body.dark-mode #btc-dominance,
+body.dark-mode #eth-dominance,
+body.dark-mode #others-dominance {
+    color: white !important;
+}
+
+/* Revertir el color del contenedor detrás del título de Gestión de Riesgo */
+body.dark-mode .risk-tools-container h2 {
+    background-color: initial;
+}
+
+/* Revertir el color temporal del contenedor detrás del contenedor grande */
+body.dark-mode .risk-tools-container {
+    background-color: initial;
+}
+
+/* Mantener el color específico para las etiquetas */
+.risk-tool label {
+    color: var(--dark-brand-color) !important;
+}
+
+/* Títulos y encabezados en gestión de riesgo */
+body.dark-mode .risk-tools-container h2 {
+    color: var(--dark-brand-color) !important;
+}
+
+body.dark-mode .risk-tool h3 {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .risk-tool-table th {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .risk-tool-table td strong {
+    color: var(--dark-brand-color) !important;
+}
+
+/* Texto de los párrafos en gestión de riesgo */
+body.dark-mode .risk-tool p {
+    color: white !important;
+}
+
+/* ============================================
+   COMPONENTES COMUNES
+   ============================================ */
+
+/* Navegación y barra de herramientas */
+body.dark-mode .sub-nav {
+    background-color: var(--dark-bg-secondary) !important;
+    border-bottom-color: #495057 !important;
+}
+
+body.dark-mode .nav-tabs .nav-link {
+    color: var(--dark-text-secondary) !important;
+    border-color: transparent !important;
+}
+
+body.dark-mode .nav-tabs .nav-link:hover {
+    color: var(--dark-text-primary) !important;
+    border-color: #495057 !important;
+}
+
+body.dark-mode .nav-tabs .nav-link.active {
+    color: var(--dark-text-primary) !important;
+    background-color: var(--dark-bg-primary) !important;
+    border-color: #495057 #495057 var(--dark-bg-primary) !important;
+}
+
+/* Cartas y paneles */
+body.dark-mode .card-header {
+    background-color: var(--dark-bg-secondary) !important;
+    border-bottom-color: #2c3e50 !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .card-body {
+    background-color: var(--dark-bg-secondary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Botones */
+body.dark-mode .btn-primary {
+    background-color: var(--brand-primary) !important;
+    border-color: var(--brand-primary) !important;
+}
+
+body.dark-mode .btn-secondary {
+    background-color: #495057 !important;
+    border-color: #495057 !important;
+}
+
+/* Formularios */
+body.dark-mode .form-control {
+    background-color: #2c3e50 !important;
+    border-color: #495057 !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .form-control:focus {
+    background-color: #2c3e50 !important;
+    border-color: var(--brand-accent) !important;
+    color: var(--dark-text-primary) !important;
+    box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25) !important;
+}
+
+body.dark-mode .form-select {
+    background-color: #2c3e50 !important;
+    border-color: #495057 !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Tablas */
+body.dark-mode table {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .table th {
+    background-color: var(--dark-bg-secondary) !important;
+    color: var(--dark-text-primary) !important;
+    border-color: #495057 !important;
+}
+
+body.dark-mode .table td {
+    background-color: var(--dark-bg-primary) !important;
+    color: var(--dark-text-primary) !important;
+    border-color: #495057 !important;
+}
+
+/* Texto y elementos de texto */
+body.dark-mode .text-muted {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode h1, 
+body.dark-mode h2, 
+body.dark-mode h3, 
+body.dark-mode h4, 
+body.dark-mode h5, 
+body.dark-mode h6 {
+    color: var(--dark-text-primary) !important;
+}
+
+/* Enlaces */
+body.dark-mode a {
+    color: var(--brand-accent) !important;
+}
+
+body.dark-mode a:hover {
+    color: #5a75ff !important;
+}
+
+/* ============================================
+   MODO NOCTURNO PARA SECCIONES ESPECÍFICAS
+   ============================================ */
+
+/* Contenedor principal de gestión de riesgo */
+body.dark-mode .risk-tools-container {
+    background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%) !important;
+}
+
+/* Título de Gestión de Riesgo en modo nocturno */
+body.dark-mode .risk-tools-container h2 {
+    color: var(--dark-text-primary) !important;
+}
+
+/* Sección de Inicio */
+body.dark-mode .decision-panel {
+    background-color: var(--dark-bg-secondary) !important;
+}
+
+/* Sección de Gráficas */
+body.dark-mode .grafica-card {
+    background-color: var(--dark-bg-secondary) !important;
+    border-color: #495057 !important;
+}
+
+body.dark-mode .fear-greed-container {
+    background-color: var(--dark-bg-primary) !important;
+}
+
+body.dark-mode .funding-container {
+    background-color: var(--dark-bg-primary) !important;
+}
+
+/* Elementos específicos de gráficas */
+body.dark-mode .grafica-footer {
+    background-color: var(--dark-bg-primary) !important;
+    color: var(--dark-text-secondary) !important;
+}
+
+/* ============================================
+   SWITCH TOGGLE PARA TEMA
+   ============================================ */
+
+.theme-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.theme-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* ============================================
+   RESPONSIVIDAD PARA MODO NOCTURNO
+   ============================================ */
+
+@media (max-width: 768px) {
+    body.dark-mode .card {
+        margin-bottom: 1rem;
+    }
+    
+    body.dark-mode .theme-switch {
+        width: 50px;
+        height: 28px;
+    }
+    
+    body.dark-mode .slider:before {
+        height: 20px;
+        width: 20px;
+        left: 4px;
+        bottom: 4px;
+    }
+    
+    body.dark-mode input:checked + .slider:before {
+        transform: translateX(22px);
+    }
+}
+
+/* ============================================
+   TRANSICIONES SUAVES
+   ============================================ */
+
+body, .card, .card-header, .card-body, .form-control, .btn {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ============================================
+   FUENTES EN MODO NOCTURNO
+   ============================================ */
+
+body.dark-mode #posiciones h5,
+body.dark-mode #posiciones h6,
+body.dark-mode #posiciones .card-title,
+body.dark-mode #analisis h5,
+body.dark-mode #analisis h6,
+body.dark-mode #analisis .card-title {
+    color: #ffffff !important;
+}

@@ -1,0 +1,143 @@
+<div class="risk-tools-container">
+    <h2 style="text-align: center; color: var(--brand-primary); margin-bottom: 2rem;">
+        <i class="bi bi-calculator me-2"></i>Gestión de Riesgo
+    </h2>
+    
+    <!-- Herramienta Unificada: Calculadora de Riesgo Completa -->
+    <div class="risk-tool">
+        <h3><i class="bi bi-gear me-2"></i>Calculadora de Riesgo y Costes</h3>
+        <p>
+            Esta herramienta unificada te ayuda a calcular todos los aspectos de tu gestión de riesgo: tamaño de posición, stop loss, take profit, comisiones y costes totales.
+            Introduce tus parámetros y obtendrás automáticamente todos los cálculos necesarios para tu operación.
+        </p>
+        
+        <div class="row">
+            <!-- Columna de Inputs -->
+            <div class="col-md-6">
+                <table class="risk-tool-table">
+                    <thead>
+                        <tr>
+                            <th colspan="3" style="text-align: center;">PARÁMETROS DE ENTRADA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background-color: #e3f2fd;">
+                            <td><strong>Capital de la Cuenta</strong></td>
+                            <td><input type="number" id="capital-total" value="1000" min="1" step="1"></td>
+                            <td style="font-size: 0.85rem; color: var(--gray-medium);">Tu capital total disponible</td>
+                        </tr>
+                        <tr style="background-color: #e3f2fd;">
+                            <td><strong>Riesgo Máximo (%)</strong></td>
+                            <td><input type="number" id="riesgo-maximo" value="3" min="0.1" step="0.1"></td>
+                            <td style="font-size: 0.85rem; color: var(--gray-medium);">Máxima pérdida por operación (%)</td>
+                        </tr>
+                        <tr style="background-color: #e3f2fd;">
+                            <td><strong>Apalancamiento</strong></td>
+                            <td><input type="number" id="apalancamiento" value="20" min="1" step="0.1"></td>
+                            <td style="font-size: 0.85rem; color: var(--gray-medium);">Multiplicador de posición</td>
+                        </tr>
+                        <tr style="background-color: #e3f2fd;">
+                            <td><strong>Operación</strong></td>
+                            <td>
+                                <select id="operacion-tipo" style="padding: 0.375rem 0.75rem; border: 1px solid #ccc; border-radius: 0.25rem;">
+                                    <option value="long">Long</option>
+                                    <option value="short">Short</option>
+                                </select>
+                            </td>
+                            <td style="font-size: 0.85rem; color: var(--gray-medium);">Tipo de operación</td>
+                        </tr>
+                        <tr style="background-color: #f0f8ff;">
+                            <td><strong>Precio Entrada</strong></td>
+                            <td><input type="number" id="precio-entrada" value="100" min="0.01" step="0.01"></td>
+                            <td style="font-size: 0.85rem; color: var(--gray-medium);">Precio al que se compra el activo</td>
+                        </tr>
+                        <tr style="background-color: #f0f8ff;">
+                            <td><strong>Precio SL</strong></td>
+                            <td><input type="number" id="precio-sl" value="95" min="0.01" step="0.01"></td>
+                            <td style="font-size: 0.85rem; color: var(--gray-medium);">Precio del stop loss (control de pérdidas)</td>
+                        </tr>
+                        <tr style="background-color: #f0f8ff;">
+                            <td><strong>Precio Salida</strong></td>
+                            <td><input type="number" id="precio-salida" value="110" min="0.01" step="0.01"></td>
+                            <td style="font-size: 0.85rem; color: var(--gray-medium);">Precio al que se vende el activo</td>
+                        </tr>
+                        <tr style="background-color: #f0f8ff;">
+                            <td><strong>Riesgo/Beneficio</strong></td>
+                            <td><input type="number" id="riesgo-beneficio" value="2" min="0.01" step="0.01"></td>
+                            <td style="font-size: 0.85rem; color: var(--gray-medium);">Objetivo de $ ganados por cada $1 arriesgado</td>
+                        </tr>
+                        <tr style="background-color: #fff8f0;">
+                            <td><strong>Comisión (%)</strong></td>
+                            <td><input type="number" id="comision" value="0.06" min="0" step="0.01"></td>
+                            <td style="font-size: 0.85rem; color: var(--gray-medium);">Comisión del broker (entrada y salida)</td>
+                        </tr>
+                        <tr style="background-color: #fff8f0;">
+                            <td><strong>Financiación (%)</strong></td>
+                            <td><input type="number" id="financiacion" value="0" min="0" step="0.01"></td>
+                            <td style="font-size: 0.85rem; color: var(--gray-medium);">Costes overnight cada 8h</td>
+                        </tr>
+                        <tr style="background-color: #fff8f0;">
+                            <td><strong>Spread ($)</strong></td>
+                            <td><input type="number" id="spread" value="0" min="0" step="0.01"></td>
+                            <td style="font-size: 0.85rem; color: var(--gray-medium);">Diferencia bid/ask</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Columna de Resultados -->
+            <div class="col-md-6">
+                <h4 style="color: var(--brand-primary); margin-bottom: 1rem; border-bottom: 2px solid var(--brand-accent); padding-bottom: 0.5rem;">
+                    <i class="bi bi-calculator me-2"></i>Resultados Calculados
+                </h4>
+                
+                <div style="margin-bottom: 2rem;">
+                    <h5 style="color: var(--brand-secondary); margin-bottom: 1rem;">
+                        <i class="bi bi-target me-2"></i>Margen y Riesgo
+                    </h5>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Margen</span>
+                        <span class="result-value" id="sl-tp-capital">$0.00</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Distancia de Riesgo</span>
+                        <span class="result-value" id="sl-tp-sl">0.00%</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Pérdida</span>
+                        <span class="result-value" id="sl-tp-perdida-combinada">$0.00</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Ganancia</span>
+                        <span class="result-value" id="ganancia-resultado">$0.00</span>
+                    </div>
+                </div>
+                
+                <div>
+                    <h5 style="color: var(--brand-secondary); margin-bottom: 1rem;">
+                        <i class="bi bi-cash-stack me-2"></i>Costes y Ganancia Mínima
+                    </h5>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Comisiones Totales</span>
+                        <span class="result-value" id="comision-dolares">$0.00</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Gastos Totales</span>
+                        <span class="result-value" id="gastos-dolares">$0.00</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">% Mínimo para Cubrir Gastos</span>
+                        <span class="result-value" id="porcentaje-cubrir">0.00%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

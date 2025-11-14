@@ -1,0 +1,58 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Create production .env from GitHub Secrets
+      run: |
+        cat > .env << 'EOF'
+        CMC_API_KEY=${{ secrets.CMC_API_KEY }}
+        USE_PROXY=false
+        ENVIRONMENT=production
+        EOF
+        echo "✅ Archivo .env creado con variables de GitHub Secrets"
+
+    - name: Inject environment variables for frontend
+      run: |
+        # Crear script de variables de entorno para el frontend
+        cat > assets/js/github-env.js << 'EOF'
+        // Variables de entorno inyectadas desde GitHub Secrets
+        window.ENV_CONFIG = {
+          CMC_API_KEY: '${{ secrets.CMC_API_KEY }}',
+          USE_PROXY: false,
+          ENVIRONMENT: 'production'
+        };
+        EOF
+        echo "✅ Variables de entorno inyectadas para GitHub Pages"
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: '.'
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4

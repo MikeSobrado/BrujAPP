@@ -1,0 +1,205 @@
+<div class="row">
+    <div class="col-12">
+        <h2 class="text-center mb-4" style="color: var(--brand-primary);">
+            <i class="bi bi-graph-up me-2"></i>Monitoreo de Mercado en Tiempo Real
+        </h2>
+        <p class="text-center text-muted mb-5">
+            Monitorea indicadores clave del mercado con datos actualizados automáticamente
+        </p>
+    </div>
+</div>
+
+<div class="graficas-container">
+    <!-- Gráfica 1: Fear & Greed Index -->
+    <div class="grafica-card">
+        <h3>Fear & Greed Index</h3>
+        <div class="fear-greed-container">
+            <div class="fear-greed-main">
+                <div class="fear-greed-current">
+                    <div id="fear-greed-value">--</div>
+                    <div id="fear-greed-classification">Cargando...</div>
+                </div>
+                <div class="fear-greed-analysis">
+                    <div id="fear-greed-pattern-summary">--</div>
+                </div>
+            </div>
+            <div class="fear-greed-chart-container">
+                <canvas id="fearGreedChart"></canvas>
+            </div>
+        </div>
+        <div class="grafica-footer">
+            <div class="grafica-attribution">Fuente: <a href="https://alternative.me/" target="_blank">alternative.me</a></div>
+            <div class="grafica-last-update" id="fear-greed-last-update">--</div>
+        </div>
+    </div>
+
+
+
+    <!-- Gráfica 3: Market Dominance -->
+    <div class="grafica-card">
+        <h3>Dominancia de Mercado</h3>
+        <div id="dominance-section">
+            <!-- Primera sección: Valores actuales -->
+            <div class="dominance-current-section">
+                <div class="dominance-chart-small">
+                    <canvas id="dominanceChart"></canvas>
+                </div>
+                <div class="dominance-crypto-item">
+                    <div class="crypto-name">Bitcoin</div>
+                    <div class="crypto-dominance" id="btc-dominance">--</div>
+                    <div class="crypto-change" id="btc-change">--</div>
+                </div>
+                <div class="dominance-crypto-item">
+                    <div class="crypto-name">Ethereum</div>
+                    <div class="crypto-dominance" id="eth-dominance">--</div>
+                    <div class="crypto-change" id="eth-change">--</div>
+                </div>
+                <div class="dominance-crypto-item">
+                    <div class="crypto-name">Otros</div>
+                    <div class="crypto-dominance" id="others-dominance">--</div>
+                    <div class="crypto-change" id="others-change">--</div>
+                </div>
+            </div>
+
+            <!-- Segunda sección: Valores históricos -->
+            <div class="dominance-historical-section">
+                <div class="historical-item">
+                    <span class="historical-label">Ayer</span>
+                    <div class="historical-values">
+                        <span id="yesterday-btc">--</span>
+                        <span id="yesterday-eth">--</span>
+                        <span id="yesterday-others">--</span>
+                    </div>
+                </div>
+                <div class="historical-item">
+                    <span class="historical-label">Semana pasada</span>
+                    <div class="historical-values">
+                        <span id="week-btc">--</span>
+                        <span id="week-eth">--</span>
+                        <span id="week-others">--</span>
+                    </div>
+                </div>
+                <div class="historical-item">
+                    <span class="historical-label">Mes pasado</span>
+                    <div class="historical-values">
+                        <span id="month-btc">--</span>
+                        <span id="month-eth">--</span>
+                        <span id="month-others">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tercera sección: Máximos y mínimos del año -->
+            <div class="dominance-extremes-section">
+                <div class="extremes-item">
+                    <span class="extremes-label">Máximos del año</span>
+                    <div class="extremes-values">
+                        <span id="max-btc">--</span>
+                        <span id="max-eth">--</span>
+                        <span id="max-others">--</span>
+                    </div>
+                </div>
+                <div class="extremes-item">
+                    <span class="extremes-label">Mínimos del año</span>
+                    <div class="extremes-values">
+                        <span id="min-btc">--</span>
+                        <span id="min-eth">--</span>
+                        <span id="min-others">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="grafica-footer">
+            <div class="grafica-attribution">Fuente: <a href="https://coinmarketcap.com/" target="_blank">CoinMarketCap</a></div>
+            <div class="grafica-last-update" id="dominance-last-update">--</div>
+        </div>
+    </div>
+
+    <!-- Gráfica 4: Bitcoin Funding Rate -->
+    <div class="grafica-card">
+        <h3>Bitcoin Funding Rate</h3>
+        <div class="funding-container">
+            <div id="funding-rate-value">--</div>
+            <div id="funding-rate-classification">Cargando...</div>
+            <div class="funding-chart-container">
+                <canvas id="fundingChart"></canvas>
+            </div>
+        </div>
+        <div class="grafica-footer">
+            <div class="grafica-attribution">Fuente: <a href="https://binance.com/" target="_blank">Binance API</a></div>
+            <div class="grafica-last-update" id="funding-last-update">--</div>
+        </div>
+    </div>
+
+    <!-- Gráfica 5: Calendario Económico -->
+    <div class="grafica-card">
+        <h3>Calendario Económico</h3>
+        <!-- TradingView Widget - Carga diferida para evitar conflictos -->
+        <div id="tradingview-economic-calendar" style="width: 400px; height: 550px; margin: 0 auto; border: 1px solid #ddd;">
+            <div style="text-align: center; padding: 50px; color: #666;">
+                📊 Cargando calendario económico...
+            </div>
+        </div>
+        <div class="grafica-footer">
+            <div class="grafica-attribution">Fuente: <a href="https://tradingview.com/" target="_blank">TradingView</a></div>
+            <div class="grafica-last-update">En tiempo real</div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// Función para cargar datos de gráficas desde sessionStorage
+// SessionStorage se limpia al cerrar la pestaña, NO persiste en reload
+function loadChartsFromSession() {
+    let chartsData = null;
+    
+    // Intentar cargar SOLO de sessionStorage (cifrado)
+    if (typeof SessionStorageManager !== 'undefined' && SessionStorageManager.getEncryptionKey()) {
+        chartsData = SessionStorageManager.loadChartsData();
+    }
+    
+    if (chartsData) {
+        console.log('📂 Cargando datos de gráficas desde sessionStorage...');
+        
+        // Cargar Fear & Greed si está disponible
+        if (chartsData.fearGreed && chartsData.fearGreed.data) {
+            setTimeout(() => {
+                displayFearGreedData(chartsData.fearGreed.data);
+            }, 300);
+        }
+        
+        // Cargar Funding Rate si está disponible
+        if (chartsData.fundingRate && chartsData.fundingRate.data) {
+            setTimeout(() => {
+                displayFundingRateData(chartsData.fundingRate.data);
+            }, 300);
+        }
+        
+        // Cargar Dominance si está disponible
+        if (chartsData.dominance && chartsData.dominance.data) {
+            setTimeout(() => {
+                displayDominanceData(chartsData.dominance.data);
+            }, 300);
+        }
+        
+        return true;
+    }
+    
+    return false;
+}
+
+// Cargar datos al abrir la pestaña
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('✓ Pestaña de gráficas cargada');
+    loadChartsFromSession();
+});
+
+// Escuchar cuando se activa la pestaña de gráficas (cambio de tab)
+document.addEventListener('shown.bs.tab', function(e) {
+    if (e.target && (e.target.id === 'graficas-tab' || e.target.getAttribute('data-bs-target') === '#graficas')) {
+        console.log('✓ Pestaña de gráficas activada');
+        loadChartsFromSession();
+    }
+});
+</script>

@@ -1,0 +1,560 @@
+/* Variables CSS principales */
+:root {
+    --primary-color: #1a3a5f;
+    --secondary-color: #0d2339;
+    --accent-color: #2c5282;
+    --success-color: #2e7d32;
+    --danger-color: #c62828;
+    --warning-color: #f57c00;
+    --dark-color: #212529;
+    --light-color: #f8f9fa;
+    --gray-light: #e9ecef;
+    --gray-medium: #6c757d;
+    --brand-primary: #0d2339;
+    --brand-secondary: #2c5282;
+    --brand-accent: #4361ee;
+}
+
+/* Estilos para tab-panes */
+.tab-pane {
+    display: none !important;
+}
+
+.tab-pane.show,
+.tab-pane.active,
+.tab-pane.show.active {
+    display: block !important;
+}
+
+/* Card de título con gradiente */
+.title-card-gradient {
+    background: linear-gradient(135deg, #0d2339, #2c5282) !important;
+    border: none !important;
+    color: white !important;
+    border-radius: 12px !important;
+}
+
+.title-card-gradient .card-body {
+    background: linear-gradient(135deg, #0d2339, #2c5282) !important;
+}
+
+.title-card-gradient .card-title {
+    color: white !important;
+}
+
+.title-card-gradient .card-text {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Estilos base del body */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+    color: #333;
+    padding-top: 0;
+}
+
+/* Contenedores principales */
+.container {
+    max-width: 1400px;
+}
+
+/* Estilos para cards */
+.card {
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 25px;
+    border: 1px solid var(--gray-light);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+    color: white;
+    border-radius: 12px 12px 0 0 !important;
+    font-weight: 600;
+    padding: 1.2rem 1.5rem;
+    border-bottom: none;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Estilos para tablas */
+.risk-tool-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.risk-tool-table th {
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+    color: white;
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid var(--brand-accent);
+}
+
+.risk-tool-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--gray-light);
+    vertical-align: middle;
+}
+
+.risk-tool-table tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.risk-tool-table tr:hover {
+    background-color: #e3f2fd;
+}
+
+.risk-tool-table input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    text-align: center;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.risk-tool-table input:focus {
+    outline: none;
+    border-color: var(--brand-accent);
+    box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+}
+
+/* Ocultar flechas de incremento/decremento en campos numéricos */
+.risk-tool-table input[type="number"]::-webkit-outer-spin-button,
+.risk-tool-table input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.risk-tool-table input[type="number"] {
+    -moz-appearance: textfield; /* Firefox */
+    appearance: textfield; /* Standard property */
+}
+
+/* Estilo de advertencia para pérdida real excesiva */
+.warning {
+    background-color: var(--warning-color) !important;
+    color: white !important;
+    font-weight: bold !important;
+    animation: pulse-warning 2s infinite;
+    border: 2px solid #d32f2f !important;
+    padding: 0.3rem 0.5rem;
+    border-radius: 4px;
+}
+
+@keyframes pulse-warning {
+    0% { background-color: var(--warning-color); }
+    50% { background-color: #ff9800; }
+    100% { background-color: var(--warning-color); }
+}
+
+/* Alerta prominente de pérdida */
+.loss-warning-alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+    color: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(244, 67, 54, 0.4);
+    border: 2px solid #b71c1c;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+    max-width: 350px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.loss-warning-alert.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.warning-content {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    gap: 0.75rem;
+}
+
+.warning-icon {
+    font-size: 1.5rem;
+    animation: shake 0.5s infinite alternate;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(3px); }
+}
+
+.warning-text {
+    flex: 1;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.warning-text strong {
+    font-size: 1rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.warning-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.warning-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Estilos para resultados */
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 8px;
+    margin: 0.5rem 0;
+    border-left: 4px solid var(--brand-accent);
+    transition: all 0.3s ease;
+}
+
+.result-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.result-label {
+    font-weight: 600;
+    color: var(--brand-primary);
+    flex: 1;
+}
+
+.result-value {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--brand-accent);
+    background: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Botones principales */
+.btn-primary {
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, var(--brand-secondary), var(--brand-primary));
+}
+
+/* Estilos de riesgo */
+.risk-tools-container {
+    padding: 2rem 0;
+    background: linear-gradient(135deg, #0d2339, #2c5282);
+    min-height: auto;
+}
+
+.risk-tools-container h2 {
+    color: white !important;
+}
+
+.risk-tool {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    margin: 1.5rem 0;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--gray-light);
+    transition: all 0.3s ease;
+}
+
+.risk-tool:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.risk-tool h3 {
+    color: var(--brand-primary);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--brand-accent);
+    font-weight: 700;
+}
+
+.risk-tool p {
+    color: var(--gray-medium);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+/* Contenedor card para pestañas internas */
+.tabs-card {
+    background-color: #f0f0f0;
+    border-color: #e0e0e0;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Estilos específicos para pestañas internas de inicio */
+.inicio-tab {
+    background: none !important;
+    border: none !important;
+    color: var(--gray-medium) !important;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem !important;
+    border-radius: 25px !important;
+    transition: all 0.3s ease;
+    margin: 0 0.25rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+}
+
+.inicio-tab:hover {
+    color: var(--brand-primary) !important;
+    background-color: rgba(255, 255, 255, 0.7) !important;
+    transform: translateY(-1px);
+}
+
+.inicio-tab.active {
+    background-color: white !important;
+    color: var(--brand-primary) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+}
+
+.inicio-content {
+    position: relative;
+    min-height: 400px;
+}
+
+/* Aumentar especificidad para asegurar que se apliquen - VERSIÓN AGRESIVA */
+.card .card-body .inicio-content .inicio-pane {
+    display: none !important;
+    opacity: 0 !important;
+    transition: none !important;
+    padding: 1rem 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    position: relative !important;
+    overflow: visible !important;
+}
+
+.card .card-body .inicio-content .inicio-pane.active {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    position: relative !important;
+    overflow: visible !important;
+    z-index: 1 !important;
+    min-height: 400px !important;
+    width: 100% !important;
+    padding: 1rem !important;
+    box-sizing: border-box !important;
+}
+
+/* Forzar visualización de contenido interno */
+.card .card-body .inicio-content .inicio-pane.active * {
+    visibility: visible !important;
+    box-sizing: border-box !important;
+}
+
+.card .card-body .inicio-content .inicio-pane.active .row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    width: 100% !important;
+    min-height: 50px !important;
+    margin: 0 !important;
+}
+
+.card .card-body .inicio-content .inicio-pane.active .col-12,
+.card .card-body .inicio-content .inicio-pane.active .col-md-6 {
+    display: block !important;
+    width: 100% !important;
+    padding: 0.75rem !important;
+    min-height: 50px !important;
+}
+
+.card .card-body .inicio-content .inicio-pane.active .col-md-6 {
+    width: 50% !important;
+}
+
+.card .card-body .inicio-content .inicio-pane.active .card {
+    display: block !important;
+    width: 100% !important;
+    min-height: 100px !important;
+}
+
+/* Estilos para el contenido de las pestañas de ejemplo */
+.inicio-pane .alert {
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.inicio-pane h4 {
+    color: var(--brand-primary);
+    margin-bottom: 1rem;
+}
+
+/* ========== ESTILOS PARA PESTAÑAS DE REGISTRO ========== */
+
+.registro-tab {
+    background: none !important;
+    border: none !important;
+    color: var(--gray-medium) !important;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem !important;
+    border-radius: 25px !important;
+    transition: all 0.3s ease;
+    margin: 0 0.25rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+}
+
+.registro-tab:hover {
+    color: var(--brand-primary) !important;
+    background-color: rgba(255, 255, 255, 0.7) !important;
+    transform: translateY(-1px);
+}
+
+.registro-tab.active {
+    background-color: white !important;
+    color: var(--brand-primary) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+}
+
+.registro-content {
+    position: relative;
+    width: 100%;
+}
+
+.registro-pane {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: none !important;
+    padding: 1rem 0 !important;
+    width: 100% !important;
+    height: 0 !important;
+    position: relative !important;
+    overflow: hidden !important;
+    pointer-events: none !important;
+}
+
+.registro-pane.active {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transition: none !important;
+    position: relative !important;
+    overflow: visible !important;
+    z-index: 1 !important;
+    min-height: 600px !important;
+    height: auto !important;
+    width: 100% !important;
+    padding: 1rem !important;
+    box-sizing: border-box !important;
+    pointer-events: auto !important;
+}
+
+/* Asegurar que el contenedor-fluid dentro de graficas tenga espacio */
+#graficas .container-fluid {
+    min-height: 100px !important;
+    width: 100% !important;
+}
+
+/* Asegurar que los canvas se rendericen cuando la pestaña está activa */
+.registro-pane.active canvas {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Asegurar que el contenedor de las pestañas tiene dimensiones */
+.registro-content {
+    width: 100% !important;
+    min-height: 600px !important;
+    display: block !important;
+    position: relative !important;
+    overflow: visible !important;
+}
+/* Asegurar que el card-body que contiene registro-content tiene altura */
+.registro-pane .card > .card-body {
+    display: block !important;
+}
+
+/* Altura específica solo para el pane activo de Registro */
+.registro-pane.active .card > .card-body {
+    min-height: auto !important;
+}
+
+/* Contenedor de posiciones con scroll limitado */
+#positions-container {
+    max-height: 600px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 1px solid var(--gray-light);
+    border-radius: 8px;
+    padding: 10px;
+}
+
+/* Estilo de la barra de scroll */
+#movements-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+#movements-container::-webkit-scrollbar-track {
+    background: var(--gray-light);
+    border-radius: 8px;
+}
+
+#movements-container::-webkit-scrollbar-thumb {
+    background: var(--gray-medium);
+    border-radius: 8px;
+}
+
+#movements-container::-webkit-scrollbar-thumb:hover {
+    background: var(--brand-primary);
+}

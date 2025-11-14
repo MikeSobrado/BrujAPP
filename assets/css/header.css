@@ -1,0 +1,628 @@
+/* Header profesional */
+.main-header {
+    background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    border-bottom: 3px solid var(--brand-accent);
+    position: relative;
+    overflow: visible;
+    z-index: 1030;
+    background-image: url('../images/header-bg.jpg');
+    background-size: cover;
+    background-position: center 35%;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 1rem; /* Espaciado entre elementos */
+}
+
+.main-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+    opacity: 0.3;
+    z-index: 1;
+}
+
+.header-container {
+    position: relative;
+    z-index: 2;
+    padding: 1.5rem 0;
+}
+
+.brand-section {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.brand-logo {
+    width: 120px;
+    height: 120px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    position: absolute !important;
+    top: calc(50% - 0px) !important;
+    left: calc(50% - 265px) !important; /* Posicionado a la izquierda del título */
+    transform: translate(-50%, -50%) !important;
+    z-index: 3 !important;
+}
+
+.brand-logo:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.brand-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto; /* Asegurar que la imagen esté centrada */
+}
+
+.brand-text {
+    flex: 1;
+}
+
+.brand-name {
+    color: white;
+    font-size: 4rem;
+    font-weight: 700;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    letter-spacing: -0.5px;
+}
+
+.brand-tagline {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.5rem;
+    margin: 0;
+    font-weight: 400;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Centrar el título y subtítulo en la página */
+/* Centrar el título y subtítulo en toda la página */
+.main-header {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 150px; /* Altura mínima para centrar verticalmente */
+}
+
+.main-header h1 {
+    position: absolute;
+    top: calc(50% - 10px);
+    left: 50%;
+    transform: translate(-50%, -70%);
+    margin: 0;
+    font-size: 3.75rem; /* 2.5rem × 1.5 = 3.75rem */
+    color: var(--dark-text-primary);
+    font-family: inherit; /* Restaurar la fuente por defecto */
+}
+
+/* Ocultar el subtítulo original */
+.main-header .subtitle,
+.brand-tagline {
+    display: none !important;
+}
+
+/* Crear un nuevo subtítulo centrado debajo del título */
+.main-header::after {
+    content: "Trading Dashboard";
+    position: absolute;
+    top: calc(50% - 10px);
+    left: 50%;
+    transform: translate(-50%, 20%);
+    margin: 0;
+    font-size: 2.25rem; /* 1.5rem × 1.5 = 2.25rem */
+    color: var(--dark-text-secondary);
+    z-index: 3;
+}
+
+/* Estilos para los dropdowns */
+.settings-dropdown {
+    position: relative;
+}
+
+.settings-dropdown .dropdown-toggle {
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+}
+
+.settings-dropdown .dropdown-toggle:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.settings-dropdown .dropdown-toggle:focus {
+    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+}
+
+.settings-dropdown .dropdown-toggle::after {
+    display: none; /* Ocultar la flecha del dropdown para el botón de 3 puntos */
+}
+
+.settings-dropdown .dropdown-menu {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    padding: 0.5rem 0;
+    margin-top: 0.75rem;
+    min-width: 250px;
+    animation: dropdownSlideDown 0.3s ease;
+    z-index: 9999 !important;
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    right: auto !important;
+    transform: translateX(0) !important;
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+@keyframes dropdownSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-15px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.settings-dropdown .dropdown-item {
+    padding: 0.75rem 1rem;
+    color: var(--brand-primary);
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid var(--gray-light);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+    background: none;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    text-align: left;
+    width: 100%;
+}
+
+.settings-dropdown .dropdown-item:first-child {
+    border-radius: 8px 8px 0 0;
+}
+
+.settings-dropdown .dropdown-item:last-child {
+    border-bottom: none;
+    border-radius: 0 0 8px 8px;
+}
+
+.settings-dropdown .dropdown-item:hover {
+    background-color: rgba(67, 97, 238, 0.08);
+    color: var(--brand-accent);
+    transform: translateX(5px);
+}
+
+/* Sub-navegación */
+/* Barra lateral de navegación */
+.sidebar-nav {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 220px;
+    height: 100vh;
+    background: white;
+    border-right: 1px solid var(--gray-light);
+    z-index: 1040;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 0;
+    overflow-y: auto;
+}
+
+/* Logo en la barra lateral */
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    border-bottom: 1px solid var(--gray-light);
+    flex-shrink: 0;
+    min-height: 120px;
+}
+
+.sidebar-nav .navbar-logo {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
+    transition: opacity 0.3s ease !important;
+}
+
+/* Pestañas en la barra lateral */
+.sidebar-nav .nav-tabs {
+    flex-direction: column !important;
+    border-bottom: none;
+    margin: 0;
+    padding: 1rem 0;
+    background: transparent;
+    gap: 0.5rem;
+}
+
+.sidebar-nav .nav-item {
+    margin-bottom: 0;
+}
+
+.sidebar-nav .nav-link {
+    color: var(--gray-medium);
+    font-weight: 500;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    margin: 0;
+    border-radius: 0;
+    transition: all 0.3s ease;
+    position: relative;
+    background: transparent;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sidebar-nav .nav-link:hover {
+    color: var(--brand-primary);
+    background: rgba(26, 58, 95, 0.05);
+}
+
+.sidebar-nav .nav-link.active {
+    color: var(--brand-primary);
+    background: rgba(26, 58, 95, 0.1);
+    border-left: 3px solid var(--brand-accent);
+    padding-left: calc(1.5rem - 3px);
+}
+
+/* Separador de navegación */
+.nav-divider {
+    height: 1px;
+    background-color: var(--gray-light);
+    margin: 0.5rem 0;
+}
+
+/* Botón de opciones con dropdown */
+#optionsTab {
+    border: none !important;
+    margin-top: 0;
+    padding-left: 0 !important;
+}
+
+#optionsTab .nav-item {
+    margin-bottom: 0;
+}
+
+#optionsTab .nav-link {
+    padding: 0.75rem 1.5rem !important;
+    color: var(--text-color);
+    border-left: none !important;
+    position: relative;
+}
+
+#optionsTab .nav-link:hover {
+    background: rgba(26, 58, 95, 0.05);
+}
+
+/* Menú desplegable - ajuste para abrir hacia abajo y derecha */
+.sidebar-nav .dropdown-menu-start {
+    left: 0 !important;
+    right: auto !important;
+    transform-origin: top left;
+}
+
+.sidebar-nav .dropdown-toggle {
+    width: 100%;
+    padding: 0.75rem 1.5rem !important;
+    text-align: left;
+}
+
+/* Ajustar contenido principal para la barra lateral */
+body > .container {
+    margin-left: 220px !important;
+}
+
+#header-container {
+    margin-left: 0;
+}
+
+.sub-nav {
+    background: white;
+    border-bottom: 1px solid var(--gray-light);
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+}
+
+.nav-tabs .nav-link {
+    color: var(--gray-medium);
+    font-weight: 500;
+    border: none;
+    padding: 1rem 1.5rem;
+    margin-right: 0;
+    border-radius: 0;
+    transition: all 0.3s ease;
+    position: relative;
+    background: transparent;
+}
+
+.nav-tabs .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--brand-accent);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.nav-tabs .nav-link:hover {
+    color: var(--brand-primary);
+    background: rgba(26, 58, 95, 0.05);
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--brand-primary);
+    background: transparent;
+    border: none;
+}
+
+.nav-tabs .nav-link.active::after {
+    transform: scaleX(1);
+}
+
+/* Estilos para botones en la navegación */
+.nav-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-left: auto;
+    padding: 0.5rem 0;
+}
+
+/* Estilos específicos para dropdown de configuración */
+.sub-nav .nav-buttons .settings-dropdown .dropdown-toggle {
+    background: var(--brand-secondary) !important;
+    border: 1px solid var(--brand-secondary) !important;
+    color: white !important;
+    font-size: 1.2rem !important;
+    padding: 0.5rem !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.sub-nav .nav-buttons .settings-dropdown .dropdown-toggle:hover {
+    background: var(--brand-primary) !important;
+    border-color: var(--brand-primary) !important;
+    transform: translateY(-1px) !important;
+    color: white !important;
+}
+
+.nav-buttons .dropdown-toggle {
+    background: rgba(26, 58, 95, 0.1);
+    border: 1px solid rgba(26, 58, 95, 0.2);
+    color: var(--brand-primary);
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.nav-buttons .dropdown-toggle:hover {
+    background: rgba(26, 58, 95, 0.15);
+    border-color: rgba(26, 58, 95, 0.3);
+    color: var(--brand-primary);
+    transform: translateY(-1px);
+}
+
+.nav-buttons .dropdown-toggle:focus {
+    box-shadow: 0 0 0 3px rgba(26, 58, 95, 0.1);
+}
+
+/* Asegurar visibilidad de botones en navegación */
+.nav-buttons {
+    flex-shrink: 0;
+    min-width: fit-content;
+}
+
+/* Estilos para tool-info en dropdown */
+.tool-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.tool-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.2rem;
+}
+
+.tool-description {
+    font-size: 0.75rem;
+    color: var(--gray-medium);
+    font-weight: 400;
+}
+
+/* Estilos para menu-info en dropdown de configuración */
+.menu-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.menu-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.2rem;
+}
+
+.menu-description {
+    font-size: 0.75rem;
+    color: var(--gray-medium);
+    font-weight: 400;
+}
+
+/* Badge genérico para otros usos */
+.tool-badge {
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    background: var(--brand-accent);
+    color: white;
+    margin-left: auto;
+}
+
+/* Estilos para el botón de tema en el menú */
+.theme-toggle-button {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    padding: 0.75rem 1rem !important;
+    background: none !important;
+    border: none !important;
+    width: 100% !important;
+    text-align: left !important;
+    color: var(--brand-primary) !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease !important;
+    border-bottom: 1px solid var(--gray-light) !important;
+}
+
+.theme-toggle-button:hover {
+    background-color: rgba(67, 97, 238, 0.08) !important;
+    color: var(--brand-accent) !important;
+    transform: translateX(5px) !important;
+}
+
+.theme-toggle-button:last-child {
+    border-bottom: none !important;
+}
+
+/* Indicador visual del estado del tema */
+.theme-indicator {
+    margin-left: auto;
+    color: var(--brand-primary);
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.theme-indicator .bi-toggle-off {
+    color: #ccc;
+}
+
+.theme-indicator .bi-toggle-on {
+    color: var(--brand-primary);
+}
+
+/* Icono dinámico para el tema */
+.theme-icon {
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+/* Estados del tema */
+.theme-status {
+    transition: all 0.3s ease;
+}
+
+/* Separador en el menú */
+.settings-dropdown .dropdown-divider {
+    margin: 0.5rem 0;
+}
+
+/* Mejorar la apariencia del enlace de soporte */
+.settings-dropdown a.dropdown-item {
+    text-decoration: none;
+}
+
+.settings-dropdown a.dropdown-item:hover {
+    text-decoration: none;
+}
+
+/* Responsive para botones en navegación */
+@media (max-width: 768px) {
+    .nav-content-wrapper {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .nav-buttons {
+        margin-left: 0;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .nav-buttons .btn,
+    .nav-buttons .dropdown-toggle {
+        font-size: 0.8rem;
+        padding: 0.25rem 0.5rem;
+    }
+}
+
+/* Ocultar barra lateral en móviles */
+@media (max-width: 768px) {
+    .sidebar-nav {
+        display: none !important;
+    }
+    
+    body > .container {
+        margin-left: 0 !important;
+    }
+}

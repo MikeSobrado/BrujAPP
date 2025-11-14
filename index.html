@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Crystal Sphere</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon/logo.png">
+    <link rel="icon" type="image/x-icon" href="favicon/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+    
+    <!-- External CSS Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- Application CSS (order matters) -->
+    <link rel="stylesheet" href="assets/css/main.css?v=2025110317">
+    <link rel="stylesheet" href="assets/css/header.css">
+    <link rel="stylesheet" href="assets/css/panels.css?v=2025110313">
+    <link rel="stylesheet" href="assets/css/charts.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    
+    <!-- Dark Mode CSS -->
+    <link rel="stylesheet" href="assets/css/dark-mode.css?v=2025110315">
+</head>
+<body>
+    <!-- Header Container - Se carga dinámicamente -->
+    <div id="header-container"></div>
+
+    <!-- Navigation Container - Se carga dinámicamente -->
+    <div id="navigation-container"></div>
+
+    <!-- Contenido Principal -->
+    <div class="container mt-4">
+        <div class="tab-content" id="myTabContent">
+            <!-- Sección Dashboard (PRIMERA) -->
+            <div class="tab-pane show active" id="inicio" role="tabpanel" aria-labelledby="dashboard-tab">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-person-lines-fill me-2"></i>
+                            Perfiles de Usuario
+                        </h5>
+                    </div>
+                    <div class="card-body d-flex align-items-center flex-wrap gap-2">
+                        <select class="form-select" id="profile-select" style="max-width: 220px;">
+                            <option value="default">Perfil por defecto</option>
+                        </select>
+                        <button type="button" class="btn btn-primary" id="add-profile-btn">Agregar</button>
+                        <button type="button" class="btn btn-primary" id="rename-profile-btn">Renombrar</button>
+                        <button type="button" class="btn btn-primary" id="delete-profile-btn">Eliminar</button>
+                        <button type="button" class="btn btn-primary" id="save-profile-btn">Guardar</button>
+                        <button type="button" class="btn btn-primary" id="load-profile-btn">Cargar</button>
+                    </div>
+                </div>
+                
+                <!-- Panel de Decisión de Trading -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-lightning-charge me-2"></i>
+                            Panel de Decisión de Trading <i class="bi bi-question-circle" title="Cada indicador tiene un cuadro para una puntuación.&#10;Indica cuantos puntos tiene en la toma de decisiones.&#10;Configúralos siguiendo tu propio criterio y ajústalos&#10;para adaptar tu perfil de trading a medida que ganas&#10;experiencia en el mundillo. También puedes crear&#10;nuevos indicadores a tu gusto o editar los que hay.&#10;Los paneles de decisión tienen su propia puntuación.&#10;Es el mínimo de puntos necesario para que el panel te&#10;sugiera realizar una operación. Según tu estrategia,&#10;necesitarás que haya más indicadores que te indiquen&#10;una posición o la contraria.&#10;Aprenderás a trazar un plan, mantenerte firme y ser&#10;disciplinado."></i>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="decision-panel">
+                            <div class="decision-icons-container">
+                                <div class="decision-item decision-buy" id="buy-signal">
+                                    <svg class="decision-icon" viewBox="0 0 24 24">
+                                        <path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.85-1.26l3.03-7.08c.09-.23.12-.47.12-.66v-2z"/>
+                                    </svg>
+                                    <div class="decision-controls">
+                                        <span class="decision-label">LONG</span>
+                                        <input type="number" class="threshold-input" id="green-threshold" value="40" min="1">
+                                    </div>
+                                </div>
+                                <div class="decision-item decision-wait active" id="wait-signal">
+                                    <svg class="decision-icon" viewBox="0 0 24 24">
+                                        <path d="M6 2v6h.01L6 8.01 10 12l-4 4 .01.01H6V22h12v-5.99h-.01L18 16l-4-4 4-3.99-.01-.01H18V2H6z"/>
+                                    </svg>
+                                    <div class="decision-controls">
+                                        <span class="decision-label">ESPERA</span>
+                                    </div>
+                                </div>
+                                <div class="decision-item decision-sell" id="sell-signal">
+                                    <svg class="decision-icon" viewBox="0 0 24 24">
+                                        <path d="M15 3H6c-.83 0-1.54.5-1.85 1.26l-3.03 7.08c-.09.23-.12.47-.12.66v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/>
+                                    </svg>
+                                    <div class="decision-controls">
+                                        <span class="decision-label">SHORT</span>
+                                        <input type="number" class="threshold-input" id="red-threshold" value="40" min="1">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel de Indicadores -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-graph-up me-2"></i>
+                            Indicadores de Trading
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="indicators-panel">
+                            <ul class="indicator-list" id="indicator-list">
+                                <!-- Los indicadores se cargarán dinámicamente -->
+                            </ul>
+                            <div class="text-center mt-3">
+                                <button type="button" class="btn btn-primary" id="add-indicator-btn">
+                                    <i class="bi bi-plus-circle me-2"></i>
+                                    Añadir Indicador
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección Gestión de Riesgo (TERCERA) -->
+            <div class="tab-pane" id="gestion-riesgo" role="tabpanel" aria-labelledby="riesgo-tab">
+                <div id="g-riesgo-content">
+<div class="risk-tools-container">
+    <h2 style="text-align: center; color: var(--brand-primary); margin-bottom: 2rem;">
+        <i class="bi bi-calculator me-2"></i>Gestión de Riesgo
+    </h2>
+    
+    <!-- Herramienta Unificada: Calculadora de Riesgo Completa -->
+    <div class="risk-tool">
+        <h3><i class="bi bi-gear me-2"></i>Calculadora de Riesgo y Costes</h3>
+        <p>
+            Esta herramienta unificada te ayuda a calcular todos los aspectos de tu gestión de riesgo: tamaño de posición, stop loss, take profit, comisiones y costes totales.
+            Introduce tus parámetros y obtendrás automáticamente todos los cálculos necesarios para tu operación.
+        </p>
+        
+        <div class="row">
+            <!-- Columna de Inputs -->
+            <div class="col-md-6">
+                <table class="risk-tool-table">
+                    <thead>
+                        <tr>
+                            <th colspan="3" style="text-align: center;">PARÁMETROS DE ENTRADA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background-color: #e3f2fd;">
+                            <td><strong>Capital de la Cuenta</strong></td>
+                            <td><input type="number" id="capital-total" value="1000" min="1" step="1"></td>
+                            <td style="font-size: 0.85rem; color: var(--gray-medium);">Tu capital total disponible</td>
+                        </tr>
+                        <tr style="background-color: #e3f2fd;">
+                            <td><strong>Riesgo Máximo (%)</strong></td>
+                            <td><input type="number" id="riesgo-maximo" value="3" min="0.1" step="0.1"></td>
+                            <td style="font-size: 0.85rem; color: var(--gray-medium);">Máxima pérdida por operación (%)</td>
+                        </tr>
+                        <tr style="background-color: #e3f2fd;">
+                            <td><strong>Apalancamiento</strong></td>
+                            <td><input type="number" id="apalancamiento" value="20" min="1" step="0.1"></td>
+                            <td style="font-size: 0.85rem; color: var(--gray-medium);">Multiplicador de posición</td>
+                        </tr>
+                        <tr style="background-color: #e3f2fd;">
+                            <td><strong>Operación</strong></td>
+                            <td>
+                                <select id="operacion-tipo" style="padding: 0.375rem 0.75rem; border: 1px solid #ccc; border-radius: 0.25rem;">
+                                    <option value="long">Long</option>
+                                    <option value="short">Short</option>
+                                </select>
+                            </td>
+                            <td style="font-size: 0.85rem; color: var(--gray-medium);">Tipo de operación</td>
+                        </tr>
+                        <tr style="background-color: #f0f8ff;">
+                            <td><strong>Precio Entrada</strong></td>
+                            <td><input type="number" id="precio-entrada" value="100" min="0.01" step="0.01"></td>
+                            <td style="font-size: 0.85rem; color: var(--gray-medium);">Precio al que se compra el activo</td>
+                        </tr>
+                        <tr style="background-color: #f0f8ff;">
+                            <td><strong>Precio SL</strong></td>
+                            <td><input type="number" id="precio-sl" value="95" min="0.01" step="0.01"></td>
+                            <td style="font-size: 0.85rem; color: var(--gray-medium);">Precio del stop loss (control de pérdidas)</td>
+                        </tr>
+                        <tr style="background-color: #f0f8ff;">
+                            <td><strong>Precio Salida</strong></td>
+                            <td><input type="number" id="precio-salida" value="110" min="0.01" step="0.01"></td>
+                            <td style="font-size: 0.85rem; color: var(--gray-medium);">Precio al que se vende el activo</td>
+                        </tr>
+                        <tr style="background-color: #f0f8ff;">
+                            <td><strong>Riesgo/Beneficio</strong></td>
+                            <td><input type="number" id="riesgo-beneficio" value="2" min="0.01" step="0.01"></td>
+                            <td style="font-size: 0.85rem; color: var(--gray-medium);">Objetivo de $ ganados por cada $1 arriesgado</td>
+                        </tr>
+                        <tr style="background-color: #fff8f0;">
+                            <td><strong>Comisión (%)</strong></td>
+                            <td><input type="number" id="comision" value="0.06" min="0" step="0.01"></td>
+                            <td style="font-size: 0.85rem; color: var(--gray-medium);">Comisión del broker (entrada y salida)</td>
+                        </tr>
+                        <tr style="background-color: #fff8f0;">
+                            <td><strong>Financiación (%)</strong></td>
+                            <td><input type="number" id="financiacion" value="0" min="0" step="0.01"></td>
+                            <td style="font-size: 0.85rem; color: var(--gray-medium);">Costes overnight cada 8h</td>
+                        </tr>
+                        <tr style="background-color: #fff8f0;">
+                            <td><strong>Spread ($)</strong></td>
+                            <td><input type="number" id="spread" value="0" min="0" step="0.01"></td>
+                            <td style="font-size: 0.85rem; color: var(--gray-medium);">Diferencia bid/ask</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Columna de Resultados -->
+            <div class="col-md-6">
+                <h4 style="color: var(--brand-primary); margin-bottom: 1rem; border-bottom: 2px solid var(--brand-accent); padding-bottom: 0.5rem;">
+                    <i class="bi bi-calculator me-2"></i>Resultados Calculados
+                </h4>
+                
+                <div style="margin-bottom: 2rem;">
+                    <h5 style="color: var(--brand-secondary); margin-bottom: 1rem;">
+                        <i class="bi bi-target me-2"></i>Margen y Riesgo
+                    </h5>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Margen</span>
+                        <span class="result-value" id="sl-tp-capital">$0.00</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Distancia de Riesgo</span>
+                        <span class="result-value" id="sl-tp-sl">0.00%</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Pérdida</span>
+                        <span class="result-value" id="sl-tp-perdida-combinada">$0.00</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Ganancia</span>
+                        <span class="result-value" id="ganancia-resultado">$0.00</span>
+                    </div>
+                </div>
+                
+                <div>
+                    <h5 style="color: var(--brand-secondary); margin-bottom: 1rem;">
+                        <i class="bi bi-cash-stack me-2"></i>Costes y Ganancia Mínima
+                    </h5>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Comisiones Totales</span>
+                        <span class="result-value" id="comision-dolares">$0.00</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Gastos Totales</span>
+                        <span class="result-value" id="gastos-dolares">$0.00</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">% Mínimo para Cubrir Gastos</span>
+                        <span class="result-value" id="porcentaje-cubrir">0.00%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+                </div>
+            </div>
+
+            <!-- Sección Mercado (SEGUNDA) -->
+            <div class="tab-pane" id="graficas" role="tabpanel" aria-labelledby="graficas-tab">
+                <div id="graficas-content">
+                    <!-- Título con gradiente -->
+                    <div class="card mb-4 title-card-gradient">
+                        <div class="card-body">
+                            <h5 class="card-title mb-2">
+                                <i class="bi bi-graph-up me-2"></i>Monitoreo de Mercado en Tiempo Real
+                            </h5>
+                            <p class="card-text mb-0">
+                                Monitorea indicadores clave del mercado con datos actualizados automáticamente
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Contenedor de gráficas en grid -->
+                    <div class="graficas-container">
+                        <!-- Gráfica 1: Fear & Greed Index -->
+                        <div class="grafica-card">
+        <h3>Fear & Greed Index</h3>
+        <div class="fear-greed-container">
+            <div class="fear-greed-main">
+                <div class="fear-greed-current">
+                    <div id="fear-greed-value">--</div>
+                    <div id="fear-greed-classification">Cargando...</div>
+                </div>
+                <div class="fear-greed-analysis">
+                    <div id="fear-greed-pattern-summary">--</div>
+                </div>
+            </div>
+            <div class="fear-greed-chart-container">
+                <canvas id="fearGreedChart"></canvas>
+            </div>
+        </div>
+        <div class="grafica-footer">
+            <div class="grafica-attribution">Fuente: <a href="https://alternative.me/" target="_blank">alternative.me</a></div>
+            <div class="grafica-last-update" id="fear-greed-last-update">--</div>
+        </div>
+    </div>
+
+    <!-- Gráfica 3: Market Dominance -->
+    <div class="grafica-card">
+        <h3>Dominancia de Mercado</h3>
+        <div id="dominance-section">
+            <div class="dominance-current-section">
+                <div class="dominance-chart-small">
+                    <canvas id="dominanceChart"></canvas>
+                </div>
+                <div class="dominance-crypto-item">
+                    <div class="crypto-name">Bitcoin</div>
+                    <div class="crypto-dominance" id="btc-dominance">--</div>
+                    <div class="crypto-change" id="btc-change">--</div>
+                </div>
+                <div class="dominance-crypto-item">
+                    <div class="crypto-name">Ethereum</div>
+                    <div class="crypto-dominance" id="eth-dominance">--</div>
+                    <div class="crypto-change" id="eth-change">--</div>
+                </div>
+                <div class="dominance-crypto-item">
+                    <div class="crypto-name">Otros</div>
+                    <div class="crypto-dominance" id="others-dominance">--</div>
+                    <div class="crypto-change" id="others-change">--</div>
+                </div>
+            </div>
+
+            <div class="dominance-historical-section">
+                <div class="historical-item">
+                    <span class="historical-label">Ayer</span>
+                    <div class="historical-values">
+                        <span id="yesterday-btc">--</span>
+                        <span id="yesterday-eth">--</span>
+                        <span id="yesterday-others">--</span>
+                    </div>
+                </div>
+                <div class="historical-item">
+                    <span class="historical-label">Semana pasada</span>
+                    <div class="historical-values">
+                        <span id="week-btc">--</span>
+                        <span id="week-eth">--</span>
+                        <span id="week-others">--</span>
+                    </div>
+                </div>
+                <div class="historical-item">
+                    <span class="historical-label">Mes pasado</span>
+                    <div class="historical-values">
+                        <span id="month-btc">--</span>
+                        <span id="month-eth">--</span>
+                        <span id="month-others">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dominance-extremes-section">
+                <div class="extremes-item">
+                    <span class="extremes-label">Máximos del año</span>
+                    <div class="extremes-values">
+                        <span id="max-btc">--</span>
+                        <span id="max-eth">--</span>
+                        <span id="max-others">--</span>
+                    </div>
+                </div>
+                <div class="extremes-item">
+                    <span class="extremes-label">Mínimos del año</span>
+                    <div class="extremes-values">
+                        <span id="min-btc">--</span>
+                        <span id="min-eth">--</span>
+                        <span id="min-others">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="grafica-footer">
+            <div class="grafica-attribution">Fuente: <a href="https://coinmarketcap.com/" target="_blank">CoinMarketCap</a></div>
+            <div class="grafica-last-update" id="dominance-last-update">--</div>
+        </div>
+    </div>
+
+    <!-- Gráfica 4: Bitcoin Funding Rate -->
+    <div class="grafica-card">
+        <h3>Bitcoin Funding Rate</h3>
+        <div class="funding-container">
+            <div id="funding-rate-value">--</div>
+            <div id="funding-rate-classification">Cargando...</div>
+            <div class="funding-chart-container">
+                <canvas id="fundingChart"></canvas>
+            </div>
+        </div>
+        <div class="grafica-footer">
+            <div class="grafica-attribution">Fuente: <a href="https://binance.com/" target="_blank">Binance API</a></div>
+            <div class="grafica-last-update" id="funding-last-update">--</div>
+        </div>
+    </div>
+
+    <!-- Gráfica 5: Calendario Económico -->
+    <div class="grafica-card">
+        <h3>Calendario Económico</h3>
+        <div id="tradingview-economic-calendar" style="width: 400px; height: 550px; margin: 0 auto; border: 1px solid #ddd;">
+            <div style="text-align: center; padding: 50px; color: #666;">
+                📊 Cargando calendario económico...
+            </div>
+        </div>
+        <div class="grafica-footer">
+            <div class="grafica-attribution">Fuente: <a href="https://tradingview.com/" target="_blank">TradingView</a></div>
+            <div class="grafica-last-update">En tiempo real</div>
+        </div>
+    </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección Posiciones (CUARTA) -->
+            <div class="tab-pane" id="posiciones" role="tabpanel" aria-labelledby="posiciones-tab" style="min-height: 600px;">
+                <!-- Estadísticas rápidas de posiciones: se cargan dinámicamente -->
+                <div id="posiciones-stats-dynamic"></div>
+
+                <!-- Historial de posiciones cerradas: se carga dinámicamente -->
+                <div id="posiciones-historial-dynamic"></div>
+            </div>
+
+            <!-- Sección Monitoreo (QUINTA) -->
+            <div class="tab-pane" id="monitoreo" role="tabpanel" aria-labelledby="monitoreo-tab" style="min-height: 600px;">
+                <!-- Selectores de temporalidad -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-primary btn-sm time-range-btn active" data-timerange="1w">
+                                <i class="bi bi-calendar me-1"></i>1 Semana
+                            </button>
+                            <button type="button" class="btn btn-outline-primary btn-sm time-range-btn" data-timerange="1m">
+                                <i class="bi bi-calendar me-1"></i>1 Mes
+                            </button>
+                            <button type="button" class="btn btn-outline-primary btn-sm time-range-btn" data-timerange="3m">
+                                <i class="bi bi-calendar me-1"></i>3 Meses
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráficas Phase 1 -->
+                <div class="row">
+                    <!-- Equity Curve -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="bi bi-graph-up me-2"></i>Curva de Equidad</h6>
+                            </div>
+                            <div class="card-body" style="position: relative; height: 450px; min-height: 450px; display: flex; align-items: stretch;">
+                                <canvas id="chart-equity-curve" style="display: block; width: 100%; height: 100%; flex-grow: 1;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- P&L Bars -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="bi bi-bar-chart me-2"></i>P&L por Posición</h6>
+                            </div>
+                            <div class="card-body" style="position: relative; height: 450px; min-height: 450px; display: flex; align-items: stretch;">
+                                <canvas id="chart-pnl-bars" style="display: block; width: 100%; height: 100%; flex-grow: 1;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Long vs Short -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="bi bi-pie-chart me-2"></i>Long vs Short</h6>
+                            </div>
+                            <div class="card-body" style="position: relative; height: 450px; min-height: 450px; display: flex; align-items: stretch;">
+                                <canvas id="chart-long-vs-short" style="display: block; width: 100%; height: 100%; flex-grow: 1;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Distribución de P&L (Phase 2) -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="bi bi-histogram me-2"></i>Distribución de P&L</h6>
+                            </div>
+                            <div class="card-body" style="position: relative; height: 450px; min-height: 450px; display: flex; align-items: stretch;">
+                                <canvas id="chart-pnl-distribution" style="display: block; width: 100%; height: 100%; flex-grow: 1;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráficas Phase 2 -->
+                <div class="row mt-4">
+                    <!-- Drawdown Máximo -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="bi bi-graph-down me-2"></i>Drawdown Máximo</h6>
+                            </div>
+                            <div class="card-body" style="position: relative; height: 450px; min-height: 450px; display: flex; align-items: stretch;">
+                                <canvas id="chart-drawdown" style="display: block; width: 100%; height: 100%; flex-grow: 1;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Comisiones Acumuladas -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="bi bi-coin me-2"></i>Comisiones Acumuladas</h6>
+                            </div>
+                            <div class="card-body" style="position: relative; height: 450px; min-height: 450px; display: flex; align-items: stretch;">
+                                <canvas id="chart-accumulated-fees" style="display: block; width: 100%; height: 100%; flex-grow: 1;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección APIs (SEXTA) -->
+            <div class="tab-pane" id="apis" role="tabpanel" aria-labelledby="apis-tab" style="min-height: 600px;">
+                <div id="apicon-dynamic"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- External JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <!-- Core System Scripts (orden importante) -->
+    <script src="assets/js/config.js"></script>
+    <!-- <script src="assets/js/config-endpoints.js"></script> -->
+    <script src="assets/js/error-handler.js"></script>
+    <script src="assets/js/loading.js"></script>
+    <script src="assets/js/validators.js"></script>
+    <script src="assets/js/cache.js"></script>
+    <script src="assets/js/sessionStorage-manager.js"></script>
+    
+    <!-- Theme Manager (debe cargar temprano) -->
+    <script src="assets/js/theme-manager.js"></script>
+    
+    <!-- Components System -->
+    <script src="assets/js/components.js"></script>
+    
+    <!-- Application JavaScript -->
+    <script src="assets/js/panels.js"></script>
+    <script src="assets/js/risk-calculator.js"></script>
+    <script src="assets/js/profiles.js"></script>
+    <script src="assets/js/dominance.js"></script>
+    <script src="assets/js/bitget-api.js?v=20251112C"></script>
+    <script src="assets/js/bitget-positions.js"></script>
+    <script src="assets/js/bitget-charts.js"></script>
+    <script src="assets/js/charts-market.js"></script>
+    <script src="assets/js/charts-monitoring.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/session-security.js"></script>
+    <script src="assets/js/pdf-export.js"></script>
+    
+    <!-- TradingView Widget (cargar después de todo lo demás) -->
+    <script src="assets/js/tradingview-widget.js"></script>
+    
+    <!-- Button Handlers (event delegation - cargar último) -->
+    <script src="assets/js/button-handlers.js"></script>
+    
+    <!-- Positions Buttons Handlers (event delegation para botones de posiciones) -->
+    <script src="assets/js/positions-buttons-handlers.js"></script>
+</body>
+</html>

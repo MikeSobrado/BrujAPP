@@ -1,0 +1,592 @@
+/* Estilos para las gráficas */
+.graficas-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    padding: 0.5rem 0;
+}
+
+.grafica-card {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--gray-light);
+    transition: all 0.3s ease;
+    min-height: auto;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Estilos para canvas en el pane de monitoreo */
+#monitoreo .container-fluid {
+    width: 100% !important;
+}
+
+#analisis .card-body {
+    position: relative !important;
+    display: flex !important;
+    overflow: visible !important;
+}
+
+#analisis canvas {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    position: relative !important;
+}
+
+#chart-equity-curve,
+#chart-pnl-bars,
+#chart-long-vs-short {
+    display: block !important;
+    width: 100% !important;
+    height: 300px !important;
+}
+
+#chart-win-rate-stats {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+}
+
+.grafica-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent));
+    border-radius: 15px 15px 0 0;
+}
+
+.grafica-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.grafica-card h3 {
+    color: var(--brand-primary);
+    margin-bottom: 1rem;
+    font-weight: 700;
+    text-align: center;
+    font-size: 1.3rem;
+}
+
+.grafica-last-update {
+    font-size: 0.8rem;
+    color: var(--gray-medium);
+    font-style: italic;
+}
+
+/* Estilos específicos para cuando está fuera del footer */
+.grafica-last-update:not(.grafica-footer .grafica-last-update) {
+    text-align: center;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid var(--gray-light);
+}
+
+/* Fear & Greed Index */
+.fear-greed-container {
+    padding: 10px;
+}
+
+.fear-greed-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.fear-greed-current {
+    text-align: center;
+    flex: 1;
+}
+
+.fear-greed-analysis {
+    text-align: center;
+    flex: 1;
+    padding-left: 20px;
+}
+
+#fear-greed-value {
+    font-size: 65px;
+    font-weight: 700;
+    text-align: center;
+    margin: 20px 0;
+    transition: color 0.5s ease;
+}
+
+#fear-greed-classification {
+    font-size: 22px;
+    text-align: center;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#fear-greed-pattern-summary {
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--gray-medium);
+    text-align: left;
+}
+
+.fear-greed-chart-container {
+    width: 100%;
+    height: 200px;
+    margin-top: 20px;
+}
+
+.grafica-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--gray-light);
+    font-size: 12px;
+    color: var(--gray-medium);
+    gap: 10px;
+}
+
+.grafica-footer .grafica-attribution {
+    flex: 1;
+    text-align: left;
+}
+
+.grafica-footer .grafica-last-update {
+    flex-shrink: 0;
+    text-align: right;
+    font-size: 11px;
+}
+
+.grafica-attribution a {
+    color: var(--brand-accent);
+    text-decoration: none;
+}
+
+.grafica-attribution a:hover {
+    text-decoration: underline;
+}
+
+.fear-greed-gauge {
+    width: 200px;
+    height: 100px;
+    position: relative;
+    margin: 20px auto;
+    background: linear-gradient(to right, #d32f2f, #f57c00, #fbc02d, #689f38, #388e3c);
+    border-radius: 100px 100px 0 0;
+    overflow: hidden;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.gauge-pointer {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 4px;
+    height: 80px;
+    background: #333;
+    transform-origin: bottom center;
+    transition: transform 1s ease;
+    border-radius: 2px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+/* Funding Rate */
+.funding-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-grow: 1;
+}
+
+#funding-rate-value {
+    font-size: 50px;
+    font-weight: 700;
+    margin: 20px 0;
+    transition: color 0.5s ease;
+    color: var(--brand-primary);
+}
+
+#funding-rate-classification {
+    font-size: 20px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    color: var(--brand-secondary);
+}
+
+.funding-chart-container {
+    width: 100%;
+    height: 200px;
+    margin: 20px 0;
+    position: relative;
+}
+
+.chart-container {
+    width: 100%;
+    height: 300px;
+    position: relative;
+    margin: 20px 0;
+}
+
+/* Indicadores de estado */
+.status-indicator {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: 10px;
+}
+
+.status-real {
+    background: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+    border: 1px solid #28a745;
+}
+
+.status-simulated {
+    background: rgba(255, 193, 7, 0.1);
+    color: #ffc107;
+    border: 1px solid #ffc107;
+}
+
+.status-derived {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    border: 1px solid #dc3545;
+}
+
+/* Loading states */
+.loading-chart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    color: var(--gray-medium);
+    font-style: italic;
+}
+
+.loading-spinner {
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid var(--brand-accent);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Error states */
+.error-chart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    color: var(--danger-color);
+    font-style: italic;
+    text-align: center;
+    padding: 20px;
+}
+
+.retry-btn {
+    background: var(--brand-accent);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.3s ease;
+}
+
+.retry-btn:hover {
+    background: var(--brand-secondary);
+}
+
+/* === ESTILOS PARA GRÁFICO DE DOMINANCIA === */
+/* Extraídos exactamente del dashboard funcionando */
+
+.dominance-current-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    margin-bottom: 30px;
+    margin-top: 20px;
+    padding: 0 15px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dominance-crypto-item {
+    flex: 0 1 auto;
+    text-align: center;
+    padding: 0 10px;
+    min-width: 75px;
+}
+
+.crypto-name {
+    font-size: 15px;
+    color: var(--gray-medium);
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.crypto-dominance {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--dark-color);
+    margin-bottom: 4px;
+}
+
+.crypto-change {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.crypto-change.positive {
+    color: #28a745;
+}
+
+.crypto-change.negative {
+    color: #dc3545;
+}
+
+.crypto-change.neutral {
+    color: #888;
+}
+
+.dominance-chart-small {
+    width: 75px;
+    height: 75px;
+    flex-shrink: 0;
+    margin-right: 25px;
+}
+
+/* Segunda sección: Valores históricos */
+.dominance-historical-section {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 30px;
+    margin-top: 10px;
+    padding: 0 20px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.historical-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+}
+
+.historical-label {
+    font-size: 16px;
+    color: var(--gray-medium);
+    min-width: 130px;
+    font-weight: 500;
+}
+
+.historical-values {
+    display: flex;
+    gap: 45px;
+    font-size: 16px;
+    color: var(--gray-medium);
+    font-weight: 500;
+}
+
+.historical-values span {
+    min-width: 65px;
+    text-align: center;
+}
+
+/* Tercera sección: Máximos y mínimos */
+.dominance-extremes-section {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    padding: 0 20px;
+}
+
+.extremes-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+}
+
+.extremes-label {
+    font-size: 16px;
+    color: var(--gray-medium);
+    min-width: 130px;
+    font-weight: 500;
+}
+
+.extremes-values {
+    display: flex;
+    gap: 45px;
+    font-size: 16px;
+    color: var(--gray-medium);
+    font-weight: 500;
+}
+
+.extremes-values span {
+    min-width: 65px;
+    text-align: center;
+}
+
+/* Colores específicos para máximos y mínimos */
+#max-btc, #max-eth, #max-others {
+    color: var(--success-color) !important;
+    font-weight: 600;
+}
+
+#min-btc, #min-eth, #min-others {
+    color: var(--danger-color) !important;
+    font-weight: 600;
+}
+
+#tradingview_calendar {
+    width: 100%;
+    height: 400px;
+}
+
+/* Responsive para dominancia */
+@media (max-width: 768px) {
+    .dominance-current-section {
+        flex-direction: column;
+        gap: 12px;
+        padding: 0 10px;
+    }
+
+    .dominance-crypto-item {
+        min-width: auto;
+    }
+
+    .dominance-chart-small {
+        margin: 0 auto 15px auto;
+    }
+
+    .historical-values,
+    .extremes-values {
+        gap: 25px;
+        font-size: 13px;
+    }
+
+    .historical-values span,
+    .extremes-values span {
+        min-width: 50px;
+    }
+
+    .dominance-historical-section,
+    .dominance-extremes-section {
+        padding: 0 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .historical-values,
+    .extremes-values {
+        gap: 15px;
+        font-size: 12px;
+    }
+
+    .historical-label,
+    .extremes-label {
+        min-width: 100px;
+        font-size: 13px;
+    }
+}
+
+/* === ESTILOS PARA CALENDARIO ECONÓMICO === */
+.tradingview-widget-container {
+    width: 400px;
+    height: 550px;
+    position: relative;
+    z-index: 1;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+.tradingview-widget-container__widget {
+    width: 100% !important;
+    height: 100% !important;
+    position: relative;
+    z-index: 2;
+}
+
+.tradingview-widget-copyright {
+    font-size: 12px;
+    color: var(--gray-medium);
+    text-align: center;
+    margin-top: 0.5rem;
+}
+
+.tradingview-widget-copyright a {
+    color: var(--brand-accent);
+    text-decoration: none;
+}
+
+.tradingview-widget-copyright a:hover {
+    text-decoration: underline;
+}
+
+.tradingview-widget-copyright a:hover {
+    text-decoration: underline;
+}
+
+/* ========== BITGET CHARTS STYLES ========== */
+
+/* Canvas containers */
+#chart-equity-curve,
+#chart-pnl-bars,
+#chart-long-vs-short {
+    display: block !important;
+    width: 100% !important;
+    height: 450px !important;
+    max-width: 100%;
+}
+
+/* Asegurar que los contenedores de canvas tengan dimensiones correctas */
+canvas[id^="chart-"] {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    canvas {
+        max-height: 300px;
+    }
+}

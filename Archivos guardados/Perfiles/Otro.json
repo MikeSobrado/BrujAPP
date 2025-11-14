@@ -1,0 +1,17 @@
+{
+  "profileName": "Otro",
+  "version": "1.0",
+  "panels": [],
+  "riskCalculator": {
+    "capital-total": "1000",
+    "apalancamiento": "1",
+    "porcentaje-cuenta": "2",
+    "take-profit": "3",
+    "risk-reward-ratio": "3",
+    "perdida-maxima": "2",
+    "comision": "0.06",
+    "financiacion": "0",
+    "spread": "0"
+  },
+  "exportDate": "2025-11-04T13:34:32.070Z"
+}
