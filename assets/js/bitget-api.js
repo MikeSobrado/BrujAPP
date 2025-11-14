@@ -50,7 +50,7 @@ function initBitgetAPI() {
         constructor() {
             this.credentials = this.loadCredentials();
             // Usar proxy local para evitar CORS
-            this.apiEndpoint = 'http://localhost:8000';
+            this.apiEndpoint = '/.netlify/functions/bitget-proxy';
             this.apiVersion = '/api/v2';
             console.log('🔌 BitgetAPIManager inicializado');
             console.log('   - API Endpoint:', this.apiEndpoint + this.apiVersion);
