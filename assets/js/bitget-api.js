@@ -207,20 +207,49 @@ function initBitgetAPI() {
 
             const data = await res.json();
             console.log('📊 Respuesta de posiciones (bruto):', data);
+            console.log('📊 data.data:', data?.data, '| tipo:', typeof data?.data);
             
-            // Bitget devuelve: { code, msg, data: [...] }
-            // Extraer el array de posiciones
-            if (data && data.data && Array.isArray(data.data)) {
-                console.log('✅ Array de posiciones extraído:', data.data.length, 'posiciones');
-                return data.data;
-            } else if (Array.isArray(data)) {
-                // Si ya es un array, devolverlo directamente
-                console.log('✅ Respuesta ya es un array:', data.length, 'posiciones');
-                return data;
+            // Bitget devuelve: { code, msg, data: {...} }
+            // El array puede estar en diferentes ubicaciones
+            let positions = [];
+            
+            if (Array.isArray(data)) {
+                // Si ya es un array directamente
+                positions = data;
+                console.log('✅ Caso 1: Respuesta es array directo -', positions.length, 'posiciones');
+            } else if (Array.isArray(data?.data)) {
+                // Si data.data es un array
+                positions = data.data;
+                console.log('✅ Caso 2: data.data es array -', positions.length, 'posiciones');
+            } else if (Array.isArray(data?.data?.positions)) {
+                // Si las posiciones están dentro de data.data.positions
+                positions = data.data.positions;
+                console.log('✅ Caso 3: data.data.positions es array -', positions.length, 'posiciones');
+            } else if (typeof data?.data === 'object' && data?.data !== null) {
+                // Si data.data es un objeto, buscar dentro de él qué es un array
+                console.log('⚠️ data.data es un objeto. Inspeccionando estructura...');
+                const dataObj = data.data;
+                
+                // Buscar cualquier propiedad que sea un array
+                for (const [key, value] of Object.entries(dataObj)) {
+                    if (Array.isArray(value)) {
+                        console.log(`✅ Encontrado array en data.data.${key} -`, value.length, 'elementos');
+                        positions = value;
+                        break;
+                    }
+                }
+                
+                // Si no encontramos un array dentro, asumir que data.data ES el resultado
+                if (positions.length === 0) {
+                    console.warn('⚠️ No se encontró array dentro de data.data, devolviendo vacío');
+                    positions = [];
+                }
             } else {
-                console.warn('⚠️ Respuesta inesperada de Bitget:', data);
-                throw new Error('Formato de respuesta inesperado de Bitget');
+                console.warn('⚠️ No se encontró array de posiciones en la respuesta:', data);
+                positions = [];
             }
+            
+            return positions;
         } catch (e) {
             console.error('❌ Error en getAllOrders:', e);
             throw e;
