@@ -41,7 +41,20 @@ function loadChartsFromSession() {
 // Cargar datos al abrir la pestaña
 document.addEventListener('DOMContentLoaded', function() {
     console.log('✓ Pestaña de gráficas cargada');
-    loadChartsFromSession();
+    const hadCache = loadChartsFromSession();
+    
+    // Si no había datos en caché, cargar datos frescos
+    if (!hadCache) {
+        console.log('📡 No hay datos en caché, cargando desde APIs...');
+        
+        // Cargar dominancia (CoinMarketCap)
+        if (typeof fetchDominance === 'function') {
+            setTimeout(() => {
+                console.log('📊 Iniciando fetchDominance()...');
+                fetchDominance();
+            }, 500);
+        }
+    }
 });
 
 // Escuchar cuando se activa la pestaña de gráficas (cambio de tab)
