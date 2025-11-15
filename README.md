@@ -1,14 +1,19 @@
-# 📊 Mike Trading Dashboard - Platform de Trading Profesional
+# 📊 Trading Dome Dashboard - Platform de Trading Profesional
 
 Una aplicación web moderna para análisis de mercados financieros con integración directa a Bitget, indicadores técnicos avanzados, gestión de riesgo profesional y herramientas de análisis completas.
 
 ## 🚀 Características Principales
 
 ### 📈 Análisis Técnico
+- **📊 Gráfica Avanzada TradingView** - Análisis técnico profesional con soporte de tema dinámico
+  - Recarga automática al cambiar de tema (light/dark)
+  - Par predeterminado: BTCUSDT con timeframe diario
+  - Cambio de símbolo, indicadores y estudios técnicos incluidos
 - **🧠 Fear & Greed Index** - Índice de sentimiento del mercado crypto (Alternative.me)
 - **⚡ Bitcoin Funding Rate** - Tasas de financiación en tiempo real (Binance)
 - **🥇 Dominancia de Criptomonedas** - BTC/ETH/Otros (CoinMarketCap)
-- **📅 Calendario Económico** - Eventos económicos mundiales (TradingView)
+- **📅 Calendario Económico** - Eventos económicos mundiales con tema dinámico (TradingView)
+  - Recarga automática al cambiar de tema (light/dark)
 
 ### 🎯 Gestión de Trading Profesional
 - **📊 Dashboard de Posiciones** - Análisis integrado desde Bitget
@@ -87,8 +92,8 @@ Una aplicación web moderna para análisis de mercados financieros con integraci
 ### 💻 **Opción 2: Desarrollo Local**
 ```bash
 # Clonar el repositorio
-git clone https://github.com/tu-usuario/mike-trading-dashboard.git
-cd mike-trading-dashboard
+git clone https://github.com/tu-usuario/trading-dome-dashboard.git
+cd trading-dome-dashboard
 
 # Instalar dependencias
 npm install
@@ -107,7 +112,7 @@ Visita `http://localhost:3000` en tu navegador.
 ## 🛠️ Estructura del Proyecto
 
 ```
-mike-trading-dashboard/
+trading-dome-dashboard/
 ├── index.html                    # Página principal
 ├── components/
 │   ├── navigation.html          # Barra de navegación
@@ -141,7 +146,9 @@ mike-trading-dashboard/
 │   │   ├── error-handler.js     # Manejo de errores
 │   │   ├── loading.js           # Indicadores de carga
 │   │   ├── dominance.js         # Gráfica de dominancia (con soporte para CMC custom)
-│   │   ├── tradingview-widget.js # Widget económico
+│   │   ├── tradingview-widget.js # Widget calendario económico (tema dinámico)
+│   │   ├── components/
+│   │   │   └── inicio-tv.js      # Widget gráfica avanzada TradingView (tema dinámico)
 │   │   ├── sessionStorage-manager.js # Gestión encriptada de sesión
 │   │   └── session-security.js  # Seguridad de sesión
 │   └── images/                   # Imágenes y logos
@@ -157,6 +164,33 @@ mike-trading-dashboard/
 ```
 
 ## 🔄 Versión Actual
+
+## 🚀 **v2.7.0 - Widgets TradingView con Tema Dinámico**
+**Fecha:** Noviembre 2025
+
+### ✨ **Nuevas Características:**
+- ✅ **Gráfica Avanzada TradingView**: Análisis técnico profesional en pestaña Inicio
+  - Timeframe diario para BTCUSDT (Binance)
+  - Indicadores y estudios técnicos incluidos
+  - Cambio dinámico de símbolo disponible
+- ✅ **Calendario Económico Dinámico**: Eventos económicos mundiales en pestaña Gráficas
+  - Datos de mercados de 24 países
+  - Filtros de importancia configurables
+- ✅ **Tema Dinámico en Widgets TradingView**: Ambos widgets se actualizan sin recargar página
+  - Gráfica: Recarga automática al cambiar a tema oscuro/claro
+  - Calendario: Recarga automática al cambiar a tema oscuro/claro
+  - Soporte para 3 mecanismos de detección: localStorage, data-bs-theme, polling
+
+### 🔧 **Cambios Técnicos:**
+- ✅ `assets/js/components/inicio-tv.js`: Widget de gráfica avanzada con detección de tema
+- ✅ `assets/js/tradingview-widget.js`: Actualizado con soporte para tema dinámico
+- ✅ `components/sections/inicio.html`: Nuevo contenedor para gráfica avanzada
+- ✅ Soporte para tema oscuro/claro en ambos widgets sin recargar página
+
+### 📋 **Mejoras:**
+- ✅ Herramienta de trading de primer nivel con análisis profesional
+- ✅ Experiencia de usuario mejorada con widgets responsivos
+- ✅ Performance optimizado con recarga solo de widgets (no de página)
 
 ## 🚀 **v2.6.0 - Seguridad de API Keys y Correcciones Críticas**
 **Fecha:** Noviembre 2024
@@ -182,7 +216,7 @@ mike-trading-dashboard/
 - ✅ Botón Conectar sin manejador de eventos
 
 ### 📋 **Migraciones:**
-- ✅ Cambio de nombre: Crystal Sphere → Mike Trading Dashboard
+- ✅ Cambio de nombre: Crystal Sphere → Trading Dome Dashboard
 - ✅ API keys ya no se guardan en localStorage persistente
 - ✅ API keys se guardan en sessionStorage encriptado (solo durante la sesión)
 - ✅ Compatibilidad hacia atrás con archivos `.env` existentes

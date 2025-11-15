@@ -86,6 +86,36 @@ function updateRiskCalculations() {
         gananciResultadoDisplay.textContent = `$${ganancia.toFixed(2)}`;
     }
     
+    // Calcular Punto de Equilibrio (Break-even)
+    // Break-even = Precio Entrada × (1 + % Mínimo para Cubrir Gastos / 100)
+    const comision = parseFloat(comisionInput.value) || 0;
+    const financiacionPorcentaje = parseFloat(financiacionInput.value) || 0;
+    const spread = parseFloat(spreadInput.value) || 0;
+    
+    const comisionEntrada = (posicionTotal * (comision / 100));
+    const comisionSalida = ((posicionTotal + ganancia) * (comision / 100));
+    const costeComisionDolares = comisionEntrada + comisionSalida;
+    const financiacionDolares = (apalancamiento * margen * financiacionPorcentaje) / 100;
+    const gastosTotalesDolares = costeComisionDolares + financiacionDolares + spread;
+    
+    const porcentajeGananciaMinima = margen > 0 ? (gastosTotalesDolares / margen) * 100 : 0;
+    const breakeven = precioEntradaNum * (1 + porcentajeGananciaMinima / 100);
+    
+    const breakevenDisplay = document.getElementById('breakeven-resultado');
+    if (breakevenDisplay) {
+        breakevenDisplay.textContent = `${breakeven.toFixed(2)}`;
+    }
+    
+    // Calcular y mostrar ROI
+    // ROI = ((Ganancia - Gastos Totales) / Margen) * 100
+    const roiResultadoDisplay = document.getElementById('roi-resultado');
+    
+    const gananciaNeta = ganancia - gastosTotalesDolares;
+    const roi = margen > 0 ? (gananciaNeta / margen) * 100 : 0;
+    if (roiResultadoDisplay) {
+        roiResultadoDisplay.textContent = `${roi.toFixed(2)}%`;
+    }
+    
     // Validación de Riesgo/Beneficio
     const riesgoBeneficio = parseFloat(riesgoBeneficioInput.value) || 0;
     const ratioGananciaPeridida = perdidaEnDolares > 0 ? ganancia / perdidaEnDolares : 0;
@@ -115,27 +145,8 @@ function updateRiskCalculations() {
     }
 
     // --- Herramienta 2: Cálculo de Costes y Ganancia Mínima ---
-    const comision = parseFloat(comisionInput.value) || 0;
-    const financiacionPorcentaje = parseFloat(financiacionInput.value) || 0;
-    const spread = parseFloat(spreadInput.value) || 0;
-
-    // Comisión de entrada = Posición Total × (Comisión % / 100)
-    const comisionEntrada = (posicionTotal * (comision / 100));
+    // (Gastos ya calculados arriba para ROI y Break-even, ahora mostrar en display)
     
-    // Comisión de salida = (Posición Total + Ganancia) × (Comisión % / 100)
-    const comisionSalida = ((posicionTotal + ganancia) * (comision / 100));
-    
-    // Comisiones totales = Comisión entrada + Comisión salida
-    const costeComisionDolares = comisionEntrada + comisionSalida;
-    
-    // Cálculo de financiación: [apalancamiento * margen * financiación (%)]/100
-    const financiacionDolares = (apalancamiento * margen * financiacionPorcentaje) / 100;
-    
-    const gastosTotalesDolares = costeComisionDolares + financiacionDolares + spread;
-    
-    // El porcentaje a cubrir se calcula sobre el margen
-    const porcentajeGananciaMinima = (gastosTotalesDolares / margen) * 100;
-
     // Obtener elementos para mostrar resultados
     const porcentajeCubrirDisplay = document.getElementById('porcentaje-cubrir');
     const comisionDolaresDisplay = document.getElementById('comision-dolares');

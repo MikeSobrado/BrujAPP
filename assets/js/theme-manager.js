@@ -1,5 +1,5 @@
 /* =================================================
-   THEME MANAGER - Crystal Sphere Trading Dashboard
+   THEME MANAGER - Trading Dome Dashboard
    ================================================= */
 
 class ThemeManager {
@@ -210,8 +210,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Exponer funciones globales para compatibilidad
-window.BrujApp = window.BrujApp || {};
-window.BrujApp.ThemeManager = {
+window.TradingDome = window.TradingDome || {};
+window.TradingDome.ThemeManager = {
     toggle: () => themeManager?.toggleTheme(),
     setTheme: (theme) => themeManager?.setTheme(theme),
     getCurrentTheme: () => themeManager?.getCurrentTheme(),

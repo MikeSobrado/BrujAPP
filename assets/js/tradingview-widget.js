@@ -1,4 +1,4 @@
-// tradingview-widget.js - Carga del widget de TradingView con reintentos mejorados
+// tradingview-widget.js - Carga del widget de TradingView con soporte para tema dinámico
 
 (function() {
     'use strict';
@@ -6,7 +6,36 @@
     let tradingViewInitialized = false;
     let retryCount = 0;
     const MAX_RETRIES = 5;
+    let currentTheme = 'light';
     
+    function detectTheme() {
+        // Detectar desde data-bs-theme
+        const htmlTheme = document.documentElement.getAttribute('data-bs-theme');
+        if (htmlTheme) {
+            return htmlTheme === 'dark' ? 'dark' : 'light';
+        }
+        
+        // Detectar desde localStorage
+        const storedTheme = localStorage.getItem('crysapp-theme');
+        if (storedTheme) {
+            return storedTheme === 'dark' ? 'dark' : 'light';
+        }
+        
+        return 'light';
+    }
+
+    function getFullConfig() {
+        return {
+            colorTheme: currentTheme === 'dark' ? 'dark' : 'light',
+            isTransparent: false,
+            locale: 'es',
+            countryFilter: 'ar,au,br,ca,cn,fr,de,in,id,it,jp,kr,mx,ru,sa,za,tr,gb,us,eu',
+            importanceFilter: '0,1',
+            width: 400,
+            height: 550
+        };
+    }
+
     function initTradingViewCalendar() {
         const container = document.getElementById('tradingview-economic-calendar');
         if (!container) {
@@ -14,26 +43,11 @@
             return false;
         }
 
-        // Si ya está inicializado correctamente, no hacer nada
-        if (tradingViewInitialized) {
-            console.log('ℹ️ [TradingView] Ya inicializado, ignorando reintentos');
-            return true;
-        }
-
-        console.log('📊 [TradingView] Inicializando calendario económico (intento ' + (retryCount + 1) + '/' + MAX_RETRIES + ')...');
+        console.log('📊 [TradingView] Inicializando calendario económico (tema: ' + currentTheme + ', intento ' + (retryCount + 1) + '/' + MAX_RETRIES + ')...');
 
         try {
-            // Limpiar contenedor SOLO si está vacío o tiene placeholder
-            if (container.innerHTML.includes('Cargando') || container.innerHTML === '' || container.children.length === 0) {
-                container.innerHTML = '';
-            } else {
-                // Si ya hay contenido de TradingView, no reintentar
-                if (container.querySelector('.tradingview-widget-container')) {
-                    console.log('ℹ️ [TradingView] Widget ya presente en el DOM');
-                    tradingViewInitialized = true;
-                    return true;
-                }
-            }
+            // Limpiar contenedor
+            container.innerHTML = '';
 
             // Crear estructura de TradingView
             const widgetContainer = document.createElement('div');
@@ -58,45 +72,26 @@
             script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-events.js';
             script.async = true;
             
-            // Configuración como atributo data (más confiable)
-            script.setAttribute('data-colorTheme', 'light');
-            script.setAttribute('data-isTransparent', 'false');
-            script.setAttribute('data-locale', 'es');
-            script.setAttribute('data-countryFilter', 'ar,au,br,ca,cn,fr,de,in,id,it,jp,kr,mx,ru,sa,za,tr,gb,us,eu');
-            script.setAttribute('data-importanceFilter', '0,1');
-            script.setAttribute('data-width', '400');
-            script.setAttribute('data-height', '550');
-
-            // Configuración alternativa en innerHTML (por si falla data)
-            script.innerHTML = `{
-                "colorTheme": "light",
-                "isTransparent": false,
-                "locale": "es",
-                "countryFilter": "ar,au,br,ca,cn,fr,de,in,id,it,jp,kr,mx,ru,sa,za,tr,gb,us,eu",
-                "importanceFilter": "0,1",
-                "width": 400,
-                "height": 550
-            }`;
+            // Configuración del widget con tema actual
+            const config = getFullConfig();
+            script.innerHTML = JSON.stringify(config);
 
             // Evento para verificar si el widget se cargó correctamente
             script.onload = function() {
                 console.log('✅ [TradingView] Script cargado desde CDN');
                 tradingViewInitialized = true;
-                retryCount = 0; // Reset en caso de éxito
+                retryCount = 0;
             };
 
             script.onerror = function() {
                 console.error('❌ [TradingView] Error al cargar script de CDN');
                 tradingViewInitialized = false;
                 retryCount++;
-                // No permitir reintentos infinitos
             };
 
             // Agregar el script al widget container
             widgetDiv.appendChild(script);
             
-            // Esperar a que el widget se cargue (TradingView lo hace async)
-            // No marcar como inicializado hasta que realmente se cargue
             setTimeout(() => {
                 if (widgetDiv.innerHTML.includes('tradingview')) {
                     console.log('✅ [TradingView] Widget detectado en el DOM');
@@ -115,6 +110,75 @@
             retryCount++;
             return false;
         }
+    }
+
+    function reloadTradingViewCalendar() {
+        const detectedTheme = detectTheme();
+        
+        // Solo recargar si el tema cambió
+        if (detectedTheme !== currentTheme) {
+            console.log('[TradingView] 🎨 Tema cambió de ' + currentTheme + ' a ' + detectedTheme + ', recargando calendario...');
+            currentTheme = detectedTheme;
+            tradingViewInitialized = false;
+            retryCount = 0;
+            loadTradingView();
+        }
+    }
+
+    function setupThemeListeners() {
+        console.log('[TradingView] 👂 Configurando listeners de tema...');
+        
+        // Listener para cambios en localStorage
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'crysapp-theme') {
+                console.log('[TradingView] 🎨 Cambio de tema detectado en storage: ' + e.newValue);
+                reloadTradingViewCalendar();
+            }
+        });
+
+        // MutationObserver para cambios en data-bs-theme
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'data-bs-theme') {
+                    const newTheme = document.documentElement.getAttribute('data-bs-theme');
+                    console.log('[TradingView] 🎨 Cambio de tema detectado en HTML: ' + newTheme);
+                    reloadTradingViewCalendar();
+                }
+            });
+        });
+
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-bs-theme']
+        });
+
+        // Listener en ThemeManager si existe
+        if (window.TradingDome?.ThemeManager?.toggle) {
+            const originalToggle = window.TradingDome.ThemeManager.toggle;
+            window.TradingDome.ThemeManager.toggle = function() {
+                console.log('[TradingView] 🎨 Toggle de tema disparado');
+                originalToggle.call(this);
+                setTimeout(reloadTradingViewCalendar, 100);
+            };
+        }
+
+        if (window.TradingDome?.ThemeManager?.setTheme) {
+            const originalSetTheme = window.TradingDome.ThemeManager.setTheme;
+            window.TradingDome.ThemeManager.setTheme = function(theme) {
+                console.log('[TradingView] 🎨 setTheme disparado: ' + theme);
+                originalSetTheme.call(this, theme);
+                setTimeout(reloadTradingViewCalendar, 100);
+            };
+        }
+
+        // Polling continuo como fallback (chequea cada 500ms)
+        setInterval(() => {
+            const detectedTheme = detectTheme();
+            if (detectedTheme !== currentTheme) {
+                console.log('[TradingView] 🎨 Cambio de tema detectado por polling: ' + currentTheme + ' -> ' + detectedTheme);
+                reloadTradingViewCalendar();
+            }
+        }, 500);
     }
 
     function loadTradingView() {
@@ -155,6 +219,7 @@
     document.addEventListener('click', function(e) {
         if (e.target && (e.target.id === 'graficas-tab' || e.target.closest('#graficas-tab'))) {
             console.log('📊 [TradingView] Pestaña Gráficas clickeada, iniciando carga...');
+            currentTheme = detectTheme();
             setTimeout(loadTradingView, 300);
         }
     });
@@ -164,6 +229,7 @@
     if (graficasLink) {
         graficasLink.addEventListener('shown.bs.tab', function() {
             console.log('📊 [TradingView] Evento shown.bs.tab detectado, iniciando carga...');
+            currentTheme = detectTheme();
             setTimeout(loadTradingView, 300);
         });
         
@@ -178,6 +244,8 @@
     // También intentar cargar si ya estamos en la pestaña de gráficas
     document.addEventListener('DOMContentLoaded', function() {
         console.log('📊 [TradingView] DOMContentLoaded - verificando si gráficas ya activa...');
+        currentTheme = detectTheme();
+        setupThemeListeners();
         setTimeout(function() {
             const graficasTab = document.getElementById('graficas');
             if (graficasTab && graficasTab.classList.contains('active')) {
@@ -191,6 +259,7 @@
     document.addEventListener('shown.bs.tab', function(e) {
         if (e.target && (e.target.id === 'graficas-tab' || e.target.getAttribute('data-bs-target') === '#graficas')) {
             console.log('🔔 [TradingView] Evento shown.bs.tab para gráficas, iniciando carga...');
+            currentTheme = detectTheme();
             setTimeout(loadTradingView, 300);
         }
     });

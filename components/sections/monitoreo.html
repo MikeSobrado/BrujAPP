@@ -1,0 +1,79 @@
+<div class="row mt-4">
+    <!-- PHASE 1 - Equity Curve -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Curva de Equidad</h5>
+            </div>
+            <div class="card-body" style="min-height: 400px;">
+                <canvas id="chart-equity-curve"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- PHASE 1 - P&L Bars -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-bar-chart me-2"></i>P&L por Posición</h5>
+            </div>
+            <div class="card-body" style="min-height: 400px;">
+                <canvas id="chart-pnl-bars"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <!-- PHASE 1 - Long vs Short -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-pie-chart me-2"></i>LONG vs SHORT</h5>
+            </div>
+            <div class="card-body" style="min-height: 400px;">
+                <canvas id="chart-long-vs-short"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- PHASE 2 - Drawdown Máximo -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-graph-down me-2"></i>Drawdown Máximo</h5>
+            </div>
+            <div class="card-body" style="min-height: 400px;">
+                <canvas id="chart-drawdown"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <!-- PHASE 2 - P&L Distribution -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-distribute-vertical me-2"></i>Distribución P&L</h5>
+            </div>
+            <div class="card-body" style="min-height: 350px;">
+                <canvas id="chart-pnl-distribution"></canvas>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- PHASE 2 - Comisiones Acumuladas (en la misma fila que Distribución P&L) -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-coin me-2"></i>Comisiones Acumuladas</h5>
+            </div>
+            <div class="card-body" style="min-height: 350px;">
+                <canvas id="chart-accumulated-fees"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+

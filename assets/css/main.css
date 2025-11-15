@@ -238,7 +238,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
+    padding: 0.75rem;
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     border-radius: 8px;
     margin: 0.5rem 0;
@@ -324,79 +324,40 @@ body {
     margin-bottom: 1.5rem;
 }
 
-/* Contenedor card para pestañas internas */
+/* Contenedor card para pestañas internas - OCULTO */
 .tabs-card {
-    background-color: #f0f0f0;
-    border-color: #e0e0e0;
-    border-radius: 12px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    display: none !important;
 }
 
-/* Estilos específicos para pestañas internas de inicio */
+/* Estilos específicos para pestañas internas de inicio - OCULTO */
 .inicio-tab {
-    background: none !important;
-    border: none !important;
-    color: var(--gray-medium) !important;
-    font-weight: 500;
-    padding: 0.75rem 1.5rem !important;
-    border-radius: 25px !important;
-    transition: all 0.3s ease;
-    margin: 0 0.25rem;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
+    display: none !important;
 }
 
 .inicio-tab:hover {
-    color: var(--brand-primary) !important;
-    background-color: rgba(255, 255, 255, 0.7) !important;
-    transform: translateY(-1px);
+    display: none !important;
 }
 
 .inicio-tab.active {
-    background-color: white !important;
-    color: var(--brand-primary) !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    font-weight: 600;
+    display: none !important;
 }
 
 .inicio-content {
+    display: block !important;
     position: relative;
-    min-height: 400px;
+    min-height: auto;
 }
 
-/* Aumentar especificidad para asegurar que se apliquen - VERSIÓN AGRESIVA */
+/* Mostrar solo el contenido activo */
 .card .card-body .inicio-content .inicio-pane {
     display: none !important;
-    opacity: 0 !important;
-    transition: none !important;
-    padding: 1rem 0 !important;
-    width: 100% !important;
-    height: auto !important;
-    position: relative !important;
-    overflow: visible !important;
 }
 
 .card .card-body .inicio-content .inicio-pane.active {
     display: block !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    position: relative !important;
-    overflow: visible !important;
-    z-index: 1 !important;
-    min-height: 400px !important;
-    width: 100% !important;
-    padding: 1rem !important;
-    box-sizing: border-box !important;
 }
 
-/* Forzar visualización de contenido interno */
-.card .card-body .inicio-content .inicio-pane.active * {
-    visibility: visible !important;
-    box-sizing: border-box !important;
-}
+
 
 .card .card-body .inicio-content .inicio-pane.active .row {
     display: flex !important;

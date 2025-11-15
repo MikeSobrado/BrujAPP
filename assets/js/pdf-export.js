@@ -15,7 +15,7 @@ async function exportReportToPDF() {
         pdfBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Generando...';
         
         // Obtener estadísticas del DOM
-        const stats = extractStatsFromDOM();
+        const stats = extractExtendedStats() || extractStatsFromDOM();
         
     // Obtener tabla de posiciones del DOM
         const movementsTableHTML = extractMovementsTableHTML();
@@ -139,7 +139,7 @@ function extractMovementsTableHTML() {
 }
 
 function extractStatsFromDOM() {
-    // Intentar primero obtener de window.BitgetCharts (funciona siempre que haya datos cargados)
+    // Intentar obtener de window.BitgetCharts (funciona siempre que haya datos cargados)
     if (window.BitgetCharts && typeof window.BitgetCharts.calculateStats === 'function') {
         const baseStats = window.BitgetCharts.calculateStats();
         
@@ -166,6 +166,62 @@ function extractStatsFromDOM() {
         totalPnL: 0,
         average: 0
     };
+}
+
+/**
+ * Extraer las 8 estadísticas rápidas del DOM
+ */
+function extractExtendedStats() {
+    const container = document.getElementById('posiciones-stats-container');
+    
+    if (!container) {
+        console.warn('⚠️ Contenedor de estadísticas no encontrado');
+        return null;
+    }
+    
+    // El HTML contiene tarjetas con <small> para label y <h5> para valor
+    const cards = container.querySelectorAll('.card');
+    
+    if (cards.length === 0) {
+        console.warn('⚠️ No hay tarjetas de estadísticas en el contenedor');
+        return null;
+    }
+    
+    // Extraer valores de cada tarjeta
+    const stats = {
+        totalPnL: 0,
+        winRate: 0,
+        avgPnL: 0,
+        totalPositions: 0,
+        longCount: 0,
+        shortCount: 0,
+        maxProfit: 0,
+        maxLoss: 0
+    };
+    
+    // Mapear las tarjetas al objeto stats
+    cards.forEach((card) => {
+        const label = card.querySelector('small')?.textContent?.trim().toLowerCase() || '';
+        const valueElement = card.querySelector('h5');
+        const valueText = valueElement?.textContent?.trim() || '0';
+        
+        // Extraer solo el número, quitando símbolos
+        const numValue = parseFloat(valueText.replace(/[$,%()]/g, '').split('/')[0].split(' ')[0]) || 0;
+        
+        console.log(`[PDF] Extrayendo: "${label}" = "${valueText}" -> ${numValue}`);
+        
+        if (label.includes('p&l total')) stats.totalPnL = numValue;
+        if (label.includes('win rate')) stats.winRate = numValue;
+        if (label.includes('promedio')) stats.avgPnL = numValue;
+        if (label.includes('total posiciones')) stats.totalPositions = parseInt(numValue);
+        if (label === 'long') stats.longCount = parseInt(numValue);
+        if (label === 'short') stats.shortCount = parseInt(numValue);
+        if (label.includes('máx ganancia')) stats.maxProfit = numValue;
+        if (label.includes('máx pérdida')) stats.maxLoss = numValue;
+    });
+    
+    console.log('✅ Estadísticas extendidas extraídas:', stats);
+    return stats;
 }
 
 /**
@@ -284,24 +340,44 @@ function buildPDFHTML(stats, now, movementsTableHTML) {
             <div class="stats-grid">
                 <div class="stat-box">
                     <div class="stat-label">Total de Operaciones</div>
-                    <div class="stat-value">${stats.totalTrades || 0}</div>
+                    <div class="stat-value">${stats.totalPositions || stats.totalTrades || 0}</div>
                 </div>
                 <div class="stat-box">
                     <div class="stat-label">Win Rate</div>
-                    <div class="stat-value ${stats.winRate >= 50 ? 'stat-positive' : 'stat-negative'}">
+                    <div class="stat-value ${(stats.winRate || 0) >= 50 ? 'stat-positive' : 'stat-negative'}">
                         ${stats.winRate || 0}%
                     </div>
                 </div>
                 <div class="stat-box">
                     <div class="stat-label">Total P&L</div>
-                    <div class="stat-value ${stats.totalPnL >= 0 ? 'stat-positive' : 'stat-negative'}">
-                        $${stats.totalPnL?.toFixed(2) || '0.00'}
+                    <div class="stat-value ${(stats.totalPnL || 0) >= 0 ? 'stat-positive' : 'stat-negative'}">
+                        $${(stats.totalPnL || 0)?.toFixed(2)}
                     </div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-label">Promedio</div>
-                    <div class="stat-value ${stats.average >= 0 ? 'stat-positive' : 'stat-negative'}">
-                        $${stats.average?.toFixed(2) || '0.00'}
+                    <div class="stat-label">Promedio P&L</div>
+                    <div class="stat-value ${(stats.avgPnL || stats.average || 0) >= 0 ? 'stat-positive' : 'stat-negative'}">
+                        $${(stats.avgPnL || stats.average || 0)?.toFixed(2)}
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Long</div>
+                    <div class="stat-value stat-positive">${stats.longCount || 0}</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Short</div>
+                    <div class="stat-value stat-negative">${stats.shortCount || 0}</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Máx Ganancia</div>
+                    <div class="stat-value stat-positive">
+                        $${(stats.maxProfit || 0)?.toFixed(2)}
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Máx Pérdida</div>
+                    <div class="stat-value stat-negative">
+                        $${(stats.maxLoss || 0)?.toFixed(2)}
                     </div>
                 </div>
             </div>
@@ -314,13 +390,13 @@ function buildPDFHTML(stats, now, movementsTableHTML) {
             <div style="background: #fff3cd; border: 1px solid #ffc107; padding: 8px; border-radius: 3px; margin-top: 12px; font-size: 8px; line-height: 1.3;">
                 <div style="font-weight: bold; color: #856404; margin-bottom: 5px;">⚠️ DISCLAIMER</div>
                 <div style="color: #856404;">
-                    Este reporte ha sido generado automáticamente por Crystal Sphere Trading Analytics basándose en datos de la API de Bitget. Los resultados pasados no garantizan resultados futuros. El trading de futuros conlleva riesgos significativos. Consulta con un asesor financiero antes de tomar decisiones de inversión.
+                    Este reporte ha sido generado automáticamente por Trading Dome Dashboard basándose en datos de la API de Bitget. Los resultados pasados no garantizan resultados futuros. El trading de futuros conlleva riesgos significativos. Consulta con un asesor financiero antes de tomar decisiones de inversión.
                 </div>
             </div>
             
             <!-- Footer -->
             <div class="footer">
-                <p>Plataforma: Bitget Futures | Aplicación: Crystal Sphere Trading Analytics</p>
+                <p>Plataforma: Bitget Futures | Aplicación: Trading Dome Dashboard</p>
             </div>
         </body>
         </html>

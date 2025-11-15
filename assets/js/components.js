@@ -115,17 +115,10 @@ async function executeInlineScripts(container) {
                 document.head.appendChild(newScript);
             });
         } else if (script.innerHTML.trim()) {
-            // Script inline - ejecutar de forma nativa (sin eval, sin setTimeout)
-            console.log(`[SCRIPT-INLINE] Ejecutando script inline directamente en document.body...`);
-            
-            // Crear un nuevo elemento script y ejecutarlo inmediatamente
-            const newScript = document.createElement('script');
-            newScript.textContent = script.innerHTML;
-            newScript.type = 'text/javascript';
-            
-            // Insertar en body para que se ejecute
-            document.body.appendChild(newScript);
-            console.log('✅ Script inline ejecutado (native, insertado en body)');
+            // ⚠️ SECURITY: Inline scripts are NOT supported by CSP policy
+            // All scripts must be moved to external files and loaded via script.src
+            // Attempting to execute inline scripts here is blocked for security reasons
+            console.warn(`⚠️ Inline script found but not executed (CSP compliance). Please move to external file: /assets/js/components/{name}-init.js`);
         }
     }
     
@@ -164,27 +157,26 @@ async function initializeComponents() {
     }
     
     try {
-        // Cargar header y navegación usando configuración
-        if (window.AppConfig) {
-            const headerPath = window.AppConfig.getComponentPath('header');
-            const navPath = window.AppConfig.getComponentPath('navigation');
-            const headerContainer = window.AppConfig.getContainer('header');
-            const navContainer = window.AppConfig.getContainer('navigation');
-            
-            // await loadComponent(headerPath, headerContainer); // Comentado: no cargar header
-            await loadComponent(navPath, navContainer);
-        } else {
-            // Fallback al método anterior
-            // await loadComponent('components/header.html', 'header-container'); // Comentado: no cargar header
-            await loadComponent('components/navigation.html', 'navigation-container');
-        }
+        // Header y navegación están integrados directamente en index.html
+        // No se cargan como componentes
         
-        // NOTA: No cargar secciones dinámicamente - todas están ya en index.html:
-        // - inicio: Incluido en index.html con pestañas internas
-        // - gestion-riesgo: Incluido en pestaña de inicio (gestion-riesgo)
-        // - graficas: Incluido en pestaña de inicio (graficas)
-    // - posiciones: Incluido en pestaña del navegador principal
-    // - monitoreo: Incluido en pestaña del navegador principal
+        // Cargar secciones dinámicamente desde archivos componentes
+        // - inicio: Cargado desde components/sections/inicio.html
+        // - posiciones: Cargado desde components/sections/posiciones.html
+        // - graficas: Cargado desde components/sections/graficas.html
+        // - gestion-riesgo: Cargado desde components/sections/gestion-riesgo.html
+        // - monitoreo: Cargado desde components/sections/monitoreo.html
+        // - apis: Cargado desde components/sections/apicon.html
+        try {
+            await loadSection('inicio', 'inicio');
+            await loadSection('posiciones', 'posiciones');
+            await loadSection('graficas', 'graficas');
+            await loadSection('gestion-riesgo', 'gestion-riesgo');
+            await loadSection('monitoreo', 'monitoreo');
+            await loadSection('apis', 'apis');
+        } catch (error) {
+            console.error('Error cargando secciones dinámicas:', error);
+        }
 
         // Log de éxito
         if (window.AppConfig) {

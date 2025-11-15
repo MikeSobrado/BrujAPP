@@ -41,7 +41,118 @@ document.addEventListener('click', (e) => {
     if (buttonId === 'connect-btn' || buttonText.includes('conectar')) {
         console.log('🔘 Click en botón Conectar (delegación)');
         e.preventDefault();
-        // Este ya tiene su propio evento en bitget-api.js, pero por si acaso...
+        
+        // Disparar la lógica de conexión desde bitget-api.js
+        const apiKeyInput = document.getElementById('bitget-api-key');
+        const apiSecretInput = document.getElementById('bitget-api-secret');
+        const passphraseInput = document.getElementById('bitget-passphrase');
+        
+        if (!apiKeyInput || !apiSecretInput || !passphraseInput) {
+            console.error('❌ Inputs de API no encontrados');
+            return;
+        }
+        
+        const apiKey = apiKeyInput.value.trim();
+        const apiSecret = apiSecretInput.value.trim();
+        const passphrase = passphraseInput.value.trim();
+        
+        console.log('📝 Datos leídos:', {
+            apiKey: apiKey ? '✓' : '✗',
+            apiSecret: apiSecret ? '✓' : '✗',
+            passphrase: passphrase ? '✓' : '✗'
+        });
+        
+        if (!apiKey || !apiSecret || !passphrase) {
+            console.error('❌ Faltan campos obligatorios');
+            const statusDiv = document.getElementById('key-status');
+            if (statusDiv) {
+                statusDiv.innerHTML = '<div class="alert alert-danger"><i class="bi bi-exclamation-circle me-2"></i>Completa todos los campos de Bitget</div>';
+                statusDiv.style.display = 'block';
+            }
+            return;
+        }
+        
+        // Verificar BitgetAPI
+        console.log('🔍 Verificando BitgetAPI:', !!window.BitgetAPI);
+        if (!window.BitgetAPI) {
+            console.error('❌ BitgetAPI no disponible');
+            const statusDiv = document.getElementById('key-status');
+            if (statusDiv) {
+                statusDiv.innerHTML = '<div class="alert alert-danger"><i class="bi bi-exclamation-circle me-2"></i>❌ Sistema no disponible. Recarga la página.</div>';
+                statusDiv.style.display = 'block';
+            }
+            return;
+        }
+        
+        // Deshabilitar botón
+        target.disabled = true;
+        const statusDiv = document.getElementById('key-status');
+        if (statusDiv) {
+            statusDiv.innerHTML = '<div class="alert alert-info"><i class="bi bi-hourglass-split me-2"></i>Conectando...</div>';
+            statusDiv.style.display = 'block';
+        }
+        
+        // Ejecutar conexión
+        (async () => {
+            try {
+                console.log('💾 Guardando credenciales...');
+                if (window.BitgetAPI.saveCredentials(apiKey, apiSecret, passphrase)) {
+                    console.log('✅ Credenciales guardadas');
+                    try {
+                        console.log('📊 Cargando posiciones...');
+                        const positions = await window.BitgetAPI.getAllOrders(500);
+                        console.log('📊 Posiciones cargadas:', positions.length);
+                        
+                        if (window.cache) {
+                            window.cache.set('bitget_positions', positions);
+                        }
+                        if (typeof SessionStorageManager !== 'undefined' && SessionStorageManager.getEncryptionKey()) {
+                            SessionStorageManager.savePositions(positions);
+                        }
+                        window.displayPositions(positions);
+                        
+                        if (statusDiv) {
+                            statusDiv.innerHTML = '<div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>✅ Conectado: ' + positions.length + ' posiciones cargadas</div>';
+                            statusDiv.style.display = 'block';
+                        }
+                        
+                        // Limpiar campos
+                        console.log('🧹 Limpiando campos...');
+                        setTimeout(() => {
+                            apiKeyInput.value = '';
+                            apiSecretInput.value = '';
+                            passphraseInput.value = '';
+                            // También limpiar el campo de CoinMarketCap
+                            const cmcKeyInput = document.getElementById('coinmarketcap-api-key');
+                            if (cmcKeyInput) {
+                                cmcKeyInput.value = '';
+                            }
+                            console.log('✅ Campos limpiados (incluyendo CoinMarketCap)');
+                        }, 100);
+                    } catch (error) {
+                        console.error('❌ Error al cargar posiciones:', error);
+                        if (statusDiv) {
+                            statusDiv.innerHTML = '<div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-2"></i>⚠️ Error: ' + error.message + '</div>';
+                            statusDiv.style.display = 'block';
+                        }
+                    }
+                } else {
+                    console.error('❌ Error al guardar credenciales');
+                    if (statusDiv) {
+                        statusDiv.innerHTML = '<div class="alert alert-danger"><i class="bi bi-exclamation-circle me-2"></i>❌ Error al guardar credenciales</div>';
+                        statusDiv.style.display = 'block';
+                    }
+                }
+            } catch (e) {
+                console.error('❌ Error general:', e);
+                if (statusDiv) {
+                    statusDiv.innerHTML = '<div class="alert alert-danger"><i class="bi bi-exclamation-circle me-2"></i>❌ Error: ' + e.message + '</div>';
+                    statusDiv.style.display = 'block';
+                }
+            } finally {
+                target.disabled = false;
+            }
+        })();
     }
 });
 

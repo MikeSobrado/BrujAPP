@@ -40,7 +40,7 @@ let appInitialized = false;
 function initializeApp() {
     if (appInitialized) return;
     
-    console.log('🚀 Inicializando aplicación Mike...');
+    console.log('🚀 Inicializando Trading Dome Dashboard...');
     
     // Inicializar módulos en orden
     try {

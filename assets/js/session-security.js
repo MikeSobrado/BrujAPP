@@ -315,14 +315,14 @@ function showExitWarning() {
     
     console.log('✅ Popup mostrado en pantalla');
     
-    // Auto-cerrar después de 5 segundos si el usuario no hace nada
+    // Auto-cerrar después de 10 segundos si el usuario no hace nada
     setTimeout(() => {
         const o = document.getElementById('exit-warning-overlay');
         if (o) {
-            console.log('⏱️ Popup auto-cerrado (5 segundos)');
+            console.log('⏱️ Popup auto-cerrado (10 segundos)');
             o.remove();
         }
-    }, 5000);
+    }, 10000);
 }
 
 // ========================================

@@ -65,10 +65,10 @@
                 <!-- Campo oculto para cargar archivo -->
                 <input type="file" id="key-file-input" accept=".json" style="display: none;">
                 
-                <button class="btn btn-success" id="save-key-btn" onclick="window.handleSaveKey()">
+                <button class="btn btn-success" id="save-key-btn" data-action="save-key">
                     <i class="bi bi-download me-2"></i>Crear Llave
                 </button>
-                <button class="btn btn-info" id="load-key-btn" onclick="window.handleLoadKey()">
+                <button class="btn btn-info" id="load-key-btn" data-action="load-key">
                     <i class="bi bi-upload me-2"></i>Cargar Llave
                 </button>
                 <button class="btn btn-primary" id="connect-btn" type="button">
@@ -82,3 +82,4 @@
     </div>
 </div>
 
+<script src="/assets/js/components/apicon-init.js"></script>

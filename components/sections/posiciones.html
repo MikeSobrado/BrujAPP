@@ -10,38 +10,39 @@
     </div>
 </div>
 
-<script>
-// ==========================================
-// ESTADÍSTICAS RÁPIDAS - DELEGACIÓN A bitget-positions.js
-// ==========================================
+<script src="/assets/js/components/posiciones-stats-init.js"></script>
 
-console.log('[STATS] 🔄 Inicializando posiciones.html (estadísticas)...');
-console.log('[STATS] Estado: window.positionsManager disponible =', typeof window.positionsManager);
+<!-- Historial de Posiciones Cerradas -->
+<div class="card">
+    <div class="card-header">
+        <div>
+            <i class="bi bi-box2 me-2"></i>Historial de Posiciones Cerradas
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- Filtros de posiciones -->
+        <div class="mb-3 d-flex gap-2 flex-wrap align-items-center">
+            <button class="btn btn-outline-primary btn-sm active" data-filter="all">
+                <i class="bi bi-funnel me-1"></i>Todos
+            </button>
+            <button class="btn btn-outline-success btn-sm" data-filter="long">
+                <i class="bi bi-arrow-up-right me-1"></i>Long
+            </button>
+            <button class="btn btn-outline-danger btn-sm" data-filter="short">
+                <i class="bi bi-arrow-down-left me-1"></i>Short
+            </button>
+            <div class="vr"></div>
+            <select id="pair-filter" class="form-select form-select-sm" style="width: auto; max-width: 200px;">
+                <option value="all">Todos los pares</option>
+            </select>
+            <button type="button" class="btn btn-success btn-sm" id="btn-export-pdf">
+                <i class="bi bi-file-pdf me-1"></i>Exportar PDF
+            </button>
+        </div>
+        <div id="positions-container">
+            <p class="text-muted text-center">Conecta a la API en la pestaña de "APIs" para cargar tu historial de posiciones</p>
+        </div>
+    </div>
+</div>
 
-// IMPORTANTE: Esta sección SOLO dispara la carga a través de bitget-positions.js
-// Las funciones reales están en bitget-positions.js para evitar duplicación
-
-// Intentar cargar inmediatamente
-if (typeof window.positionsManager !== 'undefined' && window.positionsManager.syncStats) {
-    console.log('[STATS] 🚀 positionsManager disponible, sincronizando estadísticas...');
-    window.positionsManager.syncStats();
-} else {
-    console.log('[STATS] ⏳ positionsManager no disponible aún, reintentando...');
-    setTimeout(() => {
-        if (typeof window.positionsManager !== 'undefined' && window.positionsManager.syncStats) {
-            console.log('[STATS] 🚀 positionsManager disponible (retry), sincronizando estadísticas...');
-            window.positionsManager.syncStats();
-        }
-    }, 300);
-}
-
-// Escuchar evento de actualización de posiciones
-window.addEventListener('posiciones-updated', (event) => {
-    console.log('[STATS-EVENT] 📣 Evento posiciones-updated recibido con ' + (event.detail?.positions?.length || 0) + ' posiciones');
-    if (typeof window.positionsManager !== 'undefined' && window.positionsManager.syncStats) {
-        window.positionsManager.syncStats();
-    }
-});
-
-console.log('[STATS] ✅ Script de posiciones.html (estadísticas) cargado');
-</script>
+<script src="/assets/js/components/posiciones-historial-init.js"></script>

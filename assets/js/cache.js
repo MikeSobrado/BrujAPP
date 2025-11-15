@@ -16,7 +16,7 @@ class CacheSystem {
             maxAge: 300000,         // 5 minutos por defecto
             maxSize: 100,           // máximo 100 entradas en memoria
             compression: false,     // compresión deshabilitada por defecto
-            prefix: 'mike_trading_', // prefijo para localStorage
+            prefix: 'trading_dome_', // prefijo para localStorage
             enableMemory: true,     // cache en memoria habilitado
             enableStorage: false    // cache en localStorage DESHABILITADO (solo en sesión)
         };
@@ -32,6 +32,9 @@ class CacheSystem {
         
         // Limpiar datos de cache almacenados en localStorage (ya no usamos enableStorage)
         this.cleanOldStorageData();
+        
+        // Migrar datos del prefijo antiguo al nuevo (compatibilidad hacia atrás)
+        this.migratePrefix();
         
         // Configurar limpieza automática cada 5 minutos
         this.cleanupInterval = setInterval(() => {
@@ -363,8 +366,46 @@ class CacheSystem {
     }
 
     /**
-     * Wrapper para peticiones HTTP con cache automático
+     * Migra datos del prefijo antiguo al nuevo
+     * Compatibilidad hacia atrás para usuarios con datos existentes
      */
+    migratePrefix() {
+        const oldPrefix = 'mike_trading_';
+        const newPrefix = this.cacheConfig.prefix;
+
+        // Si los prefijos son iguales, no hay nada que migrar
+        if (oldPrefix === newPrefix) {
+            return;
+        }
+
+        let migratedCount = 0;
+        const keysToMigrate = [];
+
+        // Recolectar todas las claves con prefijo antiguo
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith(oldPrefix)) {
+                keysToMigrate.push(key);
+            }
+        }
+
+        // Migrar cada clave
+        keysToMigrate.forEach(oldKey => {
+            try {
+                const data = localStorage.getItem(oldKey);
+                const newKey = oldKey.replace(oldPrefix, newPrefix);
+                localStorage.setItem(newKey, data);
+                localStorage.removeItem(oldKey);
+                migratedCount++;
+            } catch (error) {
+                console.warn(`Error migrando clave ${oldKey}:`, error);
+            }
+        });
+
+        if (migratedCount > 0) {
+            console.log(`✅ Migradas ${migratedCount} entradas de cache de '${oldPrefix}' a '${newPrefix}'`);
+        }
+    }
     async fetchWithCache(url, options = {}) {
         const {
             cacheKey = url,

@@ -1,5 +1,5 @@
 {
-  "name": "crystal-sphere",
+  "name": "trading-dome-dashboard",
   "version": "1.0.0",
   "description": "Dashboard de Trading - Análisis de mercados financieros con indicadores en tiempo real",
   "main": "server.js",
@@ -10,7 +10,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MikeSobrado/Crystal-Sphere.git"
+    "url": "https://github.com/MikeSobrado/trading-dome-dashboard.git"
   },
   "keywords": [
     "trading",

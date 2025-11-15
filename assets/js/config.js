@@ -11,7 +11,7 @@ class Config {
     initializeConfig() {
         // Configuración de la aplicación
         this.app = {
-            name: 'Mike Trading Dashboard',
+            name: 'Trading Dome Dashboard',
             version: '2.0.0',
             buildDate: new Date().toISOString(),
             isDevelopment: window.location.hostname === 'localhost' || 
@@ -39,8 +39,12 @@ class Config {
                 navigation: 'components/navigation.html',
                 sections: {
                     inicio: 'components/sections/inicio.html',
-                    gestionRiesgo: 'components/sections/gestion-riesgo.html',
+                    posiciones: 'components/sections/posiciones.html',
                     graficas: 'components/sections/graficas.html',
+                    'gestion-riesgo': 'components/sections/gestion-riesgo.html',
+                    gestionRiesgo: 'components/sections/gestion-riesgo.html',
+                    monitoreo: 'components/sections/monitoreo.html',
+                    apis: 'components/sections/apicon.html',
                     contacto: 'components/sections/contacto.html'
                 }
             },
@@ -48,8 +52,12 @@ class Config {
                 header: 'header-container',
                 navigation: 'navigation-container',
                 inicio: 'inicio-content',
-                gestionRiesgo: 'g-riesgo-content',
+                posiciones: 'posiciones-content',
                 graficas: 'graficas-content',
+                'gestion-riesgo': 'gestion-riesgo-content',
+                gestionRiesgo: 'gestion-riesgo-content',
+                monitoreo: 'monitoreo-content',
+                apis: 'apis-content',
                 contacto: 'contacto-content'
             }
         };
