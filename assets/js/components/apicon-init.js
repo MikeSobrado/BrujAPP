@@ -213,4 +213,103 @@ if (document.readyState === 'loading') {
     }
 });
 
+// ===== BOTÓN PROBAR COINMARKETCAP =====
+function initializeTestCMCButton() {
+    console.log('[APICON] 🔧 Inicializando botón de prueba CoinMarketCap...');
+    
+    const testBtn = document.getElementById('test-cmc-btn');
+    if (!testBtn) {
+        console.warn('[APICON] ⚠️ test-cmc-btn no encontrado, reintentando en 500ms...');
+        setTimeout(initializeTestCMCButton, 500);
+        return;
+    }
+    
+    testBtn.addEventListener('click', async (event) => {
+        event.preventDefault();
+        console.log('[APICON] 🧪 Botón Probar CoinMarketCap clickeado');
+        
+        const cmcKeyInput = document.getElementById('coinmarketcap-api-key');
+        const cmcKey = cmcKeyInput ? cmcKeyInput.value.trim() : '';
+        const statusDiv = document.getElementById('coinmarketcap-status');
+        
+        if (!cmcKey) {
+            console.warn('[APICON] ⚠️ API Key de CoinMarketCap no ingresada');
+            if (statusDiv) {
+                statusDiv.innerHTML = '<div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-2"></i>⚠️ Ingresa tu API Key de CoinMarketCap primero</div>';
+                statusDiv.style.display = 'block';
+            }
+            return;
+        }
+        
+        testBtn.disabled = true;
+        if (statusDiv) {
+            statusDiv.innerHTML = '<div class="alert alert-info"><i class="bi bi-hourglass-split me-2"></i>Probando conexión a CoinMarketCap...</div>';
+            statusDiv.style.display = 'block';
+        }
+        
+        try {
+            console.log('[APICON] 🧪 Llamando a testCoinMarketCapConnection...');
+            
+            if (!window.testCoinMarketCapConnection) {
+                throw new Error('testCoinMarketCapConnection no disponible');
+            }
+            
+            const result = await window.testCoinMarketCapConnection(cmcKey);
+            console.log('[APICON] 📊 Resultado de prueba:', result);
+            
+            if (result.success) {
+                console.log('[APICON] ✅ Conexión exitosa a CoinMarketCap');
+                if (statusDiv) {
+                    statusDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="bi bi-check-circle me-2"></i><strong>✅ Conectado a CoinMarketCap</strong>
+                            <br><small>
+                                <i class="bi bi-coin me-1"></i><strong>Bitcoin:</strong> ${result.dominance.btc}%
+                                <br><i class="bi bi-circle me-1"></i><strong>Ethereum:</strong> ${result.dominance.eth}%
+                                <br><i class="bi bi-collection me-1"></i><strong>Otros:</strong> ${result.dominance.others}%
+                                <br><i class="bi bi-hourglass-end me-1"></i><small>Respuesta en ${result.duration}ms</small>
+                            </small>
+                        </div>
+                    `;
+                    statusDiv.style.display = 'block';
+                }
+            } else {
+                console.error('[APICON] ❌ Error en prueba:', result.message);
+                if (statusDiv) {
+                    statusDiv.innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-circle me-2"></i><strong>❌ Error de conexión</strong>
+                            <br><small>${result.message}</small>
+                            ${result.status ? `<br><small>HTTP ${result.status}</small>` : ''}
+                        </div>
+                    `;
+                    statusDiv.style.display = 'block';
+                }
+            }
+        } catch (error) {
+            console.error('[APICON] ❌ Error:', error);
+            if (statusDiv) {
+                statusDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-circle me-2"></i><strong>❌ Error en la prueba</strong>
+                        <br><small>${error.message}</small>
+                    </div>
+                `;
+                statusDiv.style.display = 'block';
+            }
+        } finally {
+            testBtn.disabled = false;
+        }
+    });
+    
+    console.log('[APICON] ✅ Botón Probar CoinMarketCap inicializado');
+}
+
+// Inicializar el botón cuando el documento esté listo
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeTestCMCButton);
+} else {
+    initializeTestCMCButton();
+}
+
 console.log('[APICON] ✅ Script apicon.html cargado');
