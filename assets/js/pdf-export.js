@@ -326,7 +326,7 @@ function buildPDFHTML(stats, now, movementsTableHTML) {
             <!-- Header -->
             <div class="header">
                 <div class="logo">
-                    <img src="/assets/images/namelogo.png" alt="Logo" style="max-height: 70px;">
+                    <img src="assets/images/namelogo.png" alt="Logo" style="max-height: 70px;">
                 </div>
                 <h1>Trading Analytics Report</h1>
                 <p>Reporte de Monitoreo de Trading</p>
