@@ -1,13 +1,19 @@
 // dominance.js - Funcionalidad de dominancia para dashboard principal
 
-// URLs del proxy (local) y alternativa para producción
-const DOMINANCE_PROXY_URL = 'http://localhost:3002/api/global-metrics';
-const NETLIFY_FUNCTION_URL = '/.netlify/functions/dominance';
+// Función para obtener la URL del proxy según el entorno
+function getDominanceProxyUrl() {
+    // En desarrollo local
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return 'http://localhost:3000/api/global-metrics';
+    }
+    // En producción (GitHub Pages), usar proxy de Render
+    // NOTA: Reemplaza con tu URL real de Render
+    return 'https://trading-dome-api.onrender.com/api/global-metrics';
+}
 
-// Detectar si estamos en desarrollo local o en producción (Netlify)
+// Detectar si estamos en desarrollo local
 const isLocalDevelopment = window.location.hostname === 'localhost' || 
-                          window.location.hostname === '127.0.0.1' || 
-                          window.location.hostname === '';
+                          window.location.hostname === '127.0.0.1';
 
 // Variable global para el gráfico de dominancia
 let dominanceChart = null;
@@ -38,71 +44,29 @@ async function fetchDominance() {
 
         let dominanceData;
 
-        if (isLocalDevelopment) {
-            // En desarrollo local: usar el proxy
-            console.log('🏠 Modo desarrollo: usando servidor local');
+        // Obtener la clave de CMC del sessionStorage (guardada desde la UI de APIs)
+        let cmcApiKey = '';
+        try {
+            if (typeof SessionStorageManager !== 'undefined' && SessionStorageManager.getEncryptionKey()) {
+                const credentials = SessionStorageManager.getCredentials();
+                cmcApiKey = credentials?.coinmarketcap?.apiKey || '';
+            }
+        } catch (e) {
+            console.warn('⚠️ Error al obtener clave de CMC:', e);
+        }
+
+        if (!cmcApiKey) {
+            console.warn('⚠️ API Key de CoinMarketCap no configurada. Generando datos simulados.');
+            dominanceData = generateRealisticDominanceData();
+        } else {
+            // Usar el proxy (local o Render)
+            const proxyUrl = getDominanceProxyUrl();
+            console.log(`🔗 Usando proxy: ${proxyUrl}`);
             
-            // Obtener la clave de CMC del sessionStorage (guardada desde la UI de APIs)
-            let cmcApiKey = '';
-            try {
-                if (typeof SessionStorageManager !== 'undefined' && SessionStorageManager.getEncryptionKey()) {
-                    const credentials = SessionStorageManager.getCredentials();
-                    cmcApiKey = credentials?.coinmarketcap?.apiKey || '';
-                }
-            } catch (e) {
-                console.warn('⚠️ Error al obtener clave de CMC:', e);
-            }
-
-            if (!cmcApiKey) {
-                throw new Error('API Key de CoinMarketCap no configurada. Configúrala en la pestaña de APIs.');
-            }
-
-            const url = new URL(DOMINANCE_PROXY_URL, window.location.origin);
+            const url = new URL(proxyUrl);
             url.searchParams.append('key', cmcApiKey);
             
-            const response = await fetch(url.toString());
-            
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-
-            const apiData = await response.json();
-            
-            if (!apiData || !apiData.data) {
-                throw new Error('Respuesta de API inválida');
-            }
-
-            // Extraer datos reales
-            const btcDominance = apiData.data.btc_dominance;
-            const ethDominance = apiData.data.eth_dominance;
-            const othersDominance = 100 - btcDominance - ethDominance;
-
-            dominanceData = {
-                btc_dominance: btcDominance,
-                eth_dominance: ethDominance,
-                others_dominance: othersDominance,
-                timestamp: Date.now()
-            };
-        } else {
-            // En Netlify: usar la función serverless
-            console.log('🌐 Modo producción: usando función serverless de Netlify');
             try {
-                // Obtener la clave de CMC del sessionStorage
-                let cmcApiKey = '';
-                try {
-                    if (typeof SessionStorageManager !== 'undefined' && SessionStorageManager.getEncryptionKey()) {
-                        const credentials = SessionStorageManager.getCredentials();
-                        cmcApiKey = credentials?.coinmarketcap?.apiKey || '';
-                    }
-                } catch (e) {
-                    console.warn('⚠️ Error al obtener clave de CMC:', e);
-                }
-
-                const url = new URL(NETLIFY_FUNCTION_URL, window.location.origin);
-                if (cmcApiKey) {
-                    url.searchParams.append('key', cmcApiKey);
-                }
-                
                 const response = await fetch(url.toString());
                 
                 if (!response.ok) {
@@ -126,8 +90,10 @@ async function fetchDominance() {
                     others_dominance: othersDominance,
                     timestamp: Date.now()
                 };
+                
+                console.log('✅ Datos reales de CoinMarketCap obtenidos');
             } catch (error) {
-                console.warn('⚠️ Error al usar función serverless, usando datos simulados:', error);
+                console.warn('⚠️ Error al obtener datos reales, usando simulados:', error.message);
                 dominanceData = generateRealisticDominanceData();
             }
         }
@@ -168,24 +134,19 @@ function generateRealisticDominanceData() {
 }
 
 /**
- * Determina si debe saltar la caché (por cambio de entorno)
+ * Determina si debe saltar la caché
  */
 function shouldSkipCache() {
-    // Si estamos en GitHub Pages, limpiar cualquier caché local anterior
-    if (!isLocalDevelopment) {
-        const ENVIRONMENT_KEY = 'dominanceEnvironment';
-        const lastEnvironment = localStorage.getItem(ENVIRONMENT_KEY);
-        
-        if (lastEnvironment === 'local') {
-            console.log('🔄 Detectado cambio de entorno local → GitHub Pages, limpiando caché');
-            localStorage.removeItem('dominanceData');
-            localStorage.setItem(ENVIRONMENT_KEY, 'github');
-            return true;
-        }
-        
-        localStorage.setItem(ENVIRONMENT_KEY, 'github');
-    } else {
-        localStorage.setItem('dominanceEnvironment', 'local');
+    // Limpiar caché antigua después de cambios en el proxy
+    const PROXY_VERSION_KEY = 'dominanceProxyVersion';
+    const currentVersion = '2.0-render'; // Incrementa si cambias lógica del proxy
+    const lastVersion = localStorage.getItem(PROXY_VERSION_KEY);
+    
+    if (lastVersion !== currentVersion) {
+        console.log('🔄 Nueva versión del proxy detectada, limpiando caché');
+        localStorage.removeItem('dominanceData');
+        localStorage.setItem(PROXY_VERSION_KEY, currentVersion);
+        return true;
     }
     
     return false;
