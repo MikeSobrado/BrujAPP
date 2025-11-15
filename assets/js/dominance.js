@@ -7,8 +7,7 @@ function getDominanceProxyUrl() {
         return 'http://localhost:3000/api/global-metrics';
     }
     // En producción (GitHub Pages), usar proxy de Render
-    // NOTA: Reemplaza con tu URL real de Render
-    return 'https://trading-dome-api.onrender.com/api/global-metrics';
+    return 'https://trading-dome-dashboard.onrender.com/api/global-metrics';
 }
 
 // Detectar si estamos en desarrollo local

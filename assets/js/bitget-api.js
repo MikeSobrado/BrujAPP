@@ -51,7 +51,7 @@ function initBitgetAPI() {
             this.credentials = this.loadCredentials();
             // Proxy en Render: /api/bitget
             // En desarrollo local: http://localhost:3000/api/bitget
-            // En producción: https://trading-dome-api.onrender.com/api/bitget
+            // En producción: https://trading-dome-dashboard.onrender.com/api/bitget
             this.proxyEndpoint = this.getProxyEndpoint();
             this.apiVersion = '/api/v2';
             console.log('🔌 BitgetAPIManager inicializado');
@@ -71,9 +71,8 @@ function initBitgetAPI() {
             if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
                 return 'http://localhost:3000/api/bitget';
             }
-            // En producción (GitHub Pages o Render), usar URL del backend de Render
-            // NOTA: Reemplaza con tu URL real de Render
-            return 'https://trading-dome-api.onrender.com/api/bitget';
+            // En producción (GitHub Pages), usar URL del backend de Render
+            return 'https://trading-dome-dashboard.onrender.com/api/bitget';
         }
 
         loadCredentials() {

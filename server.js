@@ -24,13 +24,14 @@ const corsOptions = {
       'http://localhost:8080',
       'http://127.0.0.1:3000',
       'http://127.0.0.1:8080',
-      'https://miksobrado.github.io',
+      'https://mikesobrado.github.io',
       'https://MikeSobrado.github.io',
+      'https://trading-dome-dashboard.onrender.com',
       'https://github.com'
     ];
     
     // En desarrollo, permitir peticiones sin origen (ej: curl, Postman)
-    if (!origin || allowedOrigins.includes(origin) || origin.includes('.onrender.com')) {
+    if (!origin || allowedOrigins.some(allowed => origin.includes(allowed)) || origin.includes('.onrender.com')) {
       callback(null, true);
     } else {
       console.warn(`⚠️ CORS blocked request from origin: ${origin}`);
