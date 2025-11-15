@@ -1,0 +1,17 @@
+{
+  "name": "cmc-proxy",
+  "version": "1.0.0",
+  "description": "Proxy pequeño para reenviar peticiones a CoinMarketCap y evitar problemas de CORS en pruebas locales",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.18.2",
+    "node-fetch": "^2.6.7"
+  }
+}

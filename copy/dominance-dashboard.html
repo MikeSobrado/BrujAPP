@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Dominancia Crypto</title>
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iOCIgZmlsbD0iIzE2MjEzZSIvPgo8cGF0aCBkPSJNMTYgOEwxMiAxNkwxNiAyNEwyMCAxNkwxNiA4WiIgZmlsbD0iI0ZGOTUwMCIvPgo8L3N2Zz4K">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0c1426, #1a2332);
+            color: #eaeaea;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            font-weight: 300;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .card {
+            background: linear-gradient(145deg, #16213e, #1d2951);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            text-align: center;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        /* Estilos específicos para dominancia */
+        .dominance-current-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            margin-bottom: 30px;
+            margin-top: 20px;
+            padding: 0 15px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dominance-crypto-item {
+            flex: 0 1 auto;
+            text-align: center;
+            padding: 0 10px;
+            min-width: 75px;
+        }
+
+        .crypto-name {
+            font-size: 13px;
+            color: #eaeaea;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .crypto-dominance {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .crypto-change {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .crypto-change.positive {
+            color: #00ff88;
+        }
+
+        .crypto-change.negative {
+            color: #ff4757;
+        }
+
+        .crypto-change.neutral {
+            color: #888;
+        }
+
+        .dominance-chart-small {
+            width: 75px;
+            height: 75px;
+            flex-shrink: 0;
+            margin-right: 25px;
+        }
+
+        /* Segunda sección: Valores históricos */
+        .dominance-historical-section {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-bottom: 30px;
+            margin-top: 10px;
+            padding: 0 20px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .historical-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+        }
+
+        .historical-label {
+            font-size: 14px;
+            color: #eaeaea;
+            min-width: 130px;
+            font-weight: 500;
+        }
+
+        .historical-values {
+            display: flex;
+            gap: 45px;
+            font-size: 14px;
+            color: #eaeaea;
+            font-weight: 500;
+        }
+
+        .historical-values span {
+            min-width: 65px;
+            text-align: center;
+        }
+
+        /* Tercera sección: Máximos y mínimos */
+        .dominance-extremes-section {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            padding: 0 20px;
+        }
+
+        .extremes-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+        }
+
+        .extremes-label {
+            font-size: 14px;
+            color: #eaeaea;
+            min-width: 130px;
+            font-weight: 500;
+        }
+
+        .extremes-values {
+            display: flex;
+            gap: 45px;
+            font-size: 14px;
+            color: #eaeaea;
+            font-weight: 500;
+        }
+
+        .extremes-values span {
+            min-width: 65px;
+            text-align: center;
+        }
+
+        /* Footer del panel */
+        .panel-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 12px;
+            color: #888;
+        }
+
+        /* Estilos de error */
+        .error {
+            background: rgba(255, 71, 87, 0.1);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            color: #ff4757;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 2rem;
+                margin-bottom: 20px;
+            }
+
+            .card {
+                padding: 20px;
+                border-radius: 15px;
+            }
+
+            .dominance-current-section {
+                flex-direction: column;
+                gap: 12px;
+                padding: 0 10px;
+            }
+
+            .dominance-crypto-item {
+                min-width: auto;
+            }
+
+            .dominance-chart-small {
+                margin: 0 auto 15px auto;
+            }
+
+            .historical-values,
+            .extremes-values {
+                gap: 25px;
+                font-size: 13px;
+            }
+
+            .historical-values span,
+            .extremes-values span {
+                min-width: 50px;
+            }
+
+            .dominance-historical-section,
+            .dominance-extremes-section {
+                padding: 0 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                max-width: 100%;
+            }
+
+            .historical-values,
+            .extremes-values {
+                gap: 15px;
+                font-size: 12px;
+            }
+
+            .historical-label,
+            .extremes-label {
+                min-width: 100px;
+                font-size: 13px;
+            }
+        }
+
+        /* Animaciones */
+        .card {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Loading states */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+
+        .loading::before {
+            content: "⏳";
+            display: block;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Dashboard de Dominancia Crypto</h1>
+        
+        <section class="card" id="dominance-section">
+            <h2>Dominancia de Mercado</h2>
+            
+            <!-- Primera sección: Valores actuales -->
+            <div class="dominance-current-section">
+                <div class="dominance-chart-small">
+                    <canvas id="dominanceChart"></canvas>
+                </div>
+                <div class="dominance-crypto-item">
+                    <div class="crypto-name">Bitcoin</div>
+                    <div class="crypto-dominance" id="btc-dominance">--</div>
+                    <div class="crypto-change" id="btc-change">--</div>
+                </div>
+                <div class="dominance-crypto-item">
+                    <div class="crypto-name">Ethereum</div>
+                    <div class="crypto-dominance" id="eth-dominance">--</div>
+                    <div class="crypto-change" id="eth-change">--</div>
+                </div>
+                <div class="dominance-crypto-item">
+                    <div class="crypto-name">Otros</div>
+                    <div class="crypto-dominance" id="others-dominance">--</div>
+                    <div class="crypto-change" id="others-change">--</div>
+                </div>
+            </div>
+
+            <!-- Segunda sección: Valores históricos -->
+            <div class="dominance-historical-section">
+                <div class="historical-item">
+                    <span class="historical-label">Ayer</span>
+                    <div class="historical-values">
+                        <span id="yesterday-btc">--</span>
+                        <span id="yesterday-eth">--</span>
+                        <span id="yesterday-others">--</span>
+                    </div>
+                </div>
+                <div class="historical-item">
+                    <span class="historical-label">Semana pasada</span>
+                    <div class="historical-values">
+                        <span id="week-btc">--</span>
+                        <span id="week-eth">--</span>
+                        <span id="week-others">--</span>
+                    </div>
+                </div>
+                <div class="historical-item">
+                    <span class="historical-label">Mes pasado</span>
+                    <div class="historical-values">
+                        <span id="month-btc">--</span>
+                        <span id="month-eth">--</span>
+                        <span id="month-others">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tercera sección: Máximos y mínimos del año -->
+            <div class="dominance-extremes-section">
+                <div class="extremes-item">
+                    <span class="extremes-label">Máximos del año</span>
+                    <div class="extremes-values">
+                        <span id="max-btc">--</span>
+                        <span id="max-eth">--</span>
+                        <span id="max-others">--</span>
+                    </div>
+                </div>
+                <div class="extremes-item">
+                    <span class="extremes-label">Mínimos del año</span>
+                    <div class="extremes-values">
+                        <span id="min-btc">--</span>
+                        <span id="min-eth">--</span>
+                        <span id="min-others">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer del panel -->
+            <div class="panel-footer">
+                <small>Fuente: CoinMarketCap</small>
+                <small id="dominance-last-update">--</small>
+            </div>
+        </section>
+    </div>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- JavaScript del dashboard -->
+    <script src="dominance-script.js"></script>
+</body>
+</html>
