@@ -424,21 +424,13 @@ function updateDominanceData(data) {
     document.getElementById('eth-dominance').textContent = data.eth_dominance.toFixed(1) + '%';
     document.getElementById('others-dominance').textContent = data.others_dominance.toFixed(1) + '%';
 
-    // Agregar indicador de si son datos reales o simulados
-    const dataSourceBadge = document.getElementById('dominance-data-source');
-    if (dataSourceBadge) {
-        if (data.isSimulated) {
-            dataSourceBadge.innerHTML = '<span class="badge bg-warning text-dark">📊 Datos Simulados (sin API Key)</span>';
-            dataSourceBadge.style.display = 'inline-block';
-            console.log('⚠️ Mostrando datos SIMULADOS de dominancia');
-        } else if (data.source === 'CoinMarketCap Real') {
-            dataSourceBadge.innerHTML = '<span class="badge bg-success">✅ Datos Reales (CoinMarketCap)</span>';
-            dataSourceBadge.style.display = 'inline-block';
-            console.log('✅ Mostrando datos REALES de CoinMarketCap');
-        } else if (data.source && data.source.includes('error')) {
-            dataSourceBadge.innerHTML = '<span class="badge bg-danger">❌ Error en API (datos de fallback)</span>';
-            dataSourceBadge.style.display = 'inline-block';
-        }
+    // Logs internos (sin mostrar badges en la UI)
+    if (data.isSimulated) {
+        console.log('⚠️ Mostrando datos SIMULADOS de dominancia');
+    } else if (data.source === 'CoinMarketCap Real') {
+        console.log('✅ Mostrando datos REALES de CoinMarketCap');
+    } else if (data.source && data.source.includes('error')) {
+        console.log('❌ Error en API (datos de fallback)');
     }
 
     // Helper function para actualizar elementos de forma segura
