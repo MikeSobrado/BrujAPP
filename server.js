@@ -104,32 +104,54 @@ app.get('/api/global-metrics', async (req, res) => {
     const url = `${CMC_BASE}/v1/global-metrics/quotes/latest`;
     console.log(`   📤 Enviando request a: ${url}`);
 
+    const startFetchTime = Date.now();
     const response = await fetch(url, {
       method: 'GET',
       headers: {
         'X-CMC_PRO_API_KEY': apiKey,
         'Accept': 'application/json'
-      }
+      },
+      timeout: 15000
     });
+    const fetchDuration = Date.now() - startFetchTime;
 
     const body = await response.text();
     const duration = Date.now() - startTime;
 
-    console.log(`   📊 Respuesta de CMC: ${response.status} (${duration}ms)`);
+    console.log(`   📊 Respuesta de CMC: ${response.status} ${response.statusText} (${fetchDuration}ms fetch, ${duration}ms total)`);
     console.log(`   📄 Body length: ${body.length} bytes`);
+    
+    // Log detallado de headers
+    console.log(`   📋 Headers de respuesta:`, {
+      'content-type': response.headers.get('content-type'),
+      'content-length': response.headers.get('content-length'),
+      'x-ratelimit-remaining': response.headers.get('x-ratelimit-remaining'),
+      'x-ratelimit-limit': response.headers.get('x-ratelimit-limit')
+    });
     
     // Log de respuesta (primeros 500 caracteres para debug)
     if (response.status === 200) {
       console.log(`   ✅ Respuesta exitosa`);
       try {
         const json = JSON.parse(body);
-        console.log(`   📋 Estructura: ${JSON.stringify(Object.keys(json)).substring(0, 100)}`);
+        console.log(`   📋 Estructura JSON:`, Object.keys(json));
+        if (json.data) {
+          console.log(`   📊 Data keys:`, Object.keys(json.data).slice(0, 10));
+          console.log(`   💹 BTC Dominance: ${json.data.btc_dominance}%`);
+          console.log(`   💹 ETH Dominance: ${json.data.eth_dominance}%`);
+        }
       } catch (e) {
-        console.log(`   ⚠️ No es JSON válido`);
+        console.log(`   ⚠️ No es JSON válido:`, e.message);
+        console.log(`   📄 Body (primeros 200 chars): ${body.substring(0, 200)}`);
       }
     } else {
       console.log(`   ⚠️ Status no 200: ${response.status}`);
-      console.log(`   📄 Primeros 200 chars: ${body.substring(0, 200)}`);
+      console.log(`   📄 Response body (primeros 300 chars): ${body.substring(0, 300)}`);
+      
+      // Si es 401, probablemente es un problema con la API key
+      if (response.status === 401) {
+        console.log(`   🔑 ERROR: Problema de autenticación (API key inválida o vencida)`);
+      }
     }
 
     // Reenviamos exactamente el status y el cuerpo recibido por CoinMarketCap

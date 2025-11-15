@@ -65,32 +65,53 @@ async function fetchDominance() {
                 
                 console.log(`🌐 URL final: ${url.toString().replace(cmcApiKey, 'XXXX')}`);
                 
-                const response = await fetch(url.toString());
+                const startFetch = Date.now();
+                const response = await fetch(url.toString(), {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    },
+                    timeout: 15000
+                });
+                const fetchDuration = Date.now() - startFetch;
                 
-                console.log(`📊 Respuesta HTTP: ${response.status} ${response.statusText}`);
+                console.log(`📊 Respuesta HTTP: ${response.status} ${response.statusText} (${fetchDuration}ms)`);
                 console.log(`📄 Content-Type: ${response.headers.get('content-type')}`);
+                console.log(`📋 Headers de respuesta:`, {
+                    'content-length': response.headers.get('content-length'),
+                    'cache-control': response.headers.get('cache-control'),
+                    'access-control-allow-origin': response.headers.get('access-control-allow-origin')
+                });
                 
                 if (!response.ok) {
                     const errorText = await response.text();
                     console.error(`❌ HTTP Error ${response.status}:`, errorText.substring(0, 500));
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    throw new Error(`HTTP ${response.status}: ${response.statusText} - ${errorText.substring(0, 100)}`);
                 }
 
-                const apiData = await response.json();
+                const responseText = await response.text();
+                console.log(`📄 Response body (primeros 300 chars):`, responseText.substring(0, 300));
+                
+                const apiData = JSON.parse(responseText);
                 console.log('📊 Respuesta de CoinMarketCap (completa):', apiData);
                 console.log('📊 Estructura de respuesta:', {
                     hasData: !!apiData.data,
-                    dataKeys: apiData.data ? Object.keys(apiData.data) : null,
+                    dataKeys: apiData.data ? Object.keys(apiData.data).slice(0, 10) : null,
                     hasStatus: !!apiData.status
                 });
                 
                 if (!apiData || !apiData.data) {
-                    throw new Error('Respuesta de API inválida - estructura inesperada');
+                    throw new Error('Respuesta de API inválida - estructura inesperada: ' + JSON.stringify(apiData).substring(0, 100));
                 }
 
                 // Extraer datos reales
                 const btcDominance = apiData.data.btc_dominance;
                 const ethDominance = apiData.data.eth_dominance;
+                
+                if (typeof btcDominance !== 'number' || typeof ethDominance !== 'number') {
+                    throw new Error(`Datos de dominancia inválidos: btc=${btcDominance}, eth=${ethDominance}`);
+                }
+                
                 const othersDominance = 100 - btcDominance - ethDominance;
 
                 dominanceData = {
@@ -109,6 +130,7 @@ async function fetchDominance() {
             } catch (error) {
                 console.warn('⚠️ Error al obtener datos reales de CoinMarketCap:', error.message);
                 console.log('💾 Usando datos simulados como fallback');
+                console.log('🔍 Stack:', error.stack?.substring(0, 200));
                 dominanceData = generateRealisticDominanceData();
                 dominanceData.source = 'Simulados (error en API)';
             }
