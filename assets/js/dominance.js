@@ -529,6 +529,10 @@ window.testCoinMarketCapConnection = async function(cmcApiKey) {
         return result;
     }
     
+    // Analizar formato de la clave
+    const keyInfo = analyzeAPIKeyFormat(cmcApiKey);
+    console.log('🔍 Formato de API Key:', keyInfo);
+    
     try {
         const proxyUrl = getDominanceProxyUrl();
         console.log(`🔗 Proxy URL: ${proxyUrl}`);
@@ -552,13 +556,31 @@ window.testCoinMarketCapConnection = async function(cmcApiKey) {
         
         if (!response.ok) {
             const errorText = await response.text();
-            const errorMsg = `HTTP ${response.status}: ${errorText.substring(0, 100)}`;
+            
+            // Intentar parsear el error como JSON
+            let errorDetails = '';
+            try {
+                const errorJson = JSON.parse(errorText);
+                if (errorJson.status?.error_code) {
+                    const errorCode = errorJson.status.error_code;
+                    const errorMsg = getCoinMarketCapErrorMessage(errorCode);
+                    errorDetails = `Error Code: ${errorCode} - ${errorMsg}`;
+                    console.error(`❌ CoinMarketCap Error ${errorCode}:`, errorMsg);
+                } else if (errorJson.message) {
+                    errorDetails = errorJson.message;
+                }
+            } catch (e) {
+                errorDetails = errorText.substring(0, 200);
+            }
+            
+            const errorMsg = `HTTP ${response.status}: ${errorDetails || errorText.substring(0, 100)}`;
             console.error(`❌ Error en respuesta:`, errorMsg);
             
             return {
                 success: false,
                 message: errorMsg,
                 status: response.status,
+                keyFormat: keyInfo,
                 dominance: null
             };
         }
@@ -577,7 +599,8 @@ window.testCoinMarketCapConnection = async function(cmcApiKey) {
                 eth: apiData.data.eth_dominance.toFixed(2),
                 others: (100 - apiData.data.btc_dominance - apiData.data.eth_dominance).toFixed(2)
             },
-            duration: duration
+            duration: duration,
+            keyFormat: keyInfo
         };
         
         console.log('✅ Prueba exitosa:', result);
@@ -587,12 +610,97 @@ window.testCoinMarketCapConnection = async function(cmcApiKey) {
         const result = {
             success: false,
             message: `Error: ${error.message}`,
-            dominance: null
+            dominance: null,
+            keyFormat: keyInfo
         };
         console.error('❌ Prueba fallida:', error);
         return result;
     }
 };
+
+/**
+ * Analiza el formato de una API Key de CoinMarketCap
+ * @param {string} apiKey - La API Key a analizar
+ * @returns {Object} - Información sobre el formato
+ */
+function analyzeAPIKeyFormat(apiKey) {
+    const info = {
+        length: apiKey.length,
+        format: 'unknown',
+        pattern: '',
+        hasHyphens: apiKey.includes('-'),
+        hasUnderscores: apiKey.includes('_'),
+        hasUpperCase: /[A-Z]/.test(apiKey),
+        hasLowerCase: /[a-z]/.test(apiKey),
+        hasNumbers: /[0-9]/.test(apiKey),
+        structure: ''
+    };
+    
+    // Detectar patrón UUID (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
+    if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(apiKey)) {
+        info.format = 'UUID v4';
+        info.pattern = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx';
+        info.structure = '8-4-4-4-12 hex characters with hyphens';
+    }
+    // Detectar patrón hexadecimal largo
+    else if (/^[0-9a-f]+$/i.test(apiKey)) {
+        info.format = 'Hexadecimal';
+        info.pattern = 'x'.repeat(info.length);
+        info.structure = `${info.length} hexadecimal characters`;
+    }
+    // Detectar patrón alphanumeric
+    else if (/^[a-zA-Z0-9_-]+$/.test(apiKey)) {
+        info.format = 'Alphanumeric';
+        info.pattern = 'Mixed letters, numbers, hyphens, underscores';
+        info.structure = `${info.length} characters (mixed)`;
+    }
+    // Detectar patrón base64-like
+    else if (/^[A-Za-z0-9+/=]+$/.test(apiKey)) {
+        info.format = 'Base64-like';
+        info.pattern = 'Base64 characters';
+        info.structure = `${info.length} Base64 characters`;
+    }
+    else {
+        info.format = 'Mixed/Custom';
+        info.pattern = 'Unknown pattern';
+        info.structure = `${info.length} characters (contains special characters)`;
+    }
+    
+    return info;
+}
+
+/**
+ * Obtiene el mensaje de error legible para códigos de error de CoinMarketCap
+ * @param {number} errorCode - El código de error de CMC
+ * @returns {string} - Descripción del error
+ */
+function getCoinMarketCapErrorMessage(errorCode) {
+    const errors = {
+        1000: 'Success',
+        1001: 'Invalid API Key - La clave API no es válida, expiró o fue revocada',
+        1002: 'Invalid credit',
+        1003: 'Invalid Parameters - Parámetros inválidos en la solicitud',
+        1004: 'Invalid plan',
+        1005: 'Duplicate request',
+        1006: 'Monthly request limit exceeded - Límite mensual de solicitudes excedido',
+        1007: 'Daily request limit exceeded - Límite diario de solicitudes excedido',
+        1008: 'API Rate Limit exceeded',
+        1009: 'Monthly USD Limit exceeded',
+        1010: 'Invalid value for \"convert\"',
+        1011: 'Could not find any matching records',
+        1012: 'Internal error',
+        1013: 'The \"id\" or \"slug\" you supplied does not match any cryptocurrency',
+        1014: 'API key does not have permission to access this endpoint',
+        1015: 'You have reached the maximum number of API keys for your tier',
+        1016: 'The IP address you are using is not on the whitelist for this API key',
+        1017: 'You have exceeded the rate limit for this API key',
+        1018: 'This endpoint is not available on your plan',
+        1019: 'You must be a Professional or higher subscriber to use this endpoint'
+    };
+    
+    return errors[errorCode] || `Unknown error code: ${errorCode}`;
+}
+
 
 // Ejecutar automáticamente cuando se carga la página (con espera para asegurar que el DOM está listo)
 console.log('✓ dominance.js cargado, programando fetchDominance()');

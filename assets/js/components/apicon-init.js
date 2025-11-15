@@ -276,13 +276,27 @@ function initializeTestCMCButton() {
             } else {
                 console.error('[APICON] ❌ Error en prueba:', result.message);
                 if (statusDiv) {
-                    statusDiv.innerHTML = `
+                    let detailsHtml = `
                         <div class="alert alert-danger">
                             <i class="bi bi-exclamation-circle me-2"></i><strong>❌ Error de conexión</strong>
                             <br><small>${result.message}</small>
-                            ${result.status ? `<br><small>HTTP ${result.status}</small>` : ''}
-                        </div>
                     `;
+                    
+                    // Mostrar detalles del formato de la API Key
+                    if (result.keyFormat) {
+                        detailsHtml += `
+                            <br><br><strong>Formato detectado:</strong>
+                            <ul style="margin-bottom: 0; margin-top: 5px; font-size: 0.85em;">
+                                <li><strong>Tipo:</strong> ${result.keyFormat.format}</li>
+                                <li><strong>Longitud:</strong> ${result.keyFormat.length} caracteres</li>
+                                <li><strong>Estructura:</strong> ${result.keyFormat.structure}</li>
+                                <li><strong>Patrón esperado:</strong> ${result.keyFormat.pattern}</li>
+                            </ul>
+                        `;
+                    }
+                    
+                    detailsHtml += `</div>`;
+                    statusDiv.innerHTML = detailsHtml;
                     statusDiv.style.display = 'block';
                 }
             }
