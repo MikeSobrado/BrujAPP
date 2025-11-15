@@ -39,7 +39,10 @@ async function fetchDominance(forceRefresh = false) {
                 restoreDominanceHTML();
                 renderDominanceChart(cachedData.btc_dominance, cachedData.eth_dominance, cachedData.others_dominance);
                 updateDominanceData(cachedData);
-                document.getElementById('dominance-last-update').textContent = `Última actualización: ${new Date().toLocaleString('es-ES')}`;
+                const lastUpdateElem = document.getElementById('dominance-last-update');
+                if (lastUpdateElem) {
+                    lastUpdateElem.textContent = `Última actualización: ${new Date().toLocaleString('es-ES')}`;
+                }
                 return;
             }
         } else {
@@ -150,7 +153,10 @@ async function fetchDominance(forceRefresh = false) {
         renderDominanceChart(dominanceData.btc_dominance, dominanceData.eth_dominance, dominanceData.others_dominance);
         updateDominanceData(dominanceData);
         
-        document.getElementById('dominance-last-update').textContent = `Última actualización: ${new Date().toLocaleString('es-ES')}`;
+        const lastUpdateElem = document.getElementById('dominance-last-update');
+        if (lastUpdateElem) {
+            lastUpdateElem.textContent = `Última actualización: ${new Date().toLocaleString('es-ES')}`;
+        }
         
         console.log('✅ Datos de dominancia cargados exitosamente');
 
@@ -389,6 +395,31 @@ function renderDominanceChart(btcDominance, ethDominance, othersDominance) {
 }
 
 function updateDominanceData(data) {
+    // Verificar que los elementos del DOM existen antes de actualizar
+    const requiredElements = [
+        'btc-dominance',
+        'eth-dominance',
+        'others-dominance',
+        'btc-change',
+        'eth-change',
+        'others-change',
+        'yesterday-btc',
+        'yesterday-eth',
+        'yesterday-others'
+    ];
+
+    const missingElements = requiredElements.filter(id => !document.getElementById(id));
+    if (missingElements.length > 0) {
+        console.warn('⚠️ Elementos del DOM no encontrados:', missingElements);
+        console.log('💡 La componente de gráficas aún no se ha cargado. Retrasando actualización...');
+        // Reintentar en 500ms
+        setTimeout(() => {
+            console.log('🔄 Reintentando actualizar dominanceData...');
+            updateDominanceData(data);
+        }, 500);
+        return;
+    }
+
     // Actualizar valores actuales
     document.getElementById('btc-dominance').textContent = data.btc_dominance.toFixed(1) + '%';
     document.getElementById('eth-dominance').textContent = data.eth_dominance.toFixed(1) + '%';
@@ -411,15 +442,24 @@ function updateDominanceData(data) {
         }
     }
 
+    // Helper function para actualizar elementos de forma segura
+    const safeUpdate = (id, value) => {
+        const elem = document.getElementById(id);
+        if (elem) elem.textContent = value;
+    };
+
+    const safeUpdateClass = (id, value, className) => {
+        const elem = document.getElementById(id);
+        if (elem) {
+            elem.textContent = value;
+            elem.className = className;
+        }
+    };
+
     // Simular cambios (en el original estos vendrían de datos históricos)
-    document.getElementById('btc-change').textContent = '+0.1%';
-    document.getElementById('btc-change').className = 'crypto-change positive';
-    
-    document.getElementById('eth-change').textContent = '-0.1%';
-    document.getElementById('eth-change').className = 'crypto-change negative';
-    
-    document.getElementById('others-change').textContent = '0.0%';
-    document.getElementById('others-change').className = 'crypto-change neutral';
+    safeUpdateClass('btc-change', '+0.1%', 'crypto-change positive');
+    safeUpdateClass('eth-change', '-0.1%', 'crypto-change negative');
+    safeUpdateClass('others-change', '0.0%', 'crypto-change neutral');
 
     // Simular datos históricos (en el original estos vendrían de la API)
     const btc = data.btc_dominance;
@@ -427,29 +467,29 @@ function updateDominanceData(data) {
     const others = data.others_dominance;
 
     // Ayer
-    document.getElementById('yesterday-btc').textContent = (btc - 0.1).toFixed(1) + '%';
-    document.getElementById('yesterday-eth').textContent = (eth + 0.1).toFixed(1) + '%';
-    document.getElementById('yesterday-others').textContent = (others + 0.0).toFixed(1) + '%';
+    safeUpdate('yesterday-btc', (btc - 0.1).toFixed(1) + '%');
+    safeUpdate('yesterday-eth', (eth + 0.1).toFixed(1) + '%');
+    safeUpdate('yesterday-others', (others + 0.0).toFixed(1) + '%');
 
     // Semana pasada
-    document.getElementById('week-btc').textContent = (btc - 0.5).toFixed(1) + '%';
-    document.getElementById('week-eth').textContent = (eth + 0.3).toFixed(1) + '%';
-    document.getElementById('week-others').textContent = (others + 0.2).toFixed(1) + '%';
+    safeUpdate('week-btc', (btc - 0.5).toFixed(1) + '%');
+    safeUpdate('week-eth', (eth + 0.3).toFixed(1) + '%');
+    safeUpdate('week-others', (others + 0.2).toFixed(1) + '%');
 
     // Mes pasado
-    document.getElementById('month-btc').textContent = (btc + 1.2).toFixed(1) + '%';
-    document.getElementById('month-eth').textContent = (eth - 0.8).toFixed(1) + '%';
-    document.getElementById('month-others').textContent = (others - 0.4).toFixed(1) + '%';
+    safeUpdate('month-btc', (btc + 1.2).toFixed(1) + '%');
+    safeUpdate('month-eth', (eth - 0.8).toFixed(1) + '%');
+    safeUpdate('month-others', (others - 0.4).toFixed(1) + '%');
 
     // Máximos del año
-    document.getElementById('max-btc').textContent = (btc + 5.0).toFixed(1) + '%';
-    document.getElementById('max-eth').textContent = (eth + 2.0).toFixed(1) + '%';
-    document.getElementById('max-others').textContent = (others + 3.0).toFixed(1) + '%';
+    safeUpdate('max-btc', (btc + 5.0).toFixed(1) + '%');
+    safeUpdate('max-eth', (eth + 2.0).toFixed(1) + '%');
+    safeUpdate('max-others', (others + 3.0).toFixed(1) + '%');
 
     // Mínimos del año
-    document.getElementById('min-btc').textContent = (btc - 3.0).toFixed(1) + '%';
-    document.getElementById('min-eth').textContent = (eth - 1.5).toFixed(1) + '%';
-    document.getElementById('min-others').textContent = (others - 4.0).toFixed(1) + '%';
+    safeUpdate('min-btc', (btc - 3.0).toFixed(1) + '%');
+    safeUpdate('min-eth', (eth - 1.5).toFixed(1) + '%');
+    safeUpdate('min-others', (others - 4.0).toFixed(1) + '%');
 }
 
 /**
@@ -461,7 +501,10 @@ function displayDominanceData(data) {
     restoreDominanceHTML();
     renderDominanceChart(data.btc_dominance, data.eth_dominance, data.others_dominance);
     updateDominanceData(data);
-    document.getElementById('dominance-last-update').textContent = `Última actualización: ${new Date().toLocaleString('es-ES')}`;
+    const lastUpdateElem = document.getElementById('dominance-last-update');
+    if (lastUpdateElem) {
+        lastUpdateElem.textContent = `Última actualización: ${new Date().toLocaleString('es-ES')}`;
+    }
 }
 
 // Exportar funciones para uso en otros scripts
