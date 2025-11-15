@@ -185,6 +185,15 @@ app.post('/api/bitget', async (req, res) => {
       .update(stringToSign)
       .digest('base64');
 
+    // Logs para debuguear firma
+    console.log('🔐 FIRMA DEBUG:');
+    console.log(`   - Timestamp: ${timestamp}`);
+    console.log(`   - Method: ${method}`);
+    console.log(`   - EndpointPath: ${endpointPath}`);
+    console.log(`   - Body: "${bodyForSignature}"`);
+    console.log(`   - StringToSign: "${stringToSign}"`);
+    console.log(`   - Signature: ${signature}`);
+
     // Headers para Bitget
     const bitgetHeaders = {
       'ACCESS-KEY': apiKey,
@@ -194,10 +203,16 @@ app.post('/api/bitget', async (req, res) => {
       'Content-Type': 'application/json'
     };
 
+    console.log('📤 Headers enviados a Bitget:', {
+      'ACCESS-KEY': '***',
+      'ACCESS-SIGN': signature.substring(0, 10) + '...',
+      'ACCESS-TIMESTAMP': timestamp,
+      'ACCESS-PASSPHRASE': '***'
+    });
+
     // Realizar petición a Bitget (usar fullPath con query string)
     const url = BITGET_BASE + fullPath;
     console.log(`🔗 [${new Date().toISOString()}] ${method} ${url}`);
-    console.log(`📝 Firma calculada con: "${stringToSign}"`);
 
     const bitgetResponse = await fetch(url, {
       method: method,
