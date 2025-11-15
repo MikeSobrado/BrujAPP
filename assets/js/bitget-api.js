@@ -573,6 +573,40 @@ window.initializeSaveKey = function() {
 };
 
 // Inicializar el botón Conectar cuando apicon.html se carga
+// 🎯 Validar campos en tiempo real para Bitget
+window.validateBitgetFields = function() {
+    const apiKeyInput = document.getElementById('bitget-api-key');
+    const apiSecretInput = document.getElementById('bitget-api-secret');
+    const passphraseInput = document.getElementById('bitget-passphrase');
+    const statusDiv = document.getElementById('key-status');
+    
+    if (!apiKeyInput || !apiSecretInput || !passphraseInput || !statusDiv) return;
+    
+    const apiKey = apiKeyInput.value.trim();
+    const apiSecret = apiSecretInput.value.trim();
+    const passphrase = passphraseInput.value.trim();
+    
+    if (apiKey && apiSecret && passphrase) {
+        // Todos los campos están completos
+        statusDiv.innerHTML = '<div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>✅ Credenciales guardadas. Listo para conectar.</div>';
+        statusDiv.style.display = 'block';
+    } else if (statusDiv.innerHTML.includes('Credenciales guardadas')) {
+        // Si había mensaje de éxito pero ahora falta un campo, ocultarlo
+        statusDiv.style.display = 'none';
+    }
+};
+
+// 🎯 Agregar validación en tiempo real a campos de Bitget
+window.attachBitgetFieldListeners = function() {
+    const apiKeyInput = document.getElementById('bitget-api-key');
+    const apiSecretInput = document.getElementById('bitget-api-secret');
+    const passphraseInput = document.getElementById('bitget-passphrase');
+    
+    if (apiKeyInput) apiKeyInput.addEventListener('input', window.validateBitgetFields);
+    if (apiSecretInput) apiSecretInput.addEventListener('input', window.validateBitgetFields);
+    if (passphraseInput) passphraseInput.addEventListener('input', window.validateBitgetFields);
+};
+
 window.initializeConnectButton = function() {
     console.log('🔧 initializeConnectButton llamada');
     const connectBtn = document.getElementById('connect-btn');
@@ -587,6 +621,9 @@ window.initializeConnectButton = function() {
     }
     
     console.log('✅ Asignando evento al botón Conectar');
+    
+    // 🎯 Adjuntar listeners a campos de Bitget
+    window.attachBitgetFieldListeners();
     
     connectBtn.addEventListener('click', async (event) => {
         event.preventDefault();

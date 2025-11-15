@@ -213,6 +213,25 @@ if (document.readyState === 'loading') {
     }
 });
 
+// ===== VALIDACIÓN EN TIEMPO REAL PARA CMC =====
+window.validateCMCField = function() {
+    const cmcKeyInput = document.getElementById('coinmarketcap-api-key');
+    const statusDiv = document.getElementById('coinmarketcap-status');
+    
+    if (!cmcKeyInput || !statusDiv) return;
+    
+    const cmcKey = cmcKeyInput.value.trim();
+    
+    if (cmcKey) {
+        // Mostrar mensaje de éxito cuando hay API key
+        statusDiv.innerHTML = '<div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>✅ Credenciales guardadas. Listo para conectar.</div>';
+        statusDiv.style.display = 'block';
+    } else if (statusDiv.innerHTML.includes('Credenciales guardadas')) {
+        // Ocultar si se borra el campo
+        statusDiv.style.display = 'none';
+    }
+};
+
 // ===== BOTÓN PROBAR COINMARKETCAP =====
 function initializeTestCMCButton() {
     console.log('[APICON] 🔧 Inicializando botón de prueba CoinMarketCap...');
@@ -222,6 +241,12 @@ function initializeTestCMCButton() {
         console.warn('[APICON] ⚠️ test-cmc-btn no encontrado, reintentando en 500ms...');
         setTimeout(initializeTestCMCButton, 500);
         return;
+    }
+    
+    // 🎯 Agregar listener para validación en tiempo real
+    const cmcKeyInput = document.getElementById('coinmarketcap-api-key');
+    if (cmcKeyInput) {
+        cmcKeyInput.addEventListener('input', window.validateCMCField);
     }
     
     testBtn.addEventListener('click', async (event) => {
