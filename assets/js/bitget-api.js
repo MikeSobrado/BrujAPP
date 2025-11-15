@@ -206,8 +206,21 @@ function initBitgetAPI() {
             }
 
             const data = await res.json();
-            console.log('📊 Respuesta de posiciones:', data);
-            return data;
+            console.log('📊 Respuesta de posiciones (bruto):', data);
+            
+            // Bitget devuelve: { code, msg, data: [...] }
+            // Extraer el array de posiciones
+            if (data && data.data && Array.isArray(data.data)) {
+                console.log('✅ Array de posiciones extraído:', data.data.length, 'posiciones');
+                return data.data;
+            } else if (Array.isArray(data)) {
+                // Si ya es un array, devolverlo directamente
+                console.log('✅ Respuesta ya es un array:', data.length, 'posiciones');
+                return data;
+            } else {
+                console.warn('⚠️ Respuesta inesperada de Bitget:', data);
+                throw new Error('Formato de respuesta inesperado de Bitget');
+            }
         } catch (e) {
             console.error('❌ Error en getAllOrders:', e);
             throw e;
