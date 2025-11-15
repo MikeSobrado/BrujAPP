@@ -61,6 +61,38 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('shown.bs.tab', function(e) {
     if (e.target && (e.target.id === 'graficas-tab' || e.target.getAttribute('data-bs-target') === '#graficas')) {
         console.log('✓ Pestaña de gráficas activada');
-        loadChartsFromSession();
+        const hadCache = loadChartsFromSession();
+        
+        // Si no hay datos en caché, cargar
+        if (!hadCache && typeof fetchDominance === 'function') {
+            console.log('📊 Cargando datos frescos al activar pestaña...');
+            fetchDominance();
+        }
     }
 });
+
+// También hacer que fetchDominance se ejecute apenas este script se carga
+// Por si el componente se carga después de DOMContentLoaded
+if (document.readyState === 'loading') {
+    // Aún se está cargando el DOM
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('✓ [graficas-init] DOM completamente cargado');
+        const hadCache = loadChartsFromSession();
+        if (!hadCache && typeof fetchDominance === 'function') {
+            setTimeout(() => {
+                console.log('📊 [graficas-init] Iniciando fetchDominance()...');
+                fetchDominance();
+            }, 500);
+        }
+    });
+} else {
+    // El DOM ya está cargado (el script se cargó después)
+    console.log('✓ [graficas-init] Ejecutando inmediatamente (DOM ya cargado)');
+    const hadCache = loadChartsFromSession();
+    if (!hadCache && typeof fetchDominance === 'function') {
+        setTimeout(() => {
+            console.log('📊 [graficas-init] Iniciando fetchDominance()...');
+            fetchDominance();
+        }, 500);
+    }
+}
