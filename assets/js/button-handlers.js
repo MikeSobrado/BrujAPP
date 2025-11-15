@@ -15,6 +15,12 @@ document.addEventListener('click', (e) => {
     const buttonId = target.id;
     const buttonText = target.textContent.toLowerCase();
     
+    // 🚫 EXCLUIR botón CMC - tiene su propio handler en apicon-init.js
+    if (buttonId === 'cmc-connect-btn') {
+        console.log('🔘 Botón CMC excluido de delegación, tiene handler independiente');
+        return;
+    }
+    
     // Botón: Crear Llave
     if (buttonId === 'save-key-btn' || buttonText.includes('crear llave')) {
         console.log('🔘 Click en botón Crear Llave (delegación)');
@@ -37,9 +43,9 @@ document.addEventListener('click', (e) => {
         }
     }
     
-    // Botón: Conectar
-    if (buttonId === 'connect-btn' || buttonText.includes('conectar')) {
-        console.log('🔘 Click en botón Conectar (delegación)');
+    // Botón: Conectar (SOLO para Bitget - ID debe ser exactamente 'connect-btn')
+    if (buttonId === 'connect-btn') {
+        console.log('🔘 Click en botón Conectar Bitget (delegación)');
         e.preventDefault();
         
         // Disparar la lógica de conexión desde bitget-api.js
@@ -122,12 +128,7 @@ document.addEventListener('click', (e) => {
                             apiKeyInput.value = '';
                             apiSecretInput.value = '';
                             passphraseInput.value = '';
-                            // También limpiar el campo de CoinMarketCap
-                            const cmcKeyInput = document.getElementById('coinmarketcap-api-key');
-                            if (cmcKeyInput) {
-                                cmcKeyInput.value = '';
-                            }
-                            console.log('✅ Campos limpiados (incluyendo CoinMarketCap)');
+                            console.log('✅ Campos de Bitget limpiados');
                         }, 100);
                     } catch (error) {
                         console.error('❌ Error al cargar posiciones:', error);

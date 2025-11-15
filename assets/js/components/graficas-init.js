@@ -38,61 +38,8 @@ function loadChartsFromSession() {
     return false;
 }
 
-// Cargar datos al abrir la pestaña
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('✓ Pestaña de gráficas cargada');
-    const hadCache = loadChartsFromSession();
-    
-    // Si no había datos en caché, cargar datos frescos
-    if (!hadCache) {
-        console.log('📡 No hay datos en caché, cargando desde APIs...');
-        
-        // Cargar dominancia (CoinMarketCap)
-        if (typeof fetchDominance === 'function') {
-            setTimeout(() => {
-                console.log('📊 Iniciando fetchDominance()...');
-                fetchDominance();
-            }, 500);
-        }
-    }
-});
+// NO HACER LLAMADAS AUTOMÁTICAS A fetchDominance
+// Solo se ejecuta cuando el usuario clickea el botón "Conectar" de CMC
+// Eol manual del usuario
 
-// Escuchar cuando se activa la pestaña de gráficas (cambio de tab)
-document.addEventListener('shown.bs.tab', function(e) {
-    if (e.target && (e.target.id === 'graficas-tab' || e.target.getAttribute('data-bs-target') === '#graficas')) {
-        console.log('✓ Pestaña de gráficas activada');
-        const hadCache = loadChartsFromSession();
-        
-        // Si no hay datos en caché, cargar
-        if (!hadCache && typeof fetchDominance === 'function') {
-            console.log('📊 Cargando datos frescos al activar pestaña...');
-            fetchDominance();
-        }
-    }
-});
-
-// También hacer que fetchDominance se ejecute apenas este script se carga
-// Por si el componente se carga después de DOMContentLoaded
-if (document.readyState === 'loading') {
-    // Aún se está cargando el DOM
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('✓ [graficas-init] DOM completamente cargado');
-        const hadCache = loadChartsFromSession();
-        if (!hadCache && typeof fetchDominance === 'function') {
-            setTimeout(() => {
-                console.log('📊 [graficas-init] Iniciando fetchDominance()...');
-                fetchDominance();
-            }, 500);
-        }
-    });
-} else {
-    // El DOM ya está cargado (el script se cargó después)
-    console.log('✓ [graficas-init] Ejecutando inmediatamente (DOM ya cargado)');
-    const hadCache = loadChartsFromSession();
-    if (!hadCache && typeof fetchDominance === 'function') {
-        setTimeout(() => {
-            console.log('📊 [graficas-init] Iniciando fetchDominance()...');
-            fetchDominance();
-        }, 500);
-    }
-}
+console.log('✓ Pestaña de gráficas cargada (fetchDominance solo manual)');

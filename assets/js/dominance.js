@@ -52,9 +52,8 @@ async function fetchDominance(forceRefresh = false) {
 
         let dominanceData;
 
-        // Obtener la clave de CMC del input del formulario (más directo que sessionStorage)
-        const cmcApiKeyInput = document.getElementById('coinmarketcap-api-key');
-        let cmcApiKey = cmcApiKeyInput ? cmcApiKeyInput.value.trim() : '';
+        // Obtener la clave de CMC de sessionStorage (guardada al conectar)
+        let cmcApiKey = sessionStorage.getItem('coinmarketcap_api_key') || '';
         
         console.log('🔐 API Key de CoinMarketCap:', cmcApiKey ? '✓ (longitud: ' + cmcApiKey.length + ')' : '✗ NO CONFIGURADA');
 

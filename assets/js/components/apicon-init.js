@@ -140,7 +140,7 @@ function setupKeyFileInput() {
                         document.getElementById('bitget-api-secret').value = decryptedData.bitget.apiSecret || '';
                         document.getElementById('bitget-passphrase').value = decryptedData.bitget.passphrase || '';
                         document.getElementById('bitget-sandbox').value = decryptedData.bitget.sandbox ? 'true' : 'false';
-                        document.getElementById('coinmarketcap-api-key').value = decryptedData.coinmarketcap?.apiKey || '';
+                        document.getElementById('cmc-api-key').value = decryptedData.coinmarketcap?.apiKey || '';
                         
                         console.log('[APICON] ✅ Llave descifrada y cargada');
                         if (statusDiv) {
@@ -166,7 +166,7 @@ function setupKeyFileInput() {
                     document.getElementById('bitget-api-secret').value = content.bitget.apiSecret || '';
                     document.getElementById('bitget-passphrase').value = content.bitget.passphrase || '';
                     document.getElementById('bitget-sandbox').value = content.bitget.sandbox ? 'true' : 'false';
-                    document.getElementById('coinmarketcap-api-key').value = content.coinmarketcap?.apiKey || '';
+                    document.getElementById('cmc-api-key').value = content.coinmarketcap?.apiKey || '';
                     
                     console.log('[APICON] ✅ Llave cargada (sin cifrar)');
                     if (statusDiv) {
@@ -213,151 +213,93 @@ if (document.readyState === 'loading') {
     }
 });
 
-// ===== VALIDACIÓN EN TIEMPO REAL PARA CMC =====
-window.validateCMCField = function() {
-    const cmcKeyInput = document.getElementById('coinmarketcap-api-key');
-    const statusDiv = document.getElementById('coinmarketcap-status');
-    
-    if (!cmcKeyInput || !statusDiv) return;
-    
-    const cmcKey = cmcKeyInput.value.trim();
-    
-    if (cmcKey) {
-        // Mostrar mensaje de éxito cuando hay API key
-        statusDiv.innerHTML = '<div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>✅ Credenciales guardadas. Listo para conectar.</div>';
-        statusDiv.style.display = 'block';
-    } else if (statusDiv.innerHTML.includes('Credenciales guardadas')) {
-        // Ocultar si se borra el campo
-        statusDiv.style.display = 'none';
-    }
-};
+// ===== BOTÓN CONECTAR COINMARKETCAP (NUEVO) =====
+if (typeof window.cmcConnectInitialized === 'undefined') {
+    window.cmcConnectInitialized = false;
+}
 
-// ===== BOTÓN PROBAR COINMARKETCAP =====
-function initializeTestCMCButton() {
-    console.log('[APICON] 🔧 Inicializando botón de prueba CoinMarketCap...');
-    
-    const testBtn = document.getElementById('test-cmc-btn');
-    if (!testBtn) {
-        console.warn('[APICON] ⚠️ test-cmc-btn no encontrado, reintentando en 500ms...');
-        setTimeout(initializeTestCMCButton, 500);
+function initializeCMCConnectButton() {
+    if (window.cmcConnectInitialized) {
+        console.log('[APICON] ⚠️ Botón CMC ya inicializado, evitando duplicación');
         return;
     }
     
-    // 🎯 Agregar listener para validación en tiempo real
-    const cmcKeyInput = document.getElementById('coinmarketcap-api-key');
-    if (cmcKeyInput) {
-        cmcKeyInput.addEventListener('input', window.validateCMCField);
+    console.log('[APICON] 🔧 Inicializando botón Conectar CMC...');
+    
+    const cmcBtn = document.getElementById('cmc-connect-btn');
+    if (!cmcBtn) {
+        console.warn('[APICON] ⚠️ cmc-connect-btn no encontrado, reintentando en 500ms...');
+        setTimeout(initializeCMCConnectButton, 500);
+        return;
     }
     
-    testBtn.addEventListener('click', async (event) => {
+    window.cmcConnectInitialized = true;
+    
+    cmcBtn.addEventListener('click', async (event) => {
         event.preventDefault();
-        console.log('[APICON] 🧪 Botón Probar CoinMarketCap clickeado');
+        event.stopPropagation();
+        console.log('[APICON] 🔌 Botón CMC Conectar clickeado');
         
-        const cmcKeyInput = document.getElementById('coinmarketcap-api-key');
+        const cmcKeyInput = document.getElementById('cmc-api-key');
         const cmcKey = cmcKeyInput ? cmcKeyInput.value.trim() : '';
-        const statusDiv = document.getElementById('coinmarketcap-status');
+        const statusDiv = document.getElementById('cmc-status');
         
         if (!cmcKey) {
-            console.warn('[APICON] ⚠️ API Key de CoinMarketCap no ingresada');
+            console.warn('[APICON] ⚠️ API Key de CMC vacía');
             if (statusDiv) {
-                statusDiv.innerHTML = '<div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-2"></i>⚠️ Ingresa tu API Key de CoinMarketCap primero</div>';
+                statusDiv.innerHTML = '<div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-2"></i>⚠️ Ingresa tu API Key primero</div>';
                 statusDiv.style.display = 'block';
             }
             return;
         }
         
-        testBtn.disabled = true;
         if (statusDiv) {
-            statusDiv.innerHTML = '<div class="alert alert-info"><i class="bi bi-hourglass-split me-2"></i>Probando conexión a CoinMarketCap...</div>';
+            statusDiv.innerHTML = '<div class="alert alert-info"><i class="bi bi-hourglass-split me-2"></i>Conectando a CoinMarketCap...</div>';
             statusDiv.style.display = 'block';
         }
+        cmcBtn.disabled = true;
         
         try {
-            console.log('[APICON] 🧪 Llamando a testCoinMarketCapConnection...');
+            sessionStorage.setItem('coinmarketcap_api_key', cmcKey);
+            console.log('[APICON] 💾 API Key guardada en sessionStorage (sesión actual)');
             
-            if (!window.testCoinMarketCapConnection) {
-                throw new Error('testCoinMarketCapConnection no disponible');
-            }
-            
-            const result = await window.testCoinMarketCapConnection(cmcKey);
-            console.log('[APICON] 📊 Resultado de prueba:', result);
-            
-            if (result.success) {
+            if (typeof window.fetchDominance === 'function') {
+                console.log('[APICON] 🔄 Llamando a fetchDominance...');
+                await window.fetchDominance(true);
+                
                 console.log('[APICON] ✅ Conexión exitosa a CoinMarketCap');
                 if (statusDiv) {
-                    statusDiv.innerHTML = `
-                        <div class="alert alert-success">
-                            <i class="bi bi-check-circle me-2"></i><strong>✅ Conectado a CoinMarketCap</strong>
-                            <br><small>
-                                <i class="bi bi-coin me-1"></i><strong>Bitcoin:</strong> ${result.dominance.btc}%
-                                <br><i class="bi bi-circle me-1"></i><strong>Ethereum:</strong> ${result.dominance.eth}%
-                                <br><i class="bi bi-collection me-1"></i><strong>Otros:</strong> ${result.dominance.others}%
-                                <br><i class="bi bi-hourglass-end me-1"></i><small>Respuesta en ${result.duration}ms</small>
-                            </small>
-                        </div>
-                    `;
+                    statusDiv.innerHTML = '<div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>✅ Conectado correctamente</div>';
                     statusDiv.style.display = 'block';
                 }
                 
-                // 🧹 Limpiar campo de CMC después de conexión exitosa
-                console.log('[APICON] 🧹 Limpiando campo de CMC API Key...');
+                // Limpiar el campo después de éxito
                 setTimeout(() => {
-                    if (cmcKeyInput) {
-                        cmcKeyInput.value = '';
-                        console.log('[APICON] ✅ Campo de CMC limpiado');
-                    }
-                }, 0);
+                    if (cmcKeyInput) cmcKeyInput.value = '';
+                    console.log('[APICON] 🧹 Campo de CMC limpiado');
+                }, 500);
             } else {
-                console.error('[APICON] ❌ Error en prueba:', result.message);
-                if (statusDiv) {
-                    let detailsHtml = `
-                        <div class="alert alert-danger">
-                            <i class="bi bi-exclamation-circle me-2"></i><strong>❌ Error de conexión</strong>
-                            <br><small>${result.message}</small>
-                    `;
-                    
-                    // Mostrar detalles del formato de la API Key
-                    if (result.keyFormat) {
-                        detailsHtml += `
-                            <br><br><strong>Formato detectado:</strong>
-                            <ul style="margin-bottom: 0; margin-top: 5px; font-size: 0.85em;">
-                                <li><strong>Tipo:</strong> ${result.keyFormat.format}</li>
-                                <li><strong>Longitud:</strong> ${result.keyFormat.length} caracteres</li>
-                                <li><strong>Estructura:</strong> ${result.keyFormat.structure}</li>
-                                <li><strong>Patrón esperado:</strong> ${result.keyFormat.pattern}</li>
-                            </ul>
-                        `;
-                    }
-                    
-                    detailsHtml += `</div>`;
-                    statusDiv.innerHTML = detailsHtml;
-                    statusDiv.style.display = 'block';
-                }
+                throw new Error('fetchDominance no disponible');
             }
         } catch (error) {
-            console.error('[APICON] ❌ Error:', error);
+            console.error('[APICON] ❌ Error:', error.message);
             if (statusDiv) {
-                statusDiv.innerHTML = `
-                    <div class="alert alert-danger">
-                        <i class="bi bi-exclamation-circle me-2"></i><strong>❌ Error en la prueba</strong>
-                        <br><small>${error.message}</small>
-                    </div>
-                `;
+                statusDiv.innerHTML = '<div class="alert alert-danger"><i class="bi bi-exclamation-circle me-2"></i>❌ Error: ' + error.message + '</div>';
                 statusDiv.style.display = 'block';
             }
         } finally {
-            testBtn.disabled = false;
+            cmcBtn.disabled = false;
         }
     });
     
-    console.log('[APICON] ✅ Botón Probar CoinMarketCap inicializado');
+    console.log('[APICON] ✅ Botón CMC inicializado');
 }
 
-// Inicializar el botón cuando el documento esté listo
+// Inicializar cuando el documento esté listo
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeTestCMCButton);
+    document.addEventListener('DOMContentLoaded', initializeCMCConnectButton);
 } else {
-    initializeTestCMCButton();
+    initializeCMCConnectButton();
 }
 
 console.log('[APICON] ✅ Script apicon.html cargado');

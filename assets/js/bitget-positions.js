@@ -180,9 +180,6 @@ window.renderPositionsStats = function(positions) {
             </div>
         </div>
     </div>
-    <div class="alert alert-info mt-3">
-        <i class="bi bi-info-circle me-2"></i><small>Estadísticas calculadas de <strong>${positions.length}</strong> posiciones cerradas</small>
-    </div>
     `;
     
     container.innerHTML = html;

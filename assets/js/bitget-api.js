@@ -274,7 +274,7 @@ window.handleSaveKey = function() {
     const apiKey = document.getElementById('bitget-api-key').value.trim();
     const apiSecret = document.getElementById('bitget-api-secret').value.trim();
     const passphrase = document.getElementById('bitget-passphrase').value.trim();
-    const coinmarketcapKey = document.getElementById('coinmarketcap-api-key').value.trim();
+    const coinmarketcapKey = document.getElementById('cmc-api-key').value.trim();
     const sandbox = document.getElementById('bitget-sandbox').value;
     
     const statusDiv = document.getElementById('key-status');
@@ -452,7 +452,7 @@ window.initializeFileInputHandler = function() {
                         document.getElementById('bitget-api-secret').value = decryptedData.bitget.apiSecret || '';
                         document.getElementById('bitget-passphrase').value = decryptedData.bitget.passphrase || '';
                         document.getElementById('bitget-sandbox').value = decryptedData.bitget.sandbox ? 'true' : 'false';
-                        document.getElementById('coinmarketcap-api-key').value = decryptedData.coinmarketcap?.apiKey || '';
+                        document.getElementById('cmc-api-key').value = decryptedData.coinmarketcap?.apiKey || '';
                         
                         console.log('✅ Llave descifrada y cargada correctamente');
                         if (statusDiv) {
@@ -485,7 +485,7 @@ window.initializeFileInputHandler = function() {
                     document.getElementById('bitget-api-secret').value = content.bitget.apiSecret || '';
                     document.getElementById('bitget-passphrase').value = content.bitget.passphrase || '';
                     document.getElementById('bitget-sandbox').value = content.bitget.sandbox ? 'true' : 'false';
-                    document.getElementById('coinmarketcap-api-key').value = content.coinmarketcap?.apiKey || '';
+                    document.getElementById('cmc-api-key').value = content.coinmarketcap?.apiKey || '';
                     
                     console.log('⚠️ Llave cargada pero sin cifrar. Considera guardarla de nuevo con cifrado.');
                     if (statusDiv) {
@@ -573,40 +573,6 @@ window.initializeSaveKey = function() {
 };
 
 // Inicializar el botón Conectar cuando apicon.html se carga
-// 🎯 Validar campos en tiempo real para Bitget
-window.validateBitgetFields = function() {
-    const apiKeyInput = document.getElementById('bitget-api-key');
-    const apiSecretInput = document.getElementById('bitget-api-secret');
-    const passphraseInput = document.getElementById('bitget-passphrase');
-    const statusDiv = document.getElementById('key-status');
-    
-    if (!apiKeyInput || !apiSecretInput || !passphraseInput || !statusDiv) return;
-    
-    const apiKey = apiKeyInput.value.trim();
-    const apiSecret = apiSecretInput.value.trim();
-    const passphrase = passphraseInput.value.trim();
-    
-    if (apiKey && apiSecret && passphrase) {
-        // Todos los campos están completos
-        statusDiv.innerHTML = '<div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>✅ Credenciales guardadas. Listo para conectar.</div>';
-        statusDiv.style.display = 'block';
-    } else if (statusDiv.innerHTML.includes('Credenciales guardadas')) {
-        // Si había mensaje de éxito pero ahora falta un campo, ocultarlo
-        statusDiv.style.display = 'none';
-    }
-};
-
-// 🎯 Agregar validación en tiempo real a campos de Bitget
-window.attachBitgetFieldListeners = function() {
-    const apiKeyInput = document.getElementById('bitget-api-key');
-    const apiSecretInput = document.getElementById('bitget-api-secret');
-    const passphraseInput = document.getElementById('bitget-passphrase');
-    
-    if (apiKeyInput) apiKeyInput.addEventListener('input', window.validateBitgetFields);
-    if (apiSecretInput) apiSecretInput.addEventListener('input', window.validateBitgetFields);
-    if (passphraseInput) passphraseInput.addEventListener('input', window.validateBitgetFields);
-};
-
 window.initializeConnectButton = function() {
     console.log('🔧 initializeConnectButton llamada');
     const connectBtn = document.getElementById('connect-btn');
@@ -621,9 +587,6 @@ window.initializeConnectButton = function() {
     }
     
     console.log('✅ Asignando evento al botón Conectar');
-    
-    // 🎯 Adjuntar listeners a campos de Bitget
-    window.attachBitgetFieldListeners();
     
     connectBtn.addEventListener('click', async (event) => {
         event.preventDefault();
