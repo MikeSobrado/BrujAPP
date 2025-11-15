@@ -20,25 +20,31 @@ let dominanceChart = null;
 /**
  * Función principal para obtener y mostrar datos de dominancia.
  * Adaptada para funcionar en local y en GitHub Pages
+ * @param {boolean} forceRefresh - Si es true, ignora la caché y hace una llamada a la API
  */
-async function fetchDominance() {
+async function fetchDominance(forceRefresh = false) {
     try {
-        console.log('🔄 Cargando datos de dominancia...');
+        console.log('🔄 Cargando datos de dominancia...', forceRefresh ? '(FORZANDO ACTUALIZACIÓN)' : '');
         console.log('🌍 Hostname:', window.location.hostname);
         console.log('🔍 Es desarrollo local:', isLocalDevelopment);
         
         // Mostrar loading state
         showDominanceLoading();
         
-        // Intentar usar caché primero (solo si estamos en el mismo entorno)
-        const cachedData = getDominanceFromCache();
-        if (cachedData && !shouldSkipCache()) {
-            console.log('📁 Usando datos de dominancia desde caché');
-            restoreDominanceHTML();
-            renderDominanceChart(cachedData.btc_dominance, cachedData.eth_dominance, cachedData.others_dominance);
-            updateDominanceData(cachedData);
-            document.getElementById('dominance-last-update').textContent = `Última actualización: ${new Date().toLocaleString('es-ES')}`;
-            return;
+        // Intentar usar caché primero SOLO si no está siendo forzada la actualización
+        if (!forceRefresh) {
+            const cachedData = getDominanceFromCache();
+            if (cachedData && !shouldSkipCache()) {
+                console.log('📁 Usando datos de dominancia desde caché');
+                restoreDominanceHTML();
+                renderDominanceChart(cachedData.btc_dominance, cachedData.eth_dominance, cachedData.others_dominance);
+                updateDominanceData(cachedData);
+                document.getElementById('dominance-last-update').textContent = `Última actualización: ${new Date().toLocaleString('es-ES')}`;
+                return;
+            }
+        } else {
+            console.log('🔄 Limpiando caché anterior debido a forceRefresh=true');
+            localStorage.removeItem('dominanceData');
         }
 
         let dominanceData;
@@ -460,6 +466,36 @@ function displayDominanceData(data) {
 
 // Exportar funciones para uso en otros scripts
 window.fetchDominance = fetchDominance;
+
+// Ejecutar automáticamente cuando se carga la página (con espera para asegurar que el DOM está listo)
+console.log('✓ dominance.js cargado, programando fetchDominance()');
+
+// Opción 1: Si el DOM ya está cargado
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    console.log('📊 [dominance.js] DOM ya está listo, ejecutando fetchDominance en 2 segundos');
+    setTimeout(() => {
+        console.log('📊 [dominance.js] Ejecutando fetchDominance ahora con forceRefresh=true');
+        fetchDominance(true); // forceRefresh = true para datos frescos
+    }, 2000);
+} else {
+    // Opción 2: Esperar a que el DOM esté cargado
+    console.log('📊 [dominance.js] Esperando a que DOM esté listo...');
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('📊 [dominance.js] DOM cargado, ejecutando fetchDominance en 1 segundo');
+        setTimeout(() => {
+            console.log('📊 [dominance.js] Ejecutando fetchDominance ahora con forceRefresh=true');
+            fetchDominance(true); // forceRefresh = true para datos frescos
+        }, 1000);
+    });
+}
+
+// Opción 3: También escuchar cuando se hace visible la pestaña de gráficas
+document.addEventListener('shown.bs.tab', (e) => {
+    if (e.target && (e.target.id === 'graficas-tab' || e.target.getAttribute('data-bs-target') === '#graficas')) {
+        console.log('📊 [dominance.js] Pestaña de gráficas activada, ejecutando fetchDominance con actualización forzada');
+        fetchDominance(true); // forceRefresh = true para datos frescos al cambiar tab
+    }
+});
 window.displayDominanceData = displayDominanceData;
 
 /**
