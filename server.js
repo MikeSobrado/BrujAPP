@@ -176,6 +176,7 @@ app.post('/api/bitget', async (req, res) => {
     }
 
     // Generar firma (HMAC-SHA256)
+    // IMPORTANTE: La firma se calcula con endpointPath (sin query string), no con fullPath
     const timestamp = Date.now().toString();
     const bodyForSignature = method === 'GET' ? '' : (typeof bodyData === 'string' ? bodyData : JSON.stringify(bodyData));
     const stringToSign = timestamp + method + endpointPath + bodyForSignature;
@@ -193,9 +194,10 @@ app.post('/api/bitget', async (req, res) => {
       'Content-Type': 'application/json'
     };
 
-    // Realizar petición a Bitget
+    // Realizar petición a Bitget (usar fullPath con query string)
     const url = BITGET_BASE + fullPath;
     console.log(`🔗 [${new Date().toISOString()}] ${method} ${url}`);
+    console.log(`📝 Firma calculada con: "${stringToSign}"`);
 
     const bitgetResponse = await fetch(url, {
       method: method,
