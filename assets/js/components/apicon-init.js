@@ -268,14 +268,11 @@ function initializeCMCConnectButton() {
                 await window.fetchDominance(true);
                 
                 console.log('[APICON] ✅ Conexión exitosa a CoinMarketCap');
-                if (statusDiv) {
-                    statusDiv.innerHTML = '<div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>✅ Conectado correctamente</div>';
-                    statusDiv.style.display = 'block';
-                }
                 
                 // Limpiar el campo después de éxito
                 setTimeout(() => {
                     if (cmcKeyInput) cmcKeyInput.value = '';
+                    if (statusDiv) statusDiv.style.display = 'none';
                     console.log('[APICON] 🧹 Campo de CMC limpiado');
                 }, 500);
             } else {

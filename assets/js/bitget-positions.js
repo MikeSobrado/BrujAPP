@@ -115,7 +115,7 @@ window.renderPositionsStats = function(positions) {
     <div class="row">
         <div class="col-md-3 col-sm-6 mb-3">
             <div class="card border-0 bg-light">
-                <div class="card-body p-3">
+                <div class="card-body p-3 text-center">
                     <small class="text-muted">P&L Total</small>
                     <h5 class="mb-0 text-${pnlClass}"><strong>${parseFloat(totalPnL).toFixed(2)}</strong></h5>
                 </div>
@@ -123,7 +123,7 @@ window.renderPositionsStats = function(positions) {
         </div>
         <div class="col-md-3 col-sm-6 mb-3">
             <div class="card border-0 bg-light">
-                <div class="card-body p-3">
+                <div class="card-body p-3 text-center">
                     <small class="text-muted">Win Rate</small>
                     <h5 class="mb-0"><strong>${winRate}%</strong> <small>(${winPositions}/${positions.length})</small></h5>
                 </div>
@@ -131,7 +131,7 @@ window.renderPositionsStats = function(positions) {
         </div>
         <div class="col-md-3 col-sm-6 mb-3">
             <div class="card border-0 bg-light">
-                <div class="card-body p-3">
+                <div class="card-body p-3 text-center">
                     <small class="text-muted">Promedio P&L</small>
                     <h5 class="mb-0"><strong>${parseFloat(avgPnL).toFixed(2)}</strong></h5>
                 </div>
@@ -139,7 +139,7 @@ window.renderPositionsStats = function(positions) {
         </div>
         <div class="col-md-3 col-sm-6 mb-3">
             <div class="card border-0 bg-light">
-                <div class="card-body p-3">
+                <div class="card-body p-3 text-center">
                     <small class="text-muted">Total Posiciones</small>
                     <h5 class="mb-0"><strong>${positions.length}</strong></h5>
                 </div>
@@ -149,7 +149,7 @@ window.renderPositionsStats = function(positions) {
     <div class="row">
         <div class="col-md-3 col-sm-6 mb-3">
             <div class="card border-0 bg-light">
-                <div class="card-body p-3">
+                <div class="card-body p-3 text-center">
                     <small class="text-muted">Long</small>
                     <h5 class="mb-0 text-success"><strong>${longCount}</strong></h5>
                 </div>
@@ -157,7 +157,7 @@ window.renderPositionsStats = function(positions) {
         </div>
         <div class="col-md-3 col-sm-6 mb-3">
             <div class="card border-0 bg-light">
-                <div class="card-body p-3">
+                <div class="card-body p-3 text-center">
                     <small class="text-muted">Short</small>
                     <h5 class="mb-0 text-danger"><strong>${shortCount}</strong></h5>
                 </div>
@@ -165,7 +165,7 @@ window.renderPositionsStats = function(positions) {
         </div>
         <div class="col-md-3 col-sm-6 mb-3">
             <div class="card border-0 bg-light">
-                <div class="card-body p-3">
+                <div class="card-body p-3 text-center">
                     <small class="text-muted">Máx Ganancia</small>
                     <h5 class="mb-0 text-success"><strong>${maxProfit === -Infinity ? 'N/A' : parseFloat(maxProfit).toFixed(2)}</strong></h5>
                 </div>
@@ -173,7 +173,7 @@ window.renderPositionsStats = function(positions) {
         </div>
         <div class="col-md-3 col-sm-6 mb-3">
             <div class="card border-0 bg-light">
-                <div class="card-body p-3">
+                <div class="card-body p-3 text-center">
                     <small class="text-muted">Máx Pérdida</small>
                     <h5 class="mb-0 text-danger"><strong>${maxLoss === Infinity ? 'N/A' : parseFloat(maxLoss).toFixed(2)}</strong></h5>
                 </div>

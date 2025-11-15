@@ -998,6 +998,8 @@
     transform: scale(1.1);
 }
 
+
+
 /* Estilos para el botón de añadir indicador */
 #add-indicator-btn {
     background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
@@ -1020,4 +1022,26 @@
     transform: translateY(0);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
+
+/* Estilos para las estadísticas rápidas */
+#posiciones-stats-container h5 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+    line-height: 1.2;
+}
+
+#posiciones-stats-container h5 small {
+    display: inline;
+    font-size: 0.75rem;
+    margin-left: 0.25rem;
+    font-weight: 400;
+}
+
+#posiciones-stats-container small {
+    font-size: 0.95rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
 
