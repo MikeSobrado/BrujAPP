@@ -90,7 +90,11 @@ app.get('/api/global-metrics', async (req, res) => {
     // Obtener la clave desde query parameter o desde .env (backwards compatibility)
     const apiKey = req.query.key || process.env.CMC_API_KEY;
     
+    console.log(`📡 /api/global-metrics - Request recibido`);
+    console.log(`   - API Key provided: ${apiKey ? '✓ (length: ' + apiKey.length + ')' : '✗'}`);
+    
     if (!apiKey) {
+      console.log(`   ❌ API Key requerida pero no proporcionada`);
       return res.status(401).json({ 
         error: 'API key required', 
         message: 'Proporciona la clave CMC como parámetro query o configúrala en .env'
@@ -98,6 +102,7 @@ app.get('/api/global-metrics', async (req, res) => {
     }
 
     const url = `${CMC_BASE}/v1/global-metrics/quotes/latest`;
+    console.log(`   📤 Enviando request a: ${url}`);
 
     const response = await fetch(url, {
       method: 'GET',
@@ -110,8 +115,22 @@ app.get('/api/global-metrics', async (req, res) => {
     const body = await response.text();
     const duration = Date.now() - startTime;
 
-    // Log exitoso
-    console.log(`✅ [${new Date().toISOString()}] API Global Metrics - ${response.status} (${duration}ms)`);
+    console.log(`   📊 Respuesta de CMC: ${response.status} (${duration}ms)`);
+    console.log(`   📄 Body length: ${body.length} bytes`);
+    
+    // Log de respuesta (primeros 500 caracteres para debug)
+    if (response.status === 200) {
+      console.log(`   ✅ Respuesta exitosa`);
+      try {
+        const json = JSON.parse(body);
+        console.log(`   📋 Estructura: ${JSON.stringify(Object.keys(json)).substring(0, 100)}`);
+      } catch (e) {
+        console.log(`   ⚠️ No es JSON válido`);
+      }
+    } else {
+      console.log(`   ⚠️ Status no 200: ${response.status}`);
+      console.log(`   📄 Primeros 200 chars: ${body.substring(0, 200)}`);
+    }
 
     // Reenviamos exactamente el status y el cuerpo recibido por CoinMarketCap
     res.status(response.status).set({ 'Content-Type': 'application/json' }).send(body);
@@ -124,7 +143,7 @@ app.get('/api/global-metrics', async (req, res) => {
       error: err.message
     };
 
-    console.error('🚨 Error en proxy:', errorInfo);
+    console.error('🚨 Error en proxy /api/global-metrics:', errorInfo);
     
     res.status(500).json({ 
       error: 'Error interno en el proxy', 

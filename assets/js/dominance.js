@@ -63,14 +63,26 @@ async function fetchDominance() {
                 const url = new URL(proxyUrl);
                 url.searchParams.append('key', cmcApiKey);
                 
+                console.log(`🌐 URL final: ${url.toString().replace(cmcApiKey, 'XXXX')}`);
+                
                 const response = await fetch(url.toString());
                 
+                console.log(`📊 Respuesta HTTP: ${response.status} ${response.statusText}`);
+                console.log(`📄 Content-Type: ${response.headers.get('content-type')}`);
+                
                 if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error(`❌ HTTP Error ${response.status}:`, errorText.substring(0, 500));
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
 
                 const apiData = await response.json();
-                console.log('📊 Respuesta de CoinMarketCap:', apiData);
+                console.log('📊 Respuesta de CoinMarketCap (completa):', apiData);
+                console.log('📊 Estructura de respuesta:', {
+                    hasData: !!apiData.data,
+                    dataKeys: apiData.data ? Object.keys(apiData.data) : null,
+                    hasStatus: !!apiData.status
+                });
                 
                 if (!apiData || !apiData.data) {
                     throw new Error('Respuesta de API inválida - estructura inesperada');
