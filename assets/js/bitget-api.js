@@ -662,8 +662,50 @@ window.initializeConnectButton = function() {
                         SessionStorageManager.savePositions(positions);
                     }
                     window.displayPositions(positions);
+                    
+                    // 🟡 Mostrar estado de Bitget primero
+                    let bitgetMessage = `✅ Conectado: ${positions.length} posiciones cargadas`;
+                    
+                    // 🟡 Ahora probar CoinMarketCap
+                    const coinmarketcapKeyInput = document.getElementById('coinmarketcap-api-key');
+                    const cmcApiKey = coinmarketcapKeyInput ? coinmarketcapKeyInput.value.trim() : '';
+                    
+                    if (cmcApiKey) {
+                        console.log('🧪 Probando conexión a CoinMarketCap...');
+                        try {
+                            const cmcResult = await window.testCoinMarketCapConnection(cmcApiKey);
+                            
+                            if (cmcResult.success) {
+                                console.log('✅ CoinMarketCap conectado:', cmcResult.dominance);
+                                bitgetMessage += `<br><i class="bi bi-check-circle me-2"></i>CoinMarketCap: ${cmcResult.dominance.btc}% BTC, ${cmcResult.dominance.eth}% ETH`;
+                                
+                                // Guardar credenciales CMC también
+                                const encryptionKey = SessionStorageManager?.getEncryptionKey();
+                                if (encryptionKey) {
+                                    const chartsData = SessionStorageManager.loadChartsData() || {};
+                                    chartsData.coinmarketcap = {
+                                        apiKey: cmcApiKey,
+                                        testResult: cmcResult,
+                                        testedAt: new Date().toISOString()
+                                    };
+                                    SessionStorageManager.saveChartsData(chartsData);
+                                }
+                            } else {
+                                console.warn('⚠️ Error en CoinMarketCap:', cmcResult.message);
+                                bitgetMessage += `<br><i class="bi bi-exclamation-triangle me-2"></i>CoinMarketCap: ${cmcResult.message}`;
+                            }
+                        } catch (cmcError) {
+                            console.error('❌ Error probando CoinMarketCap:', cmcError);
+                            bitgetMessage += `<br><i class="bi bi-exclamation-triangle me-2"></i>CoinMarketCap: ${cmcError.message}`;
+                        }
+                    } else {
+                        console.log('ℹ️ CoinMarketCap API Key no configurada');
+                        bitgetMessage += `<br><i class="bi bi-info-circle me-2"></i>CoinMarketCap: No configurado`;
+                    }
+                    
+                    // 🟢 Mostrar estado final combinado
                     if (statusDiv) {
-                        statusDiv.innerHTML = '<div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>✅ Conectado: ' + positions.length + ' posiciones cargadas</div>';
+                        statusDiv.innerHTML = `<div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>${bitgetMessage}</div>`;
                         statusDiv.style.display = 'block';
                     }
                     

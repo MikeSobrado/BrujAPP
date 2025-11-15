@@ -510,6 +510,90 @@ function displayDominanceData(data) {
 // Exportar funciones para uso en otros scripts
 window.fetchDominance = fetchDominance;
 
+/**
+ * Función para probar la conexión a CoinMarketCap
+ * Usada por el botón Conectar en apicon.html
+ * @param {string} cmcApiKey - La API Key de CoinMarketCap a probar
+ * @returns {Promise<Object>} - Resultado de la prueba {success: boolean, message: string, dominance: {...}}
+ */
+window.testCoinMarketCapConnection = async function(cmcApiKey) {
+    console.log('🧪 Iniciando prueba de conexión a CoinMarketCap...');
+    
+    if (!cmcApiKey || cmcApiKey.trim() === '') {
+        const result = {
+            success: false,
+            message: 'API Key de CoinMarketCap no proporcionada',
+            dominance: null
+        };
+        console.log('❌ Prueba fallida:', result.message);
+        return result;
+    }
+    
+    try {
+        const proxyUrl = getDominanceProxyUrl();
+        console.log(`🔗 Proxy URL: ${proxyUrl}`);
+        
+        const url = new URL(proxyUrl);
+        url.searchParams.append('key', cmcApiKey);
+        
+        console.log(`📡 Enviando request de prueba a CoinMarketCap...`);
+        const startTime = Date.now();
+        
+        const response = await fetch(url.toString(), {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            },
+            timeout: 15000
+        });
+        
+        const duration = Date.now() - startTime;
+        console.log(`📊 Respuesta: ${response.status} ${response.statusText} (${duration}ms)`);
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            const errorMsg = `HTTP ${response.status}: ${errorText.substring(0, 100)}`;
+            console.error(`❌ Error en respuesta:`, errorMsg);
+            
+            return {
+                success: false,
+                message: errorMsg,
+                status: response.status,
+                dominance: null
+            };
+        }
+        
+        const apiData = await response.json();
+        
+        if (!apiData.data || typeof apiData.data.btc_dominance !== 'number') {
+            throw new Error('Respuesta inválida: no contiene datos de dominancia');
+        }
+        
+        const result = {
+            success: true,
+            message: '✅ Conexión exitosa a CoinMarketCap',
+            dominance: {
+                btc: apiData.data.btc_dominance.toFixed(2),
+                eth: apiData.data.eth_dominance.toFixed(2),
+                others: (100 - apiData.data.btc_dominance - apiData.data.eth_dominance).toFixed(2)
+            },
+            duration: duration
+        };
+        
+        console.log('✅ Prueba exitosa:', result);
+        return result;
+        
+    } catch (error) {
+        const result = {
+            success: false,
+            message: `Error: ${error.message}`,
+            dominance: null
+        };
+        console.error('❌ Prueba fallida:', error);
+        return result;
+    }
+};
+
 // Ejecutar automáticamente cuando se carga la página (con espera para asegurar que el DOM está listo)
 console.log('✓ dominance.js cargado, programando fetchDominance()');
 
