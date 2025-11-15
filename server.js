@@ -15,7 +15,34 @@ if (!API_KEY) {
   console.warn('Warning: CMC_API_KEY no está definido en .env. El proxy fallará sin la clave.');
 }
 
-app.use(cors());
+// Configurar CORS para aceptar peticiones desde GitHub Pages y localhost
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Orígenes permitidos
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'http://localhost:8080',
+      'http://127.0.0.1:3000',
+      'http://127.0.0.1:8080',
+      'https://miksobrado.github.io',
+      'https://MikeSobrado.github.io',
+      'https://github.com'
+    ];
+    
+    // En desarrollo, permitir peticiones sin origen (ej: curl, Postman)
+    if (!origin || allowedOrigins.includes(origin) || origin.includes('.onrender.com')) {
+      callback(null, true);
+    } else {
+      console.warn(`⚠️ CORS blocked request from origin: ${origin}`);
+      callback(new Error('CORS not allowed'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Headers de seguridad
@@ -45,6 +72,9 @@ app.use((req, res, next) => {
 
 // Servir archivos estáticos desde la carpeta actual
 app.use(express.static(__dirname));
+
+// Handle preflight requests (CORS)
+app.options('*', cors(corsOptions));
 
 // Ruta raíz: servir el dashboard principal
 app.get('/', (req, res) => {
