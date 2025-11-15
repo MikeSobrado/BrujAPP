@@ -102,7 +102,7 @@ function setupKeyFileInput() {
             return;
         }
         
-        const statusDiv = document.getElementById('key-status');
+        const statusDiv = document.getElementById('key-file-status');
         const reader = new FileReader();
         
         reader.onload = (event) => {
