@@ -174,19 +174,29 @@ function initBitgetAPI() {
             const path = '/api/v2/mix/position/history-position';
             const params = { productType: 'USDT-FUTURES', limit };
             console.log('🔗 Conectando al proxy:', this.proxyEndpoint);
+            console.log('📝 Enviando datos:', {
+                apiKey: '***',
+                apiSecret: '***',
+                apiPassphrase: '***',
+                method: 'GET',
+                path: path,
+                params: params
+            });
+
+            const requestBody = {
+                apiKey: this.credentials.apiKey,
+                apiSecret: this.credentials.apiSecret,
+                apiPassphrase: this.credentials.passphrase,
+                method: 'GET',
+                path: path,
+                params: params,
+                body: ''
+            };
 
             const res = await fetch(this.proxyEndpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    apiKey: this.credentials.apiKey,
-                    apiSecret: this.credentials.apiSecret,
-                    apiPassphrase: this.credentials.passphrase,
-                    method: 'GET',
-                    path: path,
-                    params: params,
-                    body: ''
-                })
+                body: JSON.stringify(requestBody)
             });
 
             if (!res.ok) {
