@@ -273,6 +273,15 @@ function initializeTestCMCButton() {
                     `;
                     statusDiv.style.display = 'block';
                 }
+                
+                // 🧹 Limpiar campo de CMC después de conexión exitosa
+                console.log('[APICON] 🧹 Limpiando campo de CMC API Key...');
+                setTimeout(() => {
+                    if (cmcKeyInput) {
+                        cmcKeyInput.value = '';
+                        console.log('[APICON] ✅ Campo de CMC limpiado');
+                    }
+                }, 0);
             } else {
                 console.error('[APICON] ❌ Error en prueba:', result.message);
                 if (statusDiv) {
