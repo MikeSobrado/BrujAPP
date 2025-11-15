@@ -43,29 +43,26 @@ async function fetchDominance() {
 
         let dominanceData;
 
-        // Obtener la clave de CMC del sessionStorage (guardada desde la UI de APIs)
-        let cmcApiKey = '';
-        try {
-            if (typeof SessionStorageManager !== 'undefined' && SessionStorageManager.getEncryptionKey()) {
-                const credentials = SessionStorageManager.getCredentials();
-                cmcApiKey = credentials?.coinmarketcap?.apiKey || '';
-            }
-        } catch (e) {
-            console.warn('⚠️ Error al obtener clave de CMC:', e);
-        }
+        // Obtener la clave de CMC del input del formulario (más directo que sessionStorage)
+        const cmcApiKeyInput = document.getElementById('coinmarketcap-api-key');
+        let cmcApiKey = cmcApiKeyInput ? cmcApiKeyInput.value.trim() : '';
+        
+        console.log('🔐 API Key de CoinMarketCap:', cmcApiKey ? '✓ (longitud: ' + cmcApiKey.length + ')' : '✗ NO CONFIGURADA');
 
         if (!cmcApiKey) {
             console.warn('⚠️ API Key de CoinMarketCap no configurada. Generando datos simulados.');
+            console.log('💡 Nota: Ingresa tu clave en [APIs] tab para usar datos reales de CoinMarketCap');
             dominanceData = generateRealisticDominanceData();
         } else {
             // Usar el proxy (local o Render)
             const proxyUrl = getDominanceProxyUrl();
             console.log(`🔗 Usando proxy: ${proxyUrl}`);
-            
-            const url = new URL(proxyUrl);
-            url.searchParams.append('key', cmcApiKey);
+            console.log(`📡 Enviando request con CMC API Key...`);
             
             try {
+                const url = new URL(proxyUrl);
+                url.searchParams.append('key', cmcApiKey);
+                
                 const response = await fetch(url.toString());
                 
                 if (!response.ok) {
@@ -73,9 +70,10 @@ async function fetchDominance() {
                 }
 
                 const apiData = await response.json();
+                console.log('📊 Respuesta de CoinMarketCap:', apiData);
                 
                 if (!apiData || !apiData.data) {
-                    throw new Error('Respuesta de API inválida');
+                    throw new Error('Respuesta de API inválida - estructura inesperada');
                 }
 
                 // Extraer datos reales
@@ -87,13 +85,20 @@ async function fetchDominance() {
                     btc_dominance: btcDominance,
                     eth_dominance: ethDominance,
                     others_dominance: othersDominance,
-                    timestamp: Date.now()
+                    timestamp: Date.now(),
+                    source: 'CoinMarketCap Real'
                 };
                 
-                console.log('✅ Datos reales de CoinMarketCap obtenidos');
+                console.log('✅ Datos REALES de CoinMarketCap obtenidos:', {
+                    btc: btcDominance + '%',
+                    eth: ethDominance + '%',
+                    others: othersDominance.toFixed(2) + '%'
+                });
             } catch (error) {
-                console.warn('⚠️ Error al obtener datos reales, usando simulados:', error.message);
+                console.warn('⚠️ Error al obtener datos reales de CoinMarketCap:', error.message);
+                console.log('💾 Usando datos simulados como fallback');
                 dominanceData = generateRealisticDominanceData();
+                dominanceData.source = 'Simulados (error en API)';
             }
         }
 
@@ -117,6 +122,7 @@ async function fetchDominance() {
 
 /**
  * Genera datos de dominancia realistas para GitHub Pages
+ * (cuando no hay API Key o falla la conexión)
  */
 function generateRealisticDominanceData() {
     // Datos basados en rangos típicos del mercado crypto
@@ -128,7 +134,9 @@ function generateRealisticDominanceData() {
         btc_dominance: parseFloat(btcDominance.toFixed(2)),
         eth_dominance: parseFloat(ethDominance.toFixed(2)),
         others_dominance: parseFloat(othersDominance.toFixed(2)),
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        source: 'Simulados (sin API Key)',
+        isSimulated: true
     };
 }
 
@@ -345,6 +353,23 @@ function updateDominanceData(data) {
     document.getElementById('btc-dominance').textContent = data.btc_dominance.toFixed(1) + '%';
     document.getElementById('eth-dominance').textContent = data.eth_dominance.toFixed(1) + '%';
     document.getElementById('others-dominance').textContent = data.others_dominance.toFixed(1) + '%';
+
+    // Agregar indicador de si son datos reales o simulados
+    const dataSourceBadge = document.getElementById('dominance-data-source');
+    if (dataSourceBadge) {
+        if (data.isSimulated) {
+            dataSourceBadge.innerHTML = '<span class="badge bg-warning text-dark">📊 Datos Simulados (sin API Key)</span>';
+            dataSourceBadge.style.display = 'inline-block';
+            console.log('⚠️ Mostrando datos SIMULADOS de dominancia');
+        } else if (data.source === 'CoinMarketCap Real') {
+            dataSourceBadge.innerHTML = '<span class="badge bg-success">✅ Datos Reales (CoinMarketCap)</span>';
+            dataSourceBadge.style.display = 'inline-block';
+            console.log('✅ Mostrando datos REALES de CoinMarketCap');
+        } else if (data.source && data.source.includes('error')) {
+            dataSourceBadge.innerHTML = '<span class="badge bg-danger">❌ Error en API (datos de fallback)</span>';
+            dataSourceBadge.style.display = 'inline-block';
+        }
+    }
 
     // Simular cambios (en el original estos vendrían de datos históricos)
     document.getElementById('btc-change').textContent = '+0.1%';
