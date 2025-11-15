@@ -33,7 +33,8 @@ function createDefaultProfile() {
         "MACD (Divergencia)": { state: null, weight: 10 },
         "Soporte/Resistencia": { state: null, weight: 10 },
         "Tendencia (Mayor temporalidad)": { state: null, weight: 10 },
-        "Patrones": { state: null, weight: 10 }
+        "Patrones": { state: null, weight: 10 },
+        "Media Móvil": { state: null, weight: 10 }
     };
     
     // Valores por defecto de la calculadora
