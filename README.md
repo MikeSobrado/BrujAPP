@@ -82,32 +82,159 @@ Una aplicación web moderna para análisis de mercados financieros con integraci
 
 ## ⚡ Instalación y Uso
 
-### ☁️ **Opción 1: Netlify (Recomendada para Producción)**
+### 🏗️ **Arquitectura (Backend + Frontend Separados)**
 
-1. Push a tu repositorio GitHub
-2. Conecta en [Netlify](https://netlify.com)
-3. ¡Listo! Deploy automático desde GitHub
-4. Usuarios pueden ingresar sus propias claves de API en la app
+La app está diseñada para:
+- **Backend**: Proxy seguro en Render que maneja credenciales y firma HMAC para Bitget
+- **Frontend**: Sitio estático en GitHub Pages
+- **Flujo**: Usuario → GitHub Pages (ingresa claves) → Render Proxy → Bitget API
+
+```
+┌─────────────────────┐          ┌──────────────────────┐         ┌─────────────┐
+│   GitHub Pages      │          │   Render Backend     │         │   Bitget    │
+│   Frontend HTML/CSS │ ─POST──> │   Proxy (Node.js)    │ ──────> │   API       │
+│   (Usuario ingresa  │  datos   │   - Firma HMAC       │         │             │
+│    claves en modal) │          │   - Rate limiting    │         └─────────────┘
+└─────────────────────┘          │   - Seguridad        │
+                                 └──────────────────────┘
+```
+
+### ☁️ **Opción 1: Producción (Render + GitHub Pages) ⭐ RECOMENDADA**
+
+#### **Paso 1: Desplegar Backend en Render**
+
+1. Abre [Render.com](https://render.com) e inicia sesión
+2. **Crea nuevo Web Service**:
+   - Repository: `https://github.com/tu-usuario/Trading-Dome`
+   - Build Command: `npm install`
+   - Start Command: `npm start`
+   - Instance Type: **Free** (suficiente)
+
+3. **Configura Variables de Entorno** (en Render dashboard):
+   ```
+   CMC_API_KEY=tu_api_key_coinmarketcap
+   NODE_ENV=production
+   ```
+   - Nota: **NO necesitas** BITGET_API_KEY, BITGET_API_SECRET, BITGET_PASSPHRASE
+   - Los usuarios proporcionarán sus claves desde la UI
+
+4. **Copia tu URL de Render** (ej: `https://trading-dome-api.onrender.com`)
+   - Anotala para el Paso 3
+
+#### **Paso 2: Desplegar Frontend en GitHub Pages**
+
+1. En tu repositorio, ve a **Settings → Pages**
+2. **Source**: Deploy from branch
+3. **Branch**: `main` / folder: `/ (root)`
+4. Tu sitio estará en: `https://tu-usuario.github.io/Trading-Dome/`
+
+#### **Paso 3: Actualizar URL del Proxy en Frontend**
+
+El archivo `assets/js/bitget-api.js` ya tiene lógica para detectar:
+- **Desarrollo local**: `http://localhost:3000/api/bitget`
+- **Producción**: `https://trading-dome-api.onrender.com/api/bitget`
+
+Si tu URL de Render es diferente, edita línea ~52:
+
+```javascript
+getProxyEndpoint() {
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return 'http://localhost:3000/api/bitget';
+    }
+    return 'https://tu-url-render.onrender.com/api/bitget'; // ← REEMPLAZA
+}
+```
+
+Luego commit y push:
+```bash
+git add assets/js/bitget-api.js
+git commit -m "chore: update Render proxy URL"
+git push
+```
+
+#### **Paso 4: Usuario Accede a la App**
+
+1. Abre `https://tu-usuario.github.io/Trading-Dome/`
+2. Ve a **APIs** → Ingresa tus credenciales de Bitget:
+   - API Key
+   - API Secret
+   - Passphrase
+3. ¡Botón **Conectar** y listo!
 
 ### 💻 **Opción 2: Desarrollo Local**
+
 ```bash
-# Clonar el repositorio
-git clone https://github.com/tu-usuario/trading-dome-dashboard.git
-cd trading-dome-dashboard
+# Clonar
+git clone https://github.com/tu-usuario/Trading-Dome.git
+cd Trading-Dome
 
 # Instalar dependencias
 npm install
 
-# Crear archivo .env
+# Crear archivo .env (opcional)
 cp .env.example .env
-# Nota: El .env es OPCIONAL. Si no lo configuras, 
-# los usuarios pueden ingresar claves desde la app
+# Nota: .env es OPCIONAL. Recomendamos que usuarios ingresen claves desde la app
 
-# Servir localmente (http://localhost:3000)
+# Servir en http://localhost:3000
 npm start
 ```
 
-Visita `http://localhost:3000` en tu navegador.
+Visita `http://localhost:3000` y sigue los pasos del Paso 4 anterior.
+
+### 🔒 **Seguridad - Cómo Funciona el Proxy**
+
+1. **Usuario ingresa credenciales** en el formulario (modal en UI)
+2. **Frontend encripta** datos antes de enviar (opcional con CryptoJS)
+3. **Frontend → Render Proxy** (HTTPS POST):
+   ```json
+   {
+     "apiKey": "tu_key",
+     "apiSecret": "tu_secret",
+     "apiPassphrase": "tu_passphrase",
+     "method": "GET",
+     "path": "/api/v2/account/info",
+     "params": {}
+   }
+   ```
+4. **Render genera firma HMAC-SHA256** (credenciales seguras en servidor, no en cliente)
+5. **Render → Bitget API** (con firma correcta)
+6. **Respuesta regresa al cliente** (encriptada si es necesario)
+7. **Cliente guarda en sessionStorage** (se borra al cerrar tab)
+
+**Ventajas**:
+- ✅ Credenciales NUNCA se envían directamente a Bitget desde el cliente
+- ✅ Firma HMAC se genera en servidor (más seguro)
+- ✅ Frontend no expone secretos
+- ✅ No hay problemas CORS (proxy maneja)
+
+## ✅ Checklist de Despliegue
+
+### **Para Producción (Render + GitHub Pages)**
+
+- [ ] **Backend (Render)**
+  - [ ] Repository conectado en Render
+  - [ ] Build Command: `npm install`
+  - [ ] Start Command: `npm start`
+  - [ ] CMC_API_KEY configurado (variable de entorno)
+  - [ ] Servidor corriendo en `https://trading-dome-api.onrender.com` (o tu URL)
+  - [ ] Health check funciona: `curl <TU_URL>/health`
+
+- [ ] **Frontend (GitHub Pages)**
+  - [ ] Settings → Pages → Deploy from branch (main)
+  - [ ] Sitio publicado en `https://tu-usuario.github.io/Trading-Dome/`
+  - [ ] Archivos estáticos accesibles (assets/css, assets/js, components/)
+
+- [ ] **Conectar Frontend con Backend**
+  - [ ] URL de Render actualizada en `bitget-api.js` (línea ~52)
+  - [ ] `getProxyEndpoint()` retorna correcta URL de Render en producción
+  - [ ] Cambios pusheados a GitHub
+
+- [ ] **Testing Final**
+  - [ ] Abre la app en GitHub Pages
+  - [ ] Ingresa credenciales de Bitget en UI
+  - [ ] Verifica en DevTools (F12) que las peticiones van a `/api/bitget`
+  - [ ] Comprueba que Bitget retorna datos correctamente
+  - [ ] Cierra la pestaña y abre de nuevo - claves fueron borradas ✅
 
 ## 🛠️ Estructura del Proyecto
 
@@ -223,7 +350,33 @@ trading-dome-dashboard/
 
 ## 🔌 Endpoints y APIs
 
-### 🔓 **APIs Públicas (Sin autenticación)**
+### 🌐 **Arquitectura de Endpoints**
+
+#### **Backend - Proxy en Render** (`/api/bitget`)
+- **Método**: POST
+- **URL**: `https://trading-dome-api.onrender.com/api/bitget` (reemplaza con tu URL)
+- **Propósito**: Reenvía peticiones a Bitget con firma HMAC
+
+**Request**:
+```json
+{
+  "apiKey": "string",
+  "apiSecret": "string",
+  "apiPassphrase": "string",
+  "method": "GET|POST|DELETE",
+  "path": "/api/v2/...",
+  "params": {},
+  "body": ""
+}
+```
+
+**Response**: Respuesta exacta de Bitget API
+
+#### **Health Check**
+- **GET** `/health` - Verifica que el servidor está funcionando
+- **Response**: `{ "status": "OK", "timestamp": "...", "port": 3000 }`
+
+### 🔓 **APIs Públicas Usadas (Sin autenticación)**
 - **Alternative.me** - Fear & Greed Index
   - Endpoint: `https://api.alternative.me/fng/`
   
@@ -232,14 +385,36 @@ trading-dome-dashboard/
 
 ### 🔑 **API Dinámica (Usuario configurable)**
 - **CoinMarketCap** - Dominance Data
-  - Endpoint: `/api/global-metrics?key=YOUR_CMC_API_KEY`
-  - Requiere: CMC_API_KEY del usuario (ingresado en la UI o en .env)
-  - Proxy: Servidor local o Netlify Functions
+  - Proxy: `/api/global-metrics?key=YOUR_CMC_API_KEY`
+  - Requiere: CMC_API_KEY del usuario (ingresado en UI)
 
-### 🎯 **Bitget API (Local - Usuario)**
-- Base: `https://api.bitget.com`
-- Endpoints: `/mix/v1/order/orders` (Movimientos cerrados)
-- Autenticación: Local (almacenada encriptada en sessionStorage)
+### 🎯 **Bitget API (Reenvía mediante Proxy)**
+- Base Remota: `https://api.bitget.com`
+- Ejemplos de endpoints:
+  - `GET /api/v2/mix/position/history-position` - Historial de posiciones
+  - `GET /api/v2/account/info` - Información de cuenta
+- Autenticación: HMAC-SHA256 (generada en servidor)
+
+## 📚 Troubleshooting
+
+### **Error: CORS en Console**
+- **Causa**: El proxy de Render no está respondiendo
+- **Solución**: Verifica que Render está corriendo y la URL es correcta
+
+### **Error: 401 Unauthorized**
+- **Causa**: Credenciales de Bitget inválidas
+- **Solución**: Revisa que API Key, Secret y Passphrase sean correctos en Bitget
+
+### **Error: Cannot GET /health**
+- **Causa**: El servidor backend no está ejecutándose
+- **Solución**: En desarrollo local, ejecuta `npm start`
+
+### **Las posiciones no cargan**
+- **Causa**: Credenciales no ingresadas o conexión fallida
+- **Solución**:
+  1. Ve a **APIs** y revisa el estado de conexión
+  2. Prueba de nuevo en **Posiciones**
+  3. Revisa console (F12) para más detalles
 
 ## 🔄 Historial de Versiones
 
@@ -254,32 +429,70 @@ trading-dome-dashboard/
 - ✅ Simplificación de datos
 - ✅ Timestamps en tiempo real
 
-## 🔧 Guía de Uso Rápida
+## 🎯 Guía del Usuario - Paso a Paso
 
-### 1️⃣ **Primera Vez**
-- Abre la app en `http://localhost:3000`
-- Ve a **APIs** (pestaña)
-- Ingresa tus credenciales de Bitget y CoinMarketCap
+### **Para Usar la App en Producción**
 
-### 2️⃣ **Cargar Movimientos**
-- Botón **Conectar** en APIs guardará tus credenciales
-- Ve a **Posiciones**
-- Se descarga el historial de Bitget automáticamente
+#### **Paso 1: Obtén tus credenciales de Bitget** 🔑
+1. Ve a [Bitget.com/es](https://www.bitget.com/es) → Inicia sesión
+2. Menú de usuario → **Configuración** → **API**
+3. Haz clic en **Crear API**
+4. Copia y guarda en un lugar seguro:
+   - **API Key**
+   - **API Secret**
+   - **Passphrase**
+5. ⚠️ **IMPORTANTE**: NO compartas estas claves con nadie
 
-### 3️⃣ **Analizar**
-- **Posiciones**: Tabla y estadísticas de tus trades
-- **Gráficas**: Pestaña análisis con 7 gráficas
-- **Calculadora**: En Gestión de Riesgo, usa tus parámetros
+#### **Paso 2: Abre la App** 🚀
+1. Ve a `https://tu-usuario.github.io/Trading-Dome/` (tu URL de GitHub Pages)
+2. ¡La app se abre en tu navegador!
 
-### 4️⃣ **Guardar Configuración**
-- Crea perfiles: Menú de Configuración
-- Cada perfil guarda: dashboard + calculadora + indicadores
-- Los perfiles se sincronizan automáticamente
+#### **Paso 3: Configura Bitget** ⚙️
+1. Ve a la pestaña **APIs** (ícono de enchufe 🔌)
+2. Rellena los campos:
+   - **API Key**: Pega tu API Key de Bitget
+   - **API Secret**: Pega tu API Secret
+   - **Passphrase**: Pega tu Passphrase
+3. Haz clic en **Conectar** ✅
 
-### 5️⃣ **Exportar Reporte**
-- Botón **Exportar PDF** en Posiciones
-- Incluye estadísticas y tabla de movimientos
-- Listo para presentar o archivar
+#### **Paso 4: ¡Listo para usar!** 🎉
+1. Ve a **Posiciones** para ver tu historial de trades
+2. Ve a **Gráficas** para análisis de P&L
+3. Usa **Calculadora de Riesgo** para nuevas operaciones
+
+### **Seguridad**
+- ✅ Tus claves **NUNCA** se guardan en el navegador después de cerrar la pestaña
+- ✅ Se usan **SOLO durante tu sesión actual**
+- ✅ Se envían de forma segura al servidor con firma HMAC
+- ✅ El servidor NO almacena tus claves
+
+### **¿Qué pasa si cierro la pestaña o actualizo?**
+- Deberás ingresar tus claves nuevamente (por seguridad)
+- Es normal y esperado
+- Tus claves NUNCA se almacenan
+
+---
+
+## 🔧 Guía de Uso Técnica (Para Desarrolladores)
+
+### 1️⃣ **Desarrollo Local**
+```bash
+npm start
+# Visita http://localhost:3000
+# El proxy local (server.js) está en el puerto 3000
+```
+
+### 2️⃣ **Testing - Comprobar Conexión Proxy**
+```bash
+# Verificar que el proxy está activo
+curl http://localhost:3000/health
+# Respuesta esperada: { "status": "OK", ... }
+```
+
+### 3️⃣ **Observar Logs**
+- Abre DevTools (F12) en el navegador
+- Pestaña **Console** para logs de frontend
+- Terminal donde ejecutas `npm start` para logs de backend
 
 ## 🤝 Contribuir
 

@@ -49,11 +49,13 @@ function initBitgetAPI() {
     class BitgetAPIManager {
         constructor() {
             this.credentials = this.loadCredentials();
-            // Usar proxy local para evitar CORS
-            this.apiEndpoint = '/.netlify/functions/bitget-proxy';
+            // Proxy en Render: /api/bitget
+            // En desarrollo local: http://localhost:3000/api/bitget
+            // En producción: https://trading-dome-api.onrender.com/api/bitget
+            this.proxyEndpoint = this.getProxyEndpoint();
             this.apiVersion = '/api/v2';
             console.log('🔌 BitgetAPIManager inicializado');
-            console.log('   - API Endpoint:', this.apiEndpoint + this.apiVersion);
+            console.log('   - Proxy Endpoint:', this.proxyEndpoint);
             console.log('   - Credenciales cargadas:', !!this.credentials);
             if (this.credentials) {
                 console.log('   - Credenciales:', {
@@ -62,6 +64,16 @@ function initBitgetAPI() {
                     passphrase: this.credentials.passphrase ? '***' : 'FALTA'
                 });
             }
+        }
+
+        getProxyEndpoint() {
+            // Detectar si está en desarrollo o producción
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                return 'http://localhost:3000/api/bitget';
+            }
+            // En producción (GitHub Pages o Render), usar URL del backend de Render
+            // NOTA: Reemplaza con tu URL real de Render
+            return 'https://trading-dome-api.onrender.com/api/bitget';
         }
 
         loadCredentials() {
@@ -126,25 +138,26 @@ function initBitgetAPI() {
         async testConnection() {
             if (!this.credentials) throw new Error('Sin credenciales');
             try {
-                // Usar el endpoint de información de cuenta para probar conexión
+                // Usar endpoint de información de cuenta para probar conexión
                 const path = '/api/v2/account/info';
-                const ts = Date.now().toString();
-                const sig = this.generateSignature(ts, 'GET', path, '');
                 
-                const res = await fetch(this.apiEndpoint + path, {
-                    method: 'GET',
-                    headers: {
-                        'ACCESS-KEY': this.credentials.apiKey,
-                        'ACCESS-SIGN': sig,
-                        'ACCESS-TIMESTAMP': ts,
-                        'ACCESS-PASSPHRASE': this.credentials.passphrase,
-                        'Content-Type': 'application/json'
-                    }
+                const res = await fetch(this.proxyEndpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        apiKey: this.credentials.apiKey,
+                        apiSecret: this.credentials.apiSecret,
+                        apiPassphrase: this.credentials.passphrase,
+                        method: 'GET',
+                        path: path,
+                        params: {},
+                        body: ''
+                    })
                 });
                 
                 if (!res.ok) {
-                    const error = await res.text();
-                    throw new Error(`Conexión fallida: ${res.status} ${error}`);
+                    const error = await res.json().catch(() => ({}));
+                    throw new Error(`Conexión fallida: ${res.status} ${error.message || error.error || 'Unknown error'}`);
                 }
                 return true;
             } catch (e) {
@@ -159,26 +172,28 @@ function initBitgetAPI() {
             // Endpoint correcto de Bitget v2: Historial de posiciones
             // GET /api/v2/mix/position/history-position
             // Parámetros obligatorios: productType (USDT-FUTURES o COIN-FUTURES)
-            const endpoint = '/api/v2/mix/position/history-position';
+            const path = '/api/v2/mix/position/history-position';
             const params = { productType: 'USDT-FUTURES', limit };
-            console.log('🔗 Conectando a (Netlify proxy):', this.apiEndpoint);
+            console.log('🔗 Conectando al proxy:', this.proxyEndpoint);
 
-            const res = await fetch(this.apiEndpoint, {
+            const res = await fetch(this.proxyEndpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     apiKey: this.credentials.apiKey,
                     apiSecret: this.credentials.apiSecret,
                     apiPassphrase: this.credentials.passphrase,
-                    endpoint,
-                    params
+                    method: 'GET',
+                    path: path,
+                    params: params,
+                    body: ''
                 })
             });
 
             if (!res.ok) {
-                const error = await res.text();
+                const error = await res.json().catch(() => ({}));
                 console.error(`❌ Error HTTP ${res.status}:`, error);
-                throw new Error(`Error obteniendo posiciones: ${res.status} ${error}`);
+                throw new Error(`Error obteniendo posiciones: ${res.status} ${error.message || error.error || 'Unknown'}`);
             }
 
             const data = await res.json();

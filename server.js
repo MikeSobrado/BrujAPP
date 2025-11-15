@@ -3,10 +3,12 @@ const path = require('path');
 const express = require('express');
 const fetch = require('node-fetch');
 const cors = require('cors');
+const crypto = require('crypto');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const CMC_BASE = 'https://pro-api.coinmarketcap.com';
+const BITGET_BASE = 'https://api.bitget.com';
 const API_KEY = process.env.CMC_API_KEY;
 
 if (!API_KEY) {
@@ -97,6 +99,99 @@ app.get('/api/global-metrics', async (req, res) => {
       error: 'Error interno en el proxy', 
       timestamp: errorInfo.timestamp,
       detail: process.env.NODE_ENV === 'production' ? undefined : err.message 
+    });
+  }
+});
+
+// ========================
+// BITGET PROXY ENDPOINT
+// ========================
+// Recibe credenciales del cliente y firma las peticiones a Bitget
+app.post('/api/bitget', async (req, res) => {
+  const startTime = Date.now();
+  
+  try {
+    const {
+      apiKey,
+      apiSecret,
+      apiPassphrase,
+      method = 'GET',
+      path: endpointPath,
+      params = {},
+      body: bodyData = ''
+    } = req.body;
+
+    // Validar credenciales
+    if (!apiKey || !apiSecret || !apiPassphrase) {
+      return res.status(400).json({
+        error: 'Missing credentials',
+        message: 'apiKey, apiSecret, y apiPassphrase son requeridos'
+      });
+    }
+
+    // Validar endpoint
+    if (!endpointPath || typeof endpointPath !== 'string') {
+      return res.status(400).json({
+        error: 'Invalid path',
+        message: 'path debe ser una ruta válida de Bitget API'
+      });
+    }
+
+    // Construir query string si params existe
+    let fullPath = endpointPath;
+    if (method === 'GET' && Object.keys(params).length > 0) {
+      const queryString = new URLSearchParams(params).toString();
+      fullPath = endpointPath + (queryString ? '?' + queryString : '');
+    }
+
+    // Generar firma (HMAC-SHA256)
+    const timestamp = Date.now().toString();
+    const bodyForSignature = method === 'GET' ? '' : (typeof bodyData === 'string' ? bodyData : JSON.stringify(bodyData));
+    const stringToSign = timestamp + method + endpointPath + bodyForSignature;
+    const signature = crypto
+      .createHmac('sha256', apiSecret)
+      .update(stringToSign)
+      .digest('base64');
+
+    // Headers para Bitget
+    const bitgetHeaders = {
+      'ACCESS-KEY': apiKey,
+      'ACCESS-SIGN': signature,
+      'ACCESS-TIMESTAMP': timestamp,
+      'ACCESS-PASSPHRASE': apiPassphrase,
+      'Content-Type': 'application/json'
+    };
+
+    // Realizar petición a Bitget
+    const url = BITGET_BASE + fullPath;
+    console.log(`🔗 [${new Date().toISOString()}] ${method} ${url}`);
+
+    const bitgetResponse = await fetch(url, {
+      method: method,
+      headers: bitgetHeaders,
+      body: bodyForSignature ? bodyForSignature : undefined,
+      timeout: 30000
+    });
+
+    const responseBody = await bitgetResponse.text();
+    const duration = Date.now() - startTime;
+
+    // Log del resultado
+    console.log(`✅ [${new Date().toISOString()}] Bitget ${method} ${endpointPath} - ${bitgetResponse.status} (${duration}ms)`);
+
+    // Reenviamos la respuesta exacta de Bitget
+    res.status(bitgetResponse.status)
+      .set({ 'Content-Type': 'application/json' })
+      .send(responseBody);
+
+  } catch (err) {
+    const duration = Date.now() - startTime;
+    console.error(`🚨 Error en proxy Bitget (${duration}ms):`, err.message);
+
+    res.status(502).json({
+      error: 'Proxy error',
+      message: process.env.NODE_ENV === 'production' ? 'Error al conectar con Bitget' : err.message,
+      timestamp: new Date().toISOString()
     });
   }
 });
